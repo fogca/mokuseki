@@ -1,0 +1,8 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "mokuseki",
+	"compatibility_date": "2026-05-30",
+	"pages_build_output_dir": ".svelte-kit/cloudflare"
+	// KV bindings, secrets, etc. will be added in Phase 1.
+	// "kv_namespaces": [{ "binding": "HOSTEX_CACHE", "id": "<id>" }]
+}

@@ -1,0 +1,363 @@
+/* =========================================================
+ * MOKUSEKI Hotels — base.css
+ * Single source of truth for tokens + utility classes.
+ * Components must not redefine font / size / color / weight;
+ * always reach for a utility or a token.
+ * ========================================================= */
+
+/* ─── Fonts ──────────────────────────────────────────── */
+@font-face {
+	font-family: 'Mokuseki Sans';
+	src: url('/fonts/MokusekiSans08-Regular.woff2?v=08') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Primary Latin face — August Type Foundry / Steiner (in-house variable
+ * font, wght 400–900). Any requested weight interpolates on one master. */
+@font-face {
+	font-family: 'Steiner';
+	src: url('/fonts/Steiner-VF08.woff2?v=20260606') format('woff2');
+	font-weight: 400 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Primary Japanese face — FOT-筑紫オールドゴシック Std M.
+ * Served in production by fontplus (domain-bound), so no @font-face is
+ * declared here. Locally fontplus is absent, so the --font-ja stack below
+ * falls back to 筑紫ゴシック M (or Hiragino). */
+
+/* ─── Tokens ─────────────────────────────────────────── */
+:root {
+	/* Color — cool neutral palette. */
+	--bg: #f6f6f6;
+	--bg-soft: #ececec;
+	--ink: #1a1a1a;
+	--ink-soft: #484848;
+	--ink-faint: #8a8a8a;
+	--rule: #1a1a1a;
+	--accent: #484848;
+	--white: #ffffff;
+
+	/* Japanese — FOT-筑紫オールドゴシック Std M (served via fontplus in prod).
+	 * Both quoted and unquoted name forms are listed so fontplus matches
+	 * whichever it registers; local dev falls back to 筑紫ゴシック M / Hiragino. */
+	--font-ja:
+		'FOT-筑紫オールドゴシック Std M', 'TsukuOldGothicStd-M', TsukuOldGothicStd-M,
+		'FOT-筑紫ゴシック Std M', 'TsukuGoStd-M', 'TsukuGoPro-M', 'FOT-TsukuGoPro-M',
+		'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+
+	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
+	 * gothic face, display and body share the same JP stack. */
+	--display: 'Steiner', 'Mokuseki Sans', 'Inter', var(--font-ja);
+	--sans:
+		'Steiner', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
+		'Helvetica Neue', var(--font-ja);
+	--ja-body: 'Steiner', var(--font-ja);
+	/* Footer / card meta JA — same JP face, Latin still Steiner. */
+	--font-tsuku: 'Steiner', 'Mokuseki Sans', var(--font-ja);
+
+	/* Type scale */
+	--fs-sm: 13px;
+	--fs-h1: 24px;
+	--fs-h2: 20px;
+	--fs-h3: 17px;
+	--fs-meta: 16px;
+	--fs-body: 16px;
+
+	/* Tracking / Leading */
+	--ls-en: 0; /* All text is set at zero tracking. */
+	--ls-ja: 0;
+	--lh-en: 1.4;
+	--lh-ja: 1.7;
+
+	/* Spacing */
+	--sp-1: 4px;
+	--sp-2: 8px;
+	--sp-3: 12px;
+	--sp-4: 16px;
+	--sp-5: 20px;
+	--sp-6: 24px;
+	--sp-7: 32px;
+	--sp-8: 40px;
+	--sp-9: 60px;
+	--sp-10: 80px;
+	--sp-11: 120px;
+
+	/* Layout — horizontal page padding (used by main, header, dock, etc.). */
+	--padding: clamp(24px, 5vw, 80px);
+	--pcPadding: clamp(40px, 5vw, 80px);
+	--max-width: 1280px;
+
+	/* Motion */
+	--duration-fast: 200ms;
+	--duration-default: 400ms;
+	--duration-slow: 800ms;
+	--ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-out: cubic-bezier(0, 0, 0.2, 1);
+	--ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+	/* Z-index */
+	--z-base: 0;
+	--z-content: 1;
+	--z-header: 50;
+	--z-floating: 40;
+	--z-overlay: 100;
+}
+
+/* PC tier — slightly tighter horizontal padding. */
+@media (min-width: 1024px) {
+	:root {
+		--padding: clamp(24px, 4vw, 80px);
+	}
+}
+
+/* SP overrides */
+@media (max-width: 540px) {
+	:root {
+		--fs-sm: 12px;
+		--fs-h1: 20px;
+		--fs-h2: 18px;
+		--fs-h3: 15px;
+		--fs-meta: 13px;
+		--fs-body: 13px;
+	}
+}
+
+/* ─── Reset ──────────────────────────────────────────── */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--sans);
+	font-weight: 300;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+:lang(ja) {
+	font-feature-settings: 'palt' 1;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+img,
+picture,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+
+/* ─── Layout — page-wide horizontal padding ──────────── */
+/* `main` owns the horizontal padding so children using width:100%
+ * automatically respect the left/right margin (--padding). */
+main {
+	padding-left: var(--padding);
+	padding-right: var(--padding);
+}
+
+/* ─── Typography utilities ───────────────────────────── */
+.h1,
+.h2,
+.h3,
+.eyebrow,
+.meta {
+	font-family: var(--display);
+	font-weight: 400;
+	line-height: var(--lh-en);
+	letter-spacing: var(--ls-en);
+	color: var(--ink);
+	margin: 0;
+}
+
+.h1 {
+	font-size: var(--fs-h1);
+}
+
+.h2 {
+	font-size: var(--fs-h2);
+}
+
+.h3 {
+	font-size: var(--fs-h3);
+}
+
+.eyebrow,
+.meta {
+	font-size: var(--fs-sm);
+	color: var(--ink-faint);
+}
+
+.h-ja {
+	font-family: var(--ja-body);
+	font-weight: 400;
+	font-size: var(--fs-meta);
+	line-height: var(--lh-ja);
+	letter-spacing: var(--ls-ja);
+	color: var(--ink-soft);
+	margin: 0;
+}
+
+.body {
+	font-family: var(--ja-body);
+	font-weight: 400;
+	font-size: var(--fs-body);
+	line-height: var(--lh-ja);
+	letter-spacing: var(--ls-ja);
+	color: var(--ink-soft);
+	margin: 0;
+}
+
+.body-sm {
+	font-family: var(--ja-body);
+	font-weight: 400;
+	font-size: var(--fs-meta);
+	line-height: var(--lh-ja);
+	letter-spacing: var(--ls-ja);
+	color: var(--ink-soft);
+	margin: 0;
+}
+
+/* ─── Color helpers ──────────────────────────────────── */
+.white {
+	color: var(--white);
+}
+
+.dark {
+	color: var(--ink);
+}
+
+.mute {
+	color: var(--ink-faint);
+}
+
+.inverse {
+	background: var(--ink);
+	color: var(--bg);
+}
+
+.inverse .eyebrow,
+.inverse .meta,
+.inverse .mute {
+	color: rgba(246, 246, 246, 0.55);
+}
+
+.inverse .body,
+.inverse .body-sm,
+.inverse .h-ja {
+	color: rgba(246, 246, 246, 0.8);
+}
+
+.inverse .h1,
+.inverse .h2,
+.inverse .h3 {
+	color: var(--bg);
+}
+
+/* ─── Text helpers ───────────────────────────────────── */
+.uppercase {
+	text-transform: uppercase;
+}
+
+.center {
+	text-align: center;
+}
+
+.left {
+	text-align: left;
+}
+
+.no-tracking {
+	letter-spacing: 0;
+}
+
+/* ─── Inline link ────────────────────────────────────── */
+.inline-link {
+	color: var(--ink-soft);
+	text-decoration: none;
+	border-bottom: 1px solid currentColor;
+	padding-bottom: 1px;
+	transition: color 300ms ease;
+}
+
+.inline-link:hover {
+	color: var(--ink);
+}
+
+/* ─── Solid button (filled dark, light text) ─────────── */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 24px;
+	background: var(--ink);
+	border: none;
+	color: var(--bg);
+	font-family: var(--display);
+	font-size: var(--fs-sm);
+	letter-spacing: var(--ls-en);
+	line-height: var(--lh-en);
+	padding: 18px 44px;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background 400ms ease;
+}
+
+.btn:hover {
+	background: var(--accent);
+}
+
+.btn .arrow {
+	text-transform: none;
+	letter-spacing: 0;
+	transition: transform 400ms ease;
+}
+
+.btn:hover .arrow {
+	transform: translateX(4px);
+}
+
+/* ─── Small reservation pill ─────────────────────────── */
+.btn-sm {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	background: var(--ink);
+	color: var(--bg);
+	font-family: var(--display);
+	font-size: 12.5px;
+	letter-spacing: var(--ls-en);
+	line-height: var(--lh-en);
+	padding: 15px;
+	text-decoration: none;
+	border: none;
+	cursor: pointer;
+	transition: background 300ms ease;
+}
+
+.btn-sm:hover {
+	background: var(--accent);
+}
