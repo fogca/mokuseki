@@ -32,12 +32,12 @@
 /* ─── Tokens ─────────────────────────────────────────── */
 :root {
 	/* Color — cool neutral palette. */
-	--bg: #f6f6f6;
-	--bg-soft: #ececec;
-	--ink: #1a1a1a;
+	--bg: #edecea;
+	--bg-soft: #e3e2e0;
+	--ink: #353535;
 	--ink-soft: #484848;
 	--ink-faint: #8a8a8a;
-	--rule: #1a1a1a;
+	--rule: #353535;
 	--accent: #484848;
 	--white: #ffffff;
 

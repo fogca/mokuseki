@@ -6,9 +6,15 @@
 
 import type { Property } from '$lib/types/domain';
 
-// Temporary photography — two brand images reused across slots until real
-// per-house photography is delivered. galleryTones stay as the fallback.
-const TEMP_IMAGES = ['/images/highlight.jpg', '/images/hero.jpg'];
+// Mood photography reused across slots until real per-house photography is
+// delivered. Each house starts on a different mood (rotate) so heroes differ.
+const MOOD = [
+	'/images/mood_00.png',
+	'/images/mood_01.png',
+	'/images/mood_02.png',
+	'/images/mood_03.png'
+];
+const rotate = (n: number): string[] => [...MOOD.slice(n), ...MOOD.slice(0, n)];
 
 // Cool neutral fallback tones shown behind photography.
 const COOL_TONES = ['#e4e4e4', '#d4d4d4', '#bdbdbd', '#ececec', '#c8c8c8'];
@@ -43,7 +49,7 @@ export const mockProperties: Property[] = [
 			{ ja: '那古野の町並みを辿る', en: 'Trace the lanes of old Nagono' }
 		],
 		galleryTones: COOL_TONES,
-		images: TEMP_IMAGES
+		images: rotate(0)
 	},
 	{
 		id: 'prop_kamejima',
@@ -74,7 +80,7 @@ export const mockProperties: Property[] = [
 			{ ja: '四間道の蔵めぐり', en: 'The storehouses of Shikemichi' }
 		],
 		galleryTones: COOL_TONES,
-		images: TEMP_IMAGES
+		images: rotate(1)
 	},
 	{
 		id: 'prop_osu',
@@ -105,7 +111,7 @@ export const mockProperties: Property[] = [
 			{ ja: '万松寺の界隈', en: 'Around Banshoji temple' }
 		],
 		galleryTones: COOL_TONES,
-		images: TEMP_IMAGES
+		images: rotate(2)
 	},
 	{
 		id: 'prop_hida',
@@ -136,7 +142,7 @@ export const mockProperties: Property[] = [
 			{ ja: '飛騨の木地師の工房を訪ねる', en: "Visit a Hida woodturner's atelier" }
 		],
 		galleryTones: COOL_TONES,
-		images: TEMP_IMAGES
+		images: rotate(3)
 	}
 ];
 

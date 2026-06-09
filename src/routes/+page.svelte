@@ -10,12 +10,21 @@
 
 	// Cool neutral fallback tones shown behind the gallery photography.
 	const galleryTones = ['#e4e4e4', '#d4d4d4', '#bdbdbd', '#c8c8c8', '#ececec', '#dadada'];
+
+	// Mood photography for the gallery grid (cycled across the six cells).
+	const galleryImages = [
+		'/images/mood_00.png',
+		'/images/mood_01.png',
+		'/images/mood_02.png',
+		'/images/mood_03.png'
+	];
 </script>
 
 <SEO title={i18n.t.meta.home.title} description={i18n.t.meta.home.description} />
 
 <!-- ─── 01 Hero ─────────────────────────────────────── -->
 <section class="hero">
+	<div class="hero-media" aria-hidden="true"></div>
 	<div class="hero-inner">
 		<h1 class="h1">
 			{en.hero.ledeLine1}<br />
@@ -143,7 +152,7 @@
 			<div
 				class="gal-cell gal-cell-{i + 1}"
 				style:background-color={tone}
-				style:background-image={`url(${i % 2 === 0 ? '/images/highlight.jpg' : '/images/hero.jpg'})`}
+				style:background-image={`url(${galleryImages[i % galleryImages.length]})`}
 				aria-hidden="true"
 			></div>
 		{/each}
@@ -191,15 +200,38 @@
 		margin-top: 20px;
 	}
 
-	/* ─── 01 Hero ────────────────────────────────────── */
+	/* ─── 01 Hero — full-bleed, full-height, white text ── */
 	.hero {
-		min-height: calc(100vh - clamp(128px, 14vh, 192px));
+		/* Break out of main's horizontal padding to span the viewport, and
+		 * pull up under the fixed header (matches .shell padding-top). */
+		margin-left: calc(-1 * var(--padding));
+		margin-right: calc(-1 * var(--padding));
+		margin-top: calc(-1 * clamp(72px, 9vh, 100px));
+		min-height: 100svh;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		justify-content: center;
+		justify-content: flex-end;
 		position: relative;
-		padding: clamp(64px, 10vh, 128px) 0 96px;
+		overflow: hidden;
+		isolation: isolate;
+		padding: clamp(96px, 16vh, 180px) var(--padding) clamp(72px, 12vh, 120px);
+	}
+
+	.hero-media {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background-image:
+			linear-gradient(
+				180deg,
+				rgba(18, 18, 18, 0.4) 0%,
+				rgba(18, 18, 18, 0.12) 38%,
+				rgba(18, 18, 18, 0.55) 100%
+			),
+			url('/images/mood_03.png');
+		background-size: cover;
+		background-position: center;
 	}
 
 	.hero-inner {
@@ -210,9 +242,17 @@
 		text-align: left;
 	}
 
+	.hero :global(.h1) {
+		color: var(--white);
+	}
+
+	.hero :global(.h-ja) {
+		color: rgba(255, 255, 255, 0.82);
+	}
+
 	.scroll {
 		position: absolute;
-		bottom: 32px;
+		bottom: 28px;
 		left: 50%;
 		transform: translateX(-50%);
 		display: flex;
@@ -221,11 +261,15 @@
 		gap: 14px;
 	}
 
+	.scroll :global(.meta) {
+		color: rgba(255, 255, 255, 0.8);
+	}
+
 	.scroll-line {
 		width: 1px;
 		height: 56px;
-		background: var(--ink-soft);
-		opacity: 0.4;
+		background: var(--white);
+		opacity: 0.5;
 		animation: scrollPulse 2400ms ease-in-out infinite;
 	}
 

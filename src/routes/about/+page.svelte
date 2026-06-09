@@ -139,7 +139,7 @@
 		aspect-ratio: 21 / 9;
 		background:
 			linear-gradient(180deg, transparent 70%, rgba(26, 26, 26, 0.06)),
-			url('/images/hero.jpg') center / cover no-repeat,
+			url('/images/mood_01.png') center / cover no-repeat,
 			linear-gradient(135deg, #e0e0e0 0%, #cfcfcf 60%, #b8b8b8 100%);
 	}
 
