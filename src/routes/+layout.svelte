@@ -6,10 +6,39 @@
 	import SiteMenu from '$lib/components/SiteMenu.svelte';
 	import { provideI18n } from '$lib/i18n/store.svelte';
 	import { browser } from '$app/environment';
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { LayoutData } from './$types';
 
-	const i18n = provideI18n();
-	let { children } = $props();
+	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
+	// Initial value only, by design — after hydration the store itself is the
+	// source of truth and setLocale() keeps the cookie in sync.
+	// svelte-ignore state_referenced_locally
+	const i18n = provideI18n(data.locale);
+
+	// FONTPLUS loads via the deferred <script> in app.html, so the global may
+	// not exist yet when navigation callbacks fire. Poll briefly, then run.
+	type FontplusApi = { reload: (init?: boolean) => void };
+	function whenFontplusReady(cb: (fp: FontplusApi) => void, timeoutMs = 6000) {
+		const startedAt = performance.now();
+		const poll = () => {
+			const fp = (window as unknown as { FONTPLUS?: FontplusApi }).FONTPLUS;
+			if (fp && typeof fp.reload === 'function') {
+				cb(fp);
+				return;
+			}
+			if (performance.now() - startedAt > timeoutMs) return; // give up silently
+			setTimeout(poll, 60);
+		};
+		poll();
+	}
+
+	afterNavigate((nav) => {
+		// SvelteKit navigates client-side, so FONTPLUS never re-scans the new
+		// DOM on its own. First load ('enter') -> reload(true): reset + fetch
+		// all. Real navigations -> reload(false): fetch newly seen chars only.
+		if (browser) whenFontplusReady((fp) => fp.reload(nav.type === 'enter'));
+	});
 
 	let menuOpen = $state(false);
 	const isTop = $derived($page.url.pathname === '/');
@@ -47,6 +76,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 	<!-- Baseline OGP (page-level <SEO /> overrides title / description / image). -->
 	<meta property="og:type" content="website" />
@@ -57,12 +87,6 @@
 	<meta name="twitter:site" content="@mokuseki" />
 
 	<meta name="theme-color" content="#f6f6f6" />
-
-	<!-- Re-inject the FONTPLUS loader on client navigation so 筑紫オールドゴシック
-	     re-applies to newly rendered routes (matches app.html). -->
-	<script
-		src="https://webfont.fontplus.jp/accessor/script/fontplus.js?kqbwQX--jVA%3D&box=xwiPbvznvro%3D&aa=1&ab=2"
-	></script>
 </svelte:head>
 
 <div class="shell" lang={i18n.locale}>
@@ -104,7 +128,7 @@
 		owns the horizontal padding (--padding) so the inner button can use
 		width: 100% and still keep left/right margins from the viewport.
 	-->
-	{#if isTop}
+	{#if isTop && data.bookingOpen}
 		<div class="reserve-dock">
 			<a class="btn-sm reserve-floating" href="/reserve">
 				<span>{i18n.t.nav.reserve}</span>

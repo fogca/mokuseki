@@ -105,10 +105,10 @@
 	.sec-head {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		text-align: left;
+		align-items: center;
+		text-align: center;
 		gap: 8px;
-		margin: 0 0 clamp(56px, 8vh, 96px);
+		margin: 0 auto clamp(56px, 8vh, 96px);
 		max-width: 720px;
 	}
 
@@ -124,8 +124,8 @@
 		padding: clamp(48px, 8vh, 96px) 0 clamp(80px, 12vh, 144px);
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		text-align: left;
+		align-items: center;
+		text-align: center;
 		gap: 8px;
 	}
 
@@ -139,7 +139,7 @@
 		aspect-ratio: 21 / 9;
 		background:
 			linear-gradient(180deg, transparent 70%, rgba(26, 26, 26, 0.06)),
-			url('/images/mood_01.png') center / cover no-repeat,
+			url('/images/mood_01.webp') center / cover no-repeat,
 			linear-gradient(135deg, #e0e0e0 0%, #cfcfcf 60%, #b8b8b8 100%);
 	}
 

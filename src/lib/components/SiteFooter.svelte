@@ -3,13 +3,6 @@
 	import Wordmark from './Wordmark.svelte';
 
 	const i18n = useI18n();
-	let email = $state('');
-
-	function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		// Newsletter signup will be wired up later (Phase 7+).
-		email = '';
-	}
 </script>
 
 <footer class="site-footer inverse">
@@ -26,13 +19,13 @@
 		<nav class="col" aria-label={i18n.t.footer.navHeading}>
 			<h2 class="eyebrow">{i18n.t.footer.navHeading}</h2>
 			<ul class="links">
-				<li><a class="body-sm" href="/">{i18n.t.footer.nav.home}</a></li>
-				<li><a class="body-sm" href="/#houses">{i18n.t.footer.nav.houses}</a></li>
-				<li><a class="body-sm" href="/about">{i18n.t.footer.nav.about}</a></li>
-				<li><a class="body-sm" href="/#concept">{i18n.t.footer.nav.concept}</a></li>
-				<li><a class="body-sm" href="/#experience">{i18n.t.footer.nav.experience}</a></li>
-				<li><a class="body-sm" href="/reserve">{i18n.t.footer.nav.reserve}</a></li>
-				<li><a class="body-sm" href="/contact">{i18n.t.footer.nav.contact}</a></li>
+				<li><a class="body-sm uppercase" href="/">{i18n.t.footer.nav.home}</a></li>
+				<li><a class="body-sm uppercase" href="/#houses">{i18n.t.footer.nav.houses}</a></li>
+				<li><a class="body-sm uppercase" href="/about">{i18n.t.footer.nav.about}</a></li>
+				<li><a class="body-sm uppercase" href="/#concept">{i18n.t.footer.nav.concept}</a></li>
+				<li><a class="body-sm uppercase" href="/#experience">{i18n.t.footer.nav.experience}</a></li>
+				<li><a class="body-sm uppercase" href="/reserve">{i18n.t.footer.nav.reserve}</a></li>
+				<li><a class="body-sm uppercase" href="/contact">{i18n.t.footer.nav.contact}</a></li>
 			</ul>
 		</nav>
 
@@ -45,41 +38,12 @@
 				{/each}
 			</address>
 
-			<h2 class="eyebrow social-heading">{i18n.t.footer.socialHeading}</h2>
-			<ul class="links">
-				{#each i18n.t.footer.socialItems as item (item.label)}
-					<li>
-						<a
-							class="body-sm social-link"
-							href={item.href}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{item.label}
-							<span class="ext" aria-hidden="true">↗</span>
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</div>
+			<!-- TODO(launch): Journal/social links — restore once the brand
+			     accounts exist (hrefs in messages.ts currently point at the
+			     platform homepages). -->
 
-		<!-- Column 4 — Newsletter -->
-		<div class="col">
-			<h2 class="eyebrow">{i18n.t.footer.newsletterHeading}</h2>
-			<p class="body-sm letter-body">{i18n.t.footer.newsletterBody}</p>
-			<form class="letter-form" onsubmit={handleSubmit}>
-				<input
-					type="email"
-					required
-					bind:value={email}
-					placeholder={i18n.t.footer.newsletterPlaceholder}
-					aria-label={i18n.t.footer.newsletterPlaceholder}
-				/>
-				<button class="meta letter-submit" type="submit">
-					<span>{i18n.t.footer.newsletterSubmit}</span>
-					<span class="arrow" aria-hidden="true">→</span>
-				</button>
-			</form>
+			<!-- TODO(launch): newsletter column — restore once a real signup
+			     endpoint exists; the previous form silently discarded emails. -->
 		</div>
 	</div>
 
@@ -91,6 +55,8 @@
 			<li><a class="meta" href="/privacy">{i18n.t.footer.legal.privacy}</a></li>
 			<li aria-hidden="true" class="meta sep">/</li>
 			<li><a class="meta" href="/terms">{i18n.t.footer.legal.terms}</a></li>
+			<li aria-hidden="true" class="meta sep">/</li>
+			<li><a class="meta" href="/legal">{i18n.t.footer.legal.tokushoho}</a></li>
 		</ul>
 	</div>
 </footer>
@@ -118,8 +84,9 @@
 		max-width: 1280px;
 		margin: 0 auto;
 		padding: 0 clamp(24px, 5vw, 80px);
+		/* 3 columns while the newsletter column is parked (see TODO above). */
 		display: grid;
-		grid-template-columns: 1.3fr 0.8fr 1fr 1.1fr;
+		grid-template-columns: 1.4fr 0.9fr 1.1fr;
 		gap: clamp(32px, 4vw, 64px);
 		align-items: start;
 	}
@@ -132,7 +99,8 @@
 
 	.footer-wordmark {
 		display: inline-flex;
-		color: var(--bg);
+		/* TRIAL: was var(--bg) — terracotta-on-navy per moodboard card 2. */
+		color: var(--accent);
 		text-decoration: none;
 		line-height: 0;
 	}
@@ -171,92 +139,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 7px;
-	}
-
-	.social-heading {
-		margin-top: 20px;
-	}
-
-	.social-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-	}
-
-	.ext {
-		font-size: 11px;
-		color: inherit;
-		opacity: 0.5;
-		transition:
-			transform 400ms ease,
-			opacity 400ms ease;
-	}
-
-	.social-link:hover .ext {
-		transform: translate(2px, -2px);
-		opacity: 1;
-	}
-
-	.letter-body {
-		max-width: 24ch;
-	}
-
-	.letter-form {
-		display: flex;
-		align-items: center;
-		border-bottom: 1px solid rgba(246, 246, 246, 0.4);
-		padding-bottom: 8px;
-		gap: 12px;
-		margin-top: 4px;
-	}
-
-	.letter-form input {
-		flex: 1;
-		appearance: none;
-		background: transparent;
-		border: none;
-		font-family: var(--display);
-		font-size: var(--fs-meta);
-		font-weight: 300;
-		letter-spacing: 0;
-		line-height: var(--lh-en);
-		color: var(--bg);
-		padding: 7px 0;
-		min-width: 0;
-	}
-
-	.letter-form input::placeholder {
-		color: rgba(246, 246, 246, 0.4);
-	}
-
-	.letter-form input:focus {
-		outline: none;
-	}
-
-	.letter-submit {
-		appearance: none;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding: 4px 0;
-		transition: color 300ms ease;
-	}
-
-	.letter-submit:hover {
-		color: var(--accent);
-	}
-
-	.letter-submit .arrow {
-		text-transform: none;
-		letter-spacing: 0;
-		transition: transform 300ms ease;
-	}
-
-	.letter-submit:hover .arrow {
-		transform: translateX(3px);
 	}
 
 	.rule {

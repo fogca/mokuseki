@@ -9,10 +9,10 @@ import type { Property } from '$lib/types/domain';
 // Mood photography reused across slots until real per-house photography is
 // delivered. Each house starts on a different mood (rotate) so heroes differ.
 const MOOD = [
-	'/images/mood_00.png',
-	'/images/mood_01.png',
-	'/images/mood_02.png',
-	'/images/mood_03.png'
+	'/images/mood_00.webp',
+	'/images/mood_01.webp',
+	'/images/mood_02.webp',
+	'/images/mood_03.webp'
 ];
 const rotate = (n: number): string[] => [...MOOD.slice(n), ...MOOD.slice(0, n)];
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import { messages } from '$lib/i18n/messages';
 	import SEO from '$lib/components/SEO.svelte';
@@ -20,16 +21,30 @@
 		return toLocalISO(d);
 	}
 	const today = addDays(0);
-	let checkIn = $state(addDays(1));
-	let checkOut = $state(addDays(3));
-	let guests = $state(2);
 
-	const minCheckOut = $derived.by(() => {
-		if (!checkIn) return today;
-		const d = new Date(checkIn);
-		d.setDate(d.getDate() + 1);
-		return toLocalISO(d);
-	});
+	// Day after a YYYY-MM-DD string, in local calendar space (no UTC parse).
+	function dayAfter(s: string): string {
+		const [y, m, d] = s.split('-').map(Number);
+		return toLocalISO(new Date(y, m - 1, d + 1));
+	}
+
+	// Seed from incoming query params so the "edit search" link from the
+	// results page keeps what the guest already entered.
+	const q = page.url.searchParams;
+	function seedDate(name: string, fallback: string, min: string): string {
+		const v = q.get(name);
+		return v && /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= min ? v : fallback;
+	}
+	const seededIn = seedDate('checkIn', addDays(1), today);
+	const seededGuests = Number(q.get('guests'));
+
+	let checkIn = $state(seededIn);
+	let checkOut = $state(seedDate('checkOut', addDays(3), dayAfter(seededIn)));
+	let guests = $state(
+		Number.isInteger(seededGuests) && seededGuests >= 1 && seededGuests <= 6 ? seededGuests : 2
+	);
+
+	const minCheckOut = $derived.by(() => (checkIn ? dayAfter(checkIn) : today));
 </script>
 
 <SEO title={i18n.t.meta.reserve.title} description={i18n.t.meta.reserve.description} />

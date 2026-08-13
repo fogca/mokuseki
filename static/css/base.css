@@ -31,19 +31,19 @@
 
 /* ─── Tokens ─────────────────────────────────────────── */
 :root {
-	/* Color — TRIAL PALETTE v4 (2026-08-11): neutral-grey bg + neutral
-	 * charcoal (navy dropped, per representative's 4th moodboard pass) +
-	 * caramel terracotta. Original cool-neutral values on record below —
-	 * restore verbatim to revert this trial:
+	/* Color — FINAL PALETTE (2026-08-13): deep wine/burgundy + neutral grey
+	 * accent + pale blue-grey bg, per representative's final moodboard pass.
+	 * Prior cool-neutral values on record below — restore verbatim if ever
+	 * needed:
 	 *   --bg:#edecea --bg-soft:#e3e2e0 --ink:#353535 --ink-soft:#484848
 	 *   --ink-faint:#767676 --rule:#353535 --accent:#484848 */
-	--bg: #ececec;
-	--bg-soft: #e2e2e2;
-	--ink: #4d5157;
-	--ink-soft: #5f636a;
-	--ink-faint: #7c8188;
-	--rule: #4d5157;
-	--accent: #c17d4c;
+	--bg: #e4e9ec;
+	--bg-soft: #dae0e3;
+	--ink: #391f27;
+	--ink-soft: #4c303a;
+	--ink-faint: #7c7375;
+	--rule: #391f27;
+	--accent: #5c5c5c;
 	--white: #ffffff;
 
 	/* Japanese — FOT-筑紫オールドゴシック Std D (served via fontplus in prod).

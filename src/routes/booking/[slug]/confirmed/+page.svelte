@@ -14,11 +14,14 @@
 			maximumFractionDigits: 0
 		})
 	);
+	// timeZone UTC: 'YYYY-MM-DD' parses as UTC midnight, so formatting in the
+	// browser's local zone shows the previous day for guests west of UTC.
 	const dateFmt = $derived(
 		new Intl.DateTimeFormat(i18n.locale === 'ja' ? 'ja-JP' : 'en-US', {
 			year: 'numeric',
 			month: 'short',
-			day: 'numeric'
+			day: 'numeric',
+			timeZone: 'UTC'
 		})
 	);
 	const stayRange = $derived(
@@ -26,7 +29,7 @@
 	);
 </script>
 
-<SEO title={i18n.t.meta.confirmed.title} description={i18n.t.meta.confirmed.description} />
+<SEO title={i18n.t.meta.confirmed.title} description={i18n.t.meta.confirmed.description} noindex />
 
 <section class="confirmed">
 	<p class="eyebrow">{i18n.t.confirmed.eyebrow}</p>

@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 
 	const i18n = useI18n();
 	const c = $derived(i18n.t.contact);
+	// Set when the (not yet open) booking flow redirected the guest here.
+	const fromBooking = $derived(page.url.searchParams.get('notice') === 'booking');
 </script>
 
 <SEO title={i18n.t.meta.contact.title} description={i18n.t.meta.contact.description} />
@@ -18,6 +21,10 @@
 			{/each}
 		</p>
 	</header>
+
+	{#if fromBooking}
+		<p class="body-sm booking-notice" role="status">{c.bookingNotice}</p>
+	{/if}
 
 	<dl class="details">
 		<div class="row">
@@ -55,6 +62,14 @@
 		gap: 8px;
 		padding-top: clamp(48px, 9vh, 120px);
 		padding-bottom: clamp(64px, 12vh, 140px);
+	}
+
+	.booking-notice {
+		border-top: 1px solid var(--rule);
+		border-bottom: 1px solid var(--rule);
+		padding: 16px 0;
+		margin: 16px 0 8px;
+		color: var(--ink-soft);
 	}
 
 	.head {

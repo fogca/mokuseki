@@ -1,3 +1,15 @@
-# allow crawling everything by default
+# PRE-LAUNCH: block all crawling while the site is in preparation.
+#
+# Launch-day switch (same runbook as one2026):
+#   1. Replace this file with the LAUNCH block below
+#   2. Register the property in Google Search Console + submit the sitemap
+#
+# --- LAUNCH block ---
+# User-agent: *
+# Disallow: /booking/
+# Disallow: /reserve/results
+# Sitemap: https://<production-domain>/sitemap.xml
+# --------------------
+
 User-agent: *
-Disallow:
+Disallow: /

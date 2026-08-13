@@ -33,10 +33,12 @@ export function stashReservation(cookies: Cookies, reservation: Reservation): vo
 	});
 }
 
-export function takeReservation(cookies: Cookies): Reservation | null {
+// Read WITHOUT consuming: guests refresh the confirmation page (or iOS
+// Safari reloads it after backgrounding), and the reference code must
+// survive that. The cookie's own maxAge expires the hand-off instead.
+export function readReservation(cookies: Cookies): Reservation | null {
 	const raw = cookies.get(BOOKING_COOKIE);
 	if (!raw) return null;
-	cookies.delete(BOOKING_COOKIE, { path: '/' });
 	try {
 		return JSON.parse(raw) as Reservation;
 	} catch {

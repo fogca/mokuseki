@@ -16,8 +16,37 @@
 		{ href: '/contact', label: i18n.t.footer.nav.contact }
 	]);
 
+	let menuEl = $state<HTMLDivElement | null>(null);
+
+	// Focus management: enter the dialog on open, restore on close. Links in
+	// the closed menu are unreachable anyway (visibility: hidden), so the
+	// trap only needs to cycle within the open overlay; Escape closes.
+	$effect(() => {
+		if (!open || !menuEl) return;
+		const previous = document.activeElement as HTMLElement | null;
+		menuEl.querySelector<HTMLElement>('a')?.focus();
+		return () => previous?.focus();
+	});
+
 	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape' && open) onClose();
+		if (!open) return;
+		if (event.key === 'Escape') {
+			onClose();
+			return;
+		}
+		if (event.key === 'Tab' && menuEl) {
+			const links = Array.from(menuEl.querySelectorAll<HTMLElement>('a'));
+			if (links.length === 0) return;
+			const first = links[0];
+			const last = links[links.length - 1];
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		}
 	}
 </script>
 
@@ -30,6 +59,7 @@
 	follow with a slight delay.
 -->
 <div
+	bind:this={menuEl}
 	class="menu"
 	class:open
 	aria-hidden={!open}

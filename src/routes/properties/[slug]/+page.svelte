@@ -50,6 +50,18 @@
 		data.property.name[i18n.locale],
 		data.property.location[i18n.locale]
 	)}
+	jsonLd={{
+		'@type': 'VacationRental',
+		name: `MOKUSEKI — ${data.property.name.en}`,
+		alternateName: data.property.name.ja,
+		description: data.property.description[i18n.locale],
+		address: {
+			'@type': 'PostalAddress',
+			addressLocality: data.property.location.en,
+			addressCountry: 'JP'
+		},
+		containedInPlace: { '@type': 'LodgingBusiness', name: 'MOKUSEKI' }
+	}}
 />
 
 <!-- ─── Hero ────────────────────────────────────────── -->
@@ -269,10 +281,10 @@
 	.sec-head {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		text-align: left;
+		align-items: center;
+		text-align: center;
 		gap: 8px;
-		margin: 0 0 clamp(48px, 7vh, 80px);
+		margin: 0 auto clamp(48px, 7vh, 80px);
 		max-width: 720px;
 	}
 
@@ -288,12 +300,14 @@
 		padding: clamp(32px, 5vh, 64px) 0 clamp(64px, 10vh, 128px);
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		text-align: left;
+		align-items: center;
+		text-align: center;
 		gap: 8px;
 	}
 
+	/* Nav breadcrumb stays pinned left even though the hero body centers. */
 	.back {
+		align-self: flex-start;
 		text-decoration: none;
 		margin-bottom: 24px;
 		transition: color 300ms ease;

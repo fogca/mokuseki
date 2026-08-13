@@ -16,11 +16,14 @@
 		})
 	);
 
+	// timeZone UTC: 'YYYY-MM-DD' parses as UTC midnight, so formatting in the
+	// browser's local zone shows the previous day for guests west of UTC.
 	const dateFmt = $derived(
 		new Intl.DateTimeFormat(i18n.locale === 'ja' ? 'ja-JP' : 'en-US', {
 			year: 'numeric',
 			month: 'short',
-			day: 'numeric'
+			day: 'numeric',
+			timeZone: 'UTC'
 		})
 	);
 
@@ -29,7 +32,7 @@
 	);
 </script>
 
-<SEO title={i18n.t.meta.results.title} description={i18n.t.meta.results.description} />
+<SEO title={i18n.t.meta.results.title} description={i18n.t.meta.results.description} noindex />
 
 <div class="results-grid">
 	<section class="head">
@@ -62,6 +65,9 @@
 	</section>
 
 	<div class="results-col">
+		{#if data.notice === 'unavailable'}
+			<p class="body-sm notice" role="status">{i18n.t.results.unavailableNotice}</p>
+		{/if}
 		{#if data.results.length === 0}
 			<div class="empty">
 				<p class="body">
@@ -170,6 +176,14 @@
 
 	.results-col {
 		min-width: 0;
+	}
+
+	.notice {
+		border-top: 1px solid var(--rule);
+		border-bottom: 1px solid var(--rule);
+		padding: 16px 0;
+		margin: 0 0 32px;
+		color: var(--ink-soft);
 	}
 
 	.cards {

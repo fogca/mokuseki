@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import SEO from '$lib/components/SEO.svelte';
@@ -38,10 +39,20 @@
 		return Object.keys(e).length === 0;
 	}
 
-	function toReview() {
+	let reviewHeading = $state<HTMLHeadingElement | null>(null);
+
+	async function toReview() {
 		if (validate()) {
 			step = 'review';
-			if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			// Move keyboard/AT focus into the newly revealed step.
+			await tick();
+			reviewHeading?.focus();
+		} else {
+			// Send focus to the first invalid field so the error is announced.
+			await tick();
+			const first = (Object.keys(clientErrors) as Array<keyof GuestDetails>)[0];
+			if (first) document.getElementById(first)?.focus();
 		}
 	}
 
@@ -51,6 +62,11 @@
 		return code === 'email' ? i18n.t.booking.errors.email : i18n.t.booking.errors.required;
 	}
 
+	// aria-describedby only when the field actually has an error message.
+	function errId(field: keyof GuestDetails): string | undefined {
+		return clientErrors[field] ? `err-${field}` : undefined;
+	}
+
 	const yen = $derived(
 		new Intl.NumberFormat(i18n.locale === 'ja' ? 'ja-JP' : 'en-US', {
 			style: 'currency',
@@ -58,11 +74,14 @@
 			maximumFractionDigits: 0
 		})
 	);
+	// timeZone UTC: 'YYYY-MM-DD' parses as UTC midnight, so formatting in the
+	// browser's local zone shows the previous day for guests west of UTC.
 	const dateFmt = $derived(
 		new Intl.DateTimeFormat(i18n.locale === 'ja' ? 'ja-JP' : 'en-US', {
 			year: 'numeric',
 			month: 'short',
-			day: 'numeric'
+			day: 'numeric',
+			timeZone: 'UTC'
 		})
 	);
 
@@ -73,7 +92,7 @@
 	);
 </script>
 
-<SEO title={i18n.t.meta.booking.title} description={i18n.t.meta.booking.description} />
+<SEO title={i18n.t.meta.booking.title} description={i18n.t.meta.booking.description} noindex />
 
 <div class="booking-grid">
 	<!-- ─── Stay summary (sticky) ─────────────────────────── -->
@@ -129,9 +148,21 @@
 		<header class="panel-head">
 			<p class="eyebrow">{i18n.t.booking.eyebrow}</p>
 			<h1 class="h1">{i18n.t.booking.heading}</h1>
-			<ol class="steps" aria-hidden="true">
-				<li class="meta" class:active={step === 'details'}>{i18n.t.booking.steps.details}</li>
-				<li class="meta" class:active={step === 'review'}>{i18n.t.booking.steps.review}</li>
+			<ol class="steps">
+				<li
+					class="meta"
+					class:active={step === 'details'}
+					aria-current={step === 'details' ? 'step' : undefined}
+				>
+					{i18n.t.booking.steps.details}
+				</li>
+				<li
+					class="meta"
+					class:active={step === 'review'}
+					aria-current={step === 'review' ? 'step' : undefined}
+				>
+					{i18n.t.booking.steps.review}
+				</li>
 			</ol>
 		</header>
 
@@ -157,9 +188,13 @@
 							name="lastName"
 							type="text"
 							autocomplete="family-name"
+							aria-invalid={!!clientErrors.lastName}
+							aria-describedby={errId('lastName')}
 							bind:value={lastName}
 						/>
-						{#if errorText('lastName')}<p class="err meta">{errorText('lastName')}</p>{/if}
+						{#if errorText('lastName')}<p id="err-lastName" class="err meta">
+								{errorText('lastName')}
+							</p>{/if}
 					</div>
 					<div class="field">
 						<label class="meta" for="firstName">{i18n.t.booking.firstName}</label>
@@ -168,22 +203,42 @@
 							name="firstName"
 							type="text"
 							autocomplete="given-name"
+							aria-invalid={!!clientErrors.firstName}
+							aria-describedby={errId('firstName')}
 							bind:value={firstName}
 						/>
-						{#if errorText('firstName')}<p class="err meta">{errorText('firstName')}</p>{/if}
+						{#if errorText('firstName')}<p id="err-firstName" class="err meta">
+								{errorText('firstName')}
+							</p>{/if}
 					</div>
 				</div>
 
 				<div class="field">
 					<label class="meta" for="email">{i18n.t.booking.email}</label>
-					<input id="email" name="email" type="email" autocomplete="email" bind:value={email} />
-					{#if errorText('email')}<p class="err meta">{errorText('email')}</p>{/if}
+					<input
+						id="email"
+						name="email"
+						type="email"
+						autocomplete="email"
+						aria-invalid={!!clientErrors.email}
+						aria-describedby={errId('email')}
+						bind:value={email}
+					/>
+					{#if errorText('email')}<p id="err-email" class="err meta">{errorText('email')}</p>{/if}
 				</div>
 
 				<div class="field">
 					<label class="meta" for="phone">{i18n.t.booking.phone}</label>
-					<input id="phone" name="phone" type="tel" autocomplete="tel" bind:value={phone} />
-					{#if errorText('phone')}<p class="err meta">{errorText('phone')}</p>{/if}
+					<input
+						id="phone"
+						name="phone"
+						type="tel"
+						autocomplete="tel"
+						aria-invalid={!!clientErrors.phone}
+						aria-describedby={errId('phone')}
+						bind:value={phone}
+					/>
+					{#if errorText('phone')}<p id="err-phone" class="err meta">{errorText('phone')}</p>{/if}
 				</div>
 
 				<div class="field">
@@ -209,7 +264,9 @@
 			<!-- Review step. -->
 			{#if step === 'review'}
 				<div class="review">
-					<h2 class="h3 review-head">{i18n.t.booking.reviewHeading}</h2>
+					<h2 class="h3 review-head" tabindex="-1" bind:this={reviewHeading}>
+						{i18n.t.booking.reviewHeading}
+					</h2>
 					<p class="body-sm intro">{i18n.t.booking.reviewIntro}</p>
 
 					<dl class="review-list">
@@ -234,7 +291,7 @@
 					</dl>
 
 					{#if form?.errors}
-						<p class="err meta server-err">{i18n.t.booking.errors.required}</p>
+						<p class="err meta server-err" role="alert">{i18n.t.booking.errors.required}</p>
 					{/if}
 
 					<p class="meta mock-notice">{i18n.t.booking.mockNotice}</p>
@@ -451,6 +508,11 @@
 
 	.review-head {
 		margin-bottom: 0;
+	}
+
+	/* Programmatic focus target only — not an interactive control. */
+	.review-head:focus {
+		outline: none;
 	}
 
 	.review-list {

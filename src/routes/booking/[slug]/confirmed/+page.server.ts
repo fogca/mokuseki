@@ -1,10 +1,12 @@
 import { redirect } from '@sveltejs/kit';
-import { takeReservation } from '$lib/server/booking';
+import { readReservation } from '$lib/server/booking';
+import { bookingOpen } from '$lib/server/flags';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ cookies }) => {
-	const reservation = takeReservation(cookies);
-	// Direct hits / refreshes have no hand-off cookie — send them to reserve.
+	if (!bookingOpen()) throw redirect(307, '/contact?notice=booking');
+	const reservation = readReservation(cookies);
+	// Direct hits / expired hand-offs have no cookie — send them to reserve.
 	if (!reservation) throw redirect(307, '/reserve');
 	return { reservation };
 };

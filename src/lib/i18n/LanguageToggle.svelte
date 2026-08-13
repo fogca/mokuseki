@@ -4,11 +4,21 @@
 </script>
 
 <div class="toggle" role="group" aria-label="Language">
-	<button type="button" class:active={i18n.locale === 'ja'} onclick={() => i18n.setLocale('ja')}>
+	<button
+		type="button"
+		class:active={i18n.locale === 'ja'}
+		aria-pressed={i18n.locale === 'ja'}
+		onclick={() => i18n.setLocale('ja')}
+	>
 		JP
 	</button>
 	<span class="sep" aria-hidden="true">/</span>
-	<button type="button" class:active={i18n.locale === 'en'} onclick={() => i18n.setLocale('en')}>
+	<button
+		type="button"
+		class:active={i18n.locale === 'en'}
+		aria-pressed={i18n.locale === 'en'}
+		onclick={() => i18n.setLocale('en')}
+	>
 		EN
 	</button>
 </div>

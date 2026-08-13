@@ -27,6 +27,7 @@ type Dict = {
 		contact: { title: string; description: string };
 		privacy: { title: string; description: string };
 		terms: { title: string; description: string };
+		tokushoho: { title: string; description: string };
 		property: {
 			title: (name: string) => string;
 			description: (name: string, location: string) => string;
@@ -93,6 +94,7 @@ type Dict = {
 		bedrooms: (n: number) => string;
 		guestsCap: (n: number) => string;
 		taxIncluded: string;
+		unavailableNotice: string;
 	};
 	booking: {
 		eyebrow: string;
@@ -151,11 +153,25 @@ type Dict = {
 		address: string;
 		hours: string;
 		note: string;
+		bookingNotice: string;
 	};
 	legal: {
 		draftNotice: string;
 		effectiveLabel: string;
 		effective: string;
+	};
+	errorPage: {
+		notFoundTitle: string;
+		notFoundBody: string;
+		serverTitle: string;
+		serverBody: string;
+		back: string;
+	};
+	tokushoho: {
+		eyebrow: string;
+		heading: string;
+		note: string;
+		rows: Array<{ label: string; value: string }>;
 	};
 	privacy: {
 		eyebrow: string;
@@ -220,7 +236,7 @@ type Dict = {
 		newsletterSubmit: string;
 		socialHeading: string;
 		socialItems: Array<{ label: string; href: string }>;
-		legal: { privacy: string; terms: string };
+		legal: { privacy: string; terms: string; tokushoho: string };
 		copy: string;
 	};
 };
@@ -276,6 +292,10 @@ export const messages: Record<Locale, Dict> = {
 			terms: {
 				title: '利用規約 — MOKUSEKI',
 				description: 'MOKUSEKI のご利用に関する規約。'
+			},
+			tokushoho: {
+				title: '特定商取引法に基づく表記 — MOKUSEKI',
+				description: 'MOKUSEKI の特定商取引法に基づく表記。'
 			},
 			property: {
 				title: (name) => `${name} — MOKUSEKI`,
@@ -370,7 +390,9 @@ export const messages: Record<Locale, Dict> = {
 			select: 'この棟を選ぶ',
 			bedrooms: (n) => `${n} 寝室`,
 			guestsCap: (n) => `最大 ${n} 名`,
-			taxIncluded: '税込'
+			taxIncluded: '税込',
+			unavailableNotice:
+				'あいにく、ご指定の内容では先ほどの棟をご用意できませんでした。以下より、他の棟・日程をご覧ください。'
 		},
 		booking: {
 			eyebrow: 'Reservation',
@@ -408,7 +430,8 @@ export const messages: Record<Locale, Dict> = {
 			heading: 'ご予約を承りました。',
 			lede: 'この度はご予約をいただき、誠にありがとうございます。\n当日、心よりお待ち申し上げております。',
 			refLabel: '予約番号',
-			emailNote: (email) => `ご予約確認のご案内を ${email} 宛にお送りいたしました。`,
+			emailNote: (email) =>
+				`本予約の開始後は、ご予約確認のご案内を ${email} 宛にお送りいたします。`,
 			detailsHeading: 'ご予約内容',
 			stayLabel: 'ご滞在',
 			guestLabel: 'ご予約者',
@@ -428,12 +451,38 @@ export const messages: Record<Locale, Dict> = {
 			tel: '+81 (0)00 0000 0000',
 			address: '〒○○○-○○○○\n愛知県名古屋市某所',
 			hours: '10:00 – 18:00（不定休）',
-			note: 'ご予約状況の確認は、ご予約番号を添えてメールにてご連絡ください。'
+			note: 'ご予約状況の確認は、ご予約番号を添えてメールにてご連絡ください。',
+			bookingNotice:
+				'オンライン予約は現在準備中です。ご予約・空室状況のご確認は、お電話またはメールにて承ります。'
 		},
 		legal: {
 			draftNotice: '※ 本ページは準備中の暫定版です。正式な内容は公開時に更新いたします。',
 			effectiveLabel: '制定日',
 			effective: '2026年'
+		},
+		errorPage: {
+			notFoundTitle: 'ページが見つかりません。',
+			notFoundBody: 'お探しのページは、移動または削除された可能性があります。',
+			serverTitle: 'エラーが発生しました。',
+			serverBody: 'お手数ですが、しばらく時間をおいて再度お試しください。',
+			back: 'ホームへ戻る'
+		},
+		tokushoho: {
+			eyebrow: 'Legal',
+			heading: '特定商取引法に基づく表記。',
+			note: '※ 開業準備中のため、確定情報は開業までに順次掲載いたします。',
+			rows: [
+				{ label: '事業者名', value: '（開業時に掲載）' },
+				{ label: '運営責任者', value: '（開業時に掲載）' },
+				{ label: '所在地', value: '（開業時に掲載）' },
+				{ label: '電話番号', value: '（開業時に掲載）' },
+				{ label: 'メールアドレス', value: 'stay@mokuseki.jp' },
+				{ label: '旅館業許可', value: '（許可番号を開業時に掲載）' },
+				{ label: '宿泊料金', value: '各棟のご案内および予約画面に表示する金額（税込）' },
+				{ label: 'お支払い方法', value: 'オンライン決済（詳細は予約開始時に掲載）' },
+				{ label: 'キャンセルポリシー', value: '（開業時に掲載）' },
+				{ label: 'チェックイン / チェックアウト', value: '（開業時に掲載）' }
+			]
 		},
 		privacy: {
 			eyebrow: 'Privacy',
@@ -584,7 +633,11 @@ export const messages: Record<Locale, Dict> = {
 				{ label: 'Instagram', href: 'https://instagram.com/' },
 				{ label: 'Note', href: 'https://note.com/' }
 			],
-			legal: { privacy: 'プライバシーポリシー', terms: '利用規約' },
+			legal: {
+				privacy: 'プライバシーポリシー',
+				terms: '利用規約',
+				tokushoho: '特定商取引法に基づく表記'
+			},
 			copy: '© MOKUSEKI'
 		}
 	},
@@ -639,6 +692,10 @@ export const messages: Record<Locale, Dict> = {
 			terms: {
 				title: 'Terms — MOKUSEKI',
 				description: 'Terms for reserving and staying with MOKUSEKI.'
+			},
+			tokushoho: {
+				title: 'Commercial Disclosure — MOKUSEKI',
+				description: 'Disclosure under the Act on Specified Commercial Transactions.'
 			},
 			property: {
 				title: (name) => `${name} — MOKUSEKI`,
@@ -736,7 +793,9 @@ export const messages: Record<Locale, Dict> = {
 			select: 'Choose this house',
 			bedrooms: (n) => `${n} ${n === 1 ? 'bedroom' : 'bedrooms'}`,
 			guestsCap: (n) => `up to ${n} guests`,
-			taxIncluded: 'Tax included'
+			taxIncluded: 'Tax included',
+			unavailableNotice:
+				'Unfortunately, that house is no longer available for your dates. Please choose from the stays below.'
 		},
 		booking: {
 			eyebrow: 'Reservation',
@@ -775,7 +834,8 @@ export const messages: Record<Locale, Dict> = {
 			heading: 'Your stay is reserved.',
 			lede: 'Thank you for your reservation.\nWe look forward to welcoming you.',
 			refLabel: 'Reservation number',
-			emailNote: (email) => `A confirmation has been sent to ${email}.`,
+			emailNote: (email) =>
+				`Once online booking opens, a confirmation email will be sent to ${email}.`,
 			detailsHeading: 'Reservation details',
 			stayLabel: 'Stay',
 			guestLabel: 'Guest',
@@ -795,12 +855,38 @@ export const messages: Record<Locale, Dict> = {
 			tel: '+81 (0)00 0000 0000',
 			address: 'Nagoya, Aichi, Japan',
 			hours: '10:00 – 18:00 (irregular)',
-			note: 'To check an existing reservation, please email us with your reservation number.'
+			note: 'To check an existing reservation, please email us with your reservation number.',
+			bookingNotice:
+				'Online booking is opening soon. In the meantime, please contact us by phone or email for reservations and availability.'
 		},
 		legal: {
 			draftNotice: 'This page is a working draft. The final text will be published before launch.',
 			effectiveLabel: 'Effective',
 			effective: '2026'
+		},
+		errorPage: {
+			notFoundTitle: 'Page not found.',
+			notFoundBody: 'The page you are looking for may have been moved or removed.',
+			serverTitle: 'Something went wrong.',
+			serverBody: 'Please try again in a moment.',
+			back: 'Back to home'
+		},
+		tokushoho: {
+			eyebrow: 'Legal',
+			heading: 'Commercial Transactions Act Disclosure.',
+			note: 'Final details will be published before opening.',
+			rows: [
+				{ label: 'Business name', value: '(To be published at opening)' },
+				{ label: 'Responsible manager', value: '(To be published at opening)' },
+				{ label: 'Address', value: '(To be published at opening)' },
+				{ label: 'Phone', value: '(To be published at opening)' },
+				{ label: 'Email', value: 'stay@mokuseki.jp' },
+				{ label: 'Hotel business licence', value: '(Licence number to be published at opening)' },
+				{ label: 'Rates', value: 'As shown on each house page and at booking (tax included)' },
+				{ label: 'Payment', value: 'Online payment (details published when booking opens)' },
+				{ label: 'Cancellation policy', value: '(To be published at opening)' },
+				{ label: 'Check-in / Check-out', value: '(To be published at opening)' }
+			]
 		},
 		privacy: {
 			eyebrow: 'Privacy',
@@ -957,7 +1043,7 @@ export const messages: Record<Locale, Dict> = {
 				{ label: 'Instagram', href: 'https://instagram.com/' },
 				{ label: 'Note', href: 'https://note.com/' }
 			],
-			legal: { privacy: 'Privacy', terms: 'Terms' },
+			legal: { privacy: 'Privacy', terms: 'Terms', tokushoho: 'Commercial Disclosure' },
 			copy: '© MOKUSEKI'
 		}
 	}

@@ -1,37 +1,38 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { mockProperties, isMockAvailable } from '$lib/server/mock/properties';
-import { buildQuote, diffInDays } from '$lib/server/quote';
+import { buildQuote } from '$lib/server/quote';
+import { parseStayCriteria } from '$lib/server/validation';
+import { bookingOpen } from '$lib/server/flags';
 import { createReference, stashReservation } from '$lib/server/booking';
 import type { GuestDetails, Reservation } from '$lib/types/domain';
 import type { Actions, PageServerLoad } from './$types';
 
+const MAX_PARTY = Math.max(...mockProperties.map((p) => p.maxGuests));
+
 // Resolve + validate the search criteria against a property. Shared by the
 // load (renders the summary) and the action (re-checks before committing).
 function resolveStay(slug: string, url: URL) {
-	const checkIn = url.searchParams.get('checkIn');
-	const checkOut = url.searchParams.get('checkOut');
-	const guestsRaw = url.searchParams.get('guests');
-	const guests = guestsRaw ? Number(guestsRaw) : NaN;
-
 	const property = mockProperties.find((p) => p.slug === slug);
 	if (!property) throw error(404, 'House not found');
 
-	if (!checkIn || !checkOut || !Number.isFinite(guests) || guests < 1) {
-		throw redirect(307, '/reserve');
-	}
+	const criteria = parseStayCriteria(url, MAX_PARTY);
+	if (!criteria) throw redirect(307, '/reserve');
+	const { checkIn, checkOut, guests, nights } = criteria;
 
-	const nights = diffInDays(checkIn, checkOut);
 	if (
-		nights < 1 ||
 		guests > property.maxGuests ||
 		nights < property.minNights ||
 		!isMockAvailable(property.id, checkIn, checkOut)
 	) {
-		// Stay no longer bookable — send the guest back to fresh results.
-		throw redirect(
-			307,
-			`/reserve/results?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`
-		);
+		// Stay no longer bookable — back to fresh results, with a visible
+		// notice (otherwise this reads as a silent broken loop).
+		const q = new URLSearchParams({
+			checkIn,
+			checkOut,
+			guests: String(guests),
+			notice: 'unavailable'
+		});
+		throw redirect(307, `/reserve/results?${q}`);
 	}
 
 	const quote = buildQuote(property, checkIn, checkOut, nights, guests);
@@ -39,22 +40,36 @@ function resolveStay(slug: string, url: URL) {
 }
 
 export const load: PageServerLoad = ({ params, url }) => {
+	if (!bookingOpen()) throw redirect(307, '/contact?notice=booking');
 	const { property, quote } = resolveStay(params.slug, url);
 	return { property, quote };
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Server-side caps so a hostile/broken client can't stuff the hand-off
+// cookie past the 4 KB browser limit (which would silently drop it).
+const FIELD_MAX: Record<keyof GuestDetails, number> = {
+	lastName: 100,
+	firstName: 100,
+	email: 254,
+	phone: 40,
+	notes: 1000
+};
+
 function validateGuest(form: FormData): {
 	values: GuestDetails;
 	errors: Partial<Record<keyof GuestDetails, 'required' | 'email'>>;
 } {
+	const field = (name: keyof GuestDetails) =>
+		(form.get(name) ?? '').toString().trim().slice(0, FIELD_MAX[name]);
+
 	const values: GuestDetails = {
-		lastName: (form.get('lastName') ?? '').toString().trim(),
-		firstName: (form.get('firstName') ?? '').toString().trim(),
-		email: (form.get('email') ?? '').toString().trim(),
-		phone: (form.get('phone') ?? '').toString().trim(),
-		notes: (form.get('notes') ?? '').toString().trim()
+		lastName: field('lastName'),
+		firstName: field('firstName'),
+		email: field('email'),
+		phone: field('phone'),
+		notes: field('notes')
 	};
 
 	const errors: Partial<Record<keyof GuestDetails, 'required' | 'email'>> = {};
@@ -69,6 +84,7 @@ function validateGuest(form: FormData): {
 
 export const actions: Actions = {
 	default: async ({ params, url, request, cookies }) => {
+		if (!bookingOpen()) throw redirect(307, '/contact?notice=booking');
 		const { property, quote } = resolveStay(params.slug, url);
 		const form = await request.formData();
 		const { values, errors } = validateGuest(form);

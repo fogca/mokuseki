@@ -13,14 +13,23 @@
 
 	// Mood photography for the gallery grid (cycled across the six cells).
 	const galleryImages = [
-		'/images/mood_00.png',
-		'/images/mood_01.png',
-		'/images/mood_02.png',
-		'/images/mood_03.png'
+		'/images/mood_00.webp',
+		'/images/mood_01.webp',
+		'/images/mood_02.webp',
+		'/images/mood_03.webp'
 	];
 </script>
 
-<SEO title={i18n.t.meta.home.title} description={i18n.t.meta.home.description} />
+<SEO
+	title={i18n.t.meta.home.title}
+	description={i18n.t.meta.home.description}
+	jsonLd={{
+		'@type': 'LodgingBusiness',
+		name: 'MOKUSEKI',
+		description: i18n.t.meta.home.description,
+		address: { '@type': 'PostalAddress', addressRegion: 'Aichi', addressCountry: 'JP' }
+	}}
+/>
 
 <!-- ─── 01 Hero ─────────────────────────────────────── -->
 <section class="hero">
@@ -60,17 +69,17 @@
 	<ul class="prop-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="prop-row" class:reverse={i % 2 === 1}>
-				<div class="prop-thumb" aria-hidden="true" style:background-image={`url(${p.images[0]})`}>
-					<span class="meta">{String(i + 1).padStart(2, '0')}</span>
-					<span class="meta">{p.slug.toUpperCase()}</span>
-				</div>
+				<div
+					class="prop-thumb"
+					aria-hidden="true"
+					style:background-image={`url(${p.images[0]})`}
+				></div>
 				<div class="prop-body">
 					<p class="meta">No. {String(i + 1).padStart(2, '0')}</p>
 					<h3 class="h2">{p.name.en}</h3>
-					{#if i18n.locale === 'ja'}
-						<p class="h-ja">{p.name.ja}</p>
-					{/if}
-					<p class="meta">{p.location[i18n.locale]}</p>
+					<p class="meta">
+						{p.location[i18n.locale]}{#if i18n.locale === 'ja'}・{p.name.ja}{/if}
+					</p>
 					<p class="body-sm prop-desc">{p.description[i18n.locale]}</p>
 					<a class="link" href={`/properties/${p.slug}`}>
 						<span>{i18n.t.home.properties.viewDetails}</span>
@@ -188,12 +197,12 @@
 
 	.sec-head {
 		max-width: 720px;
-		margin: 0 0 clamp(56px, 8vh, 96px);
-		text-align: left;
+		margin: 0 auto clamp(56px, 8vh, 96px);
+		text-align: center;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		align-items: flex-start;
+		align-items: center;
 	}
 
 	.sec-sub {
@@ -210,7 +219,7 @@
 		min-height: 100svh;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 		justify-content: flex-end;
 		position: relative;
 		overflow: hidden;
@@ -229,7 +238,7 @@
 				rgba(18, 18, 18, 0.12) 38%,
 				rgba(18, 18, 18, 0.55) 100%
 			),
-			url('/images/mood_03.png');
+			url('/images/mood_03.webp');
 		background-size: cover;
 		background-position: center;
 	}
@@ -237,9 +246,9 @@
 	.hero-inner {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 		gap: 12px;
-		text-align: left;
+		text-align: center;
 	}
 
 	.hero :global(.h1) {
@@ -325,25 +334,7 @@
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		padding: 20px 24px;
 		overflow: hidden;
-	}
-
-	.prop-thumb::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, transparent 55%, rgba(26, 26, 26, 0.05));
-	}
-
-	.prop-thumb > .meta {
-		position: relative;
-		z-index: 1;
-		color: var(--white);
 	}
 
 	.prop-body {
