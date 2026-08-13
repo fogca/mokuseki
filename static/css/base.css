@@ -15,38 +15,43 @@
 }
 
 /* Primary Latin face — August Type Foundry / Steiner (in-house variable
- * font, wght 400–900). Any requested weight interpolates on one master. */
+ * font, wght 1–950: Hair / Book / Ultra masters). */
 @font-face {
 	font-family: 'Steiner';
-	src: url('/fonts/Steiner-VF08.woff2?v=20260606') format('woff2');
-	font-weight: 400 900;
+	src: url('/fonts/Steiner-VF69.woff2?v=20260811f') format('woff2');
+	font-weight: 1 950;
 	font-style: normal;
 	font-display: swap;
 }
 
-/* Primary Japanese face — FOT-筑紫オールドゴシック Std M.
+/* Primary Japanese face — FOT-筑紫オールドゴシック Std D.
  * Served in production by fontplus (domain-bound), so no @font-face is
  * declared here. Locally fontplus is absent, so the --font-ja stack below
- * falls back to 筑紫ゴシック M (or Hiragino). */
+ * falls back to 筑紫ゴシック D (or Hiragino). */
 
 /* ─── Tokens ─────────────────────────────────────────── */
 :root {
-	/* Color — cool neutral palette. */
-	--bg: #edecea;
-	--bg-soft: #e3e2e0;
-	--ink: #353535;
-	--ink-soft: #484848;
-	--ink-faint: #8a8a8a;
-	--rule: #353535;
-	--accent: #484848;
+	/* Color — TRIAL PALETTE v4 (2026-08-11): neutral-grey bg + neutral
+	 * charcoal (navy dropped, per representative's 4th moodboard pass) +
+	 * caramel terracotta. Original cool-neutral values on record below —
+	 * restore verbatim to revert this trial:
+	 *   --bg:#edecea --bg-soft:#e3e2e0 --ink:#353535 --ink-soft:#484848
+	 *   --ink-faint:#767676 --rule:#353535 --accent:#484848 */
+	--bg: #ececec;
+	--bg-soft: #e2e2e2;
+	--ink: #4d5157;
+	--ink-soft: #5f636a;
+	--ink-faint: #7c8188;
+	--rule: #4d5157;
+	--accent: #c17d4c;
 	--white: #ffffff;
 
-	/* Japanese — FOT-筑紫オールドゴシック Std M (served via fontplus in prod).
+	/* Japanese — FOT-筑紫オールドゴシック Std D (served via fontplus in prod).
 	 * Both quoted and unquoted name forms are listed so fontplus matches
-	 * whichever it registers; local dev falls back to 筑紫ゴシック M / Hiragino. */
+	 * whichever it registers; local dev falls back to 筑紫ゴシック D / Hiragino. */
 	--font-ja:
-		'FOT-筑紫オールドゴシック Std M', 'TsukuOldGothicStd-M', TsukuOldGothicStd-M,
-		'FOT-筑紫ゴシック Std M', 'TsukuGoStd-M', 'TsukuGoPro-M', 'FOT-TsukuGoPro-M',
+		'FOT-筑紫オールドゴシック Std D', 'TsukuOldGothicStd-D', TsukuOldGothicStd-D,
+		'FOT-筑紫ゴシック Std D', 'TsukuGoStd-D', 'TsukuGoPro-D', 'FOT-TsukuGoPro-D',
 		'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
 
 	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
@@ -65,13 +70,23 @@
 	--fs-h2: 20px;
 	--fs-h3: 17px;
 	--fs-meta: 16px;
-	--fs-body: 16px;
+	--fs-body: 15px;
+	/* Dedicated JA small size (.h-ja/.body-sm) — kept separate from --fs-meta
+	 * (used by .eyebrow/.meta, Latin/uppercase) so sizing the heavier Std D
+	 * face down doesn't shrink unrelated Latin UI labels. */
+	--fs-ja-sm: 15px;
 
 	/* Tracking / Leading */
-	--ls-en: 0; /* All text is set at zero tracking. */
-	--ls-ja: 0;
+	--ls-en: 0; /* Body/UI text is set at zero tracking. */
+	/* Std D reads slightly denser than Std M at zero tracking; matches the
+	 * 0.015em used for Steiner elsewhere in the brand system (see
+	 * Operations Guideline) for one consistent tracking value site-wide. */
+	--ls-ja: 0.015em;
 	--lh-en: 1.4;
 	--lh-ja: 1.7;
+	/* Uppercase titles (.h1) open up slightly — Aman-reference quiet-luxury
+	 * spacing. Do not apply to body/UI copy (see Dev/CLAUDE.md §5). */
+	--ls-caps: 0.06em;
 
 	/* Spacing */
 	--sp-1: 4px;
@@ -122,7 +137,8 @@
 		--fs-h2: 18px;
 		--fs-h3: 15px;
 		--fs-meta: 13px;
-		--fs-body: 13px;
+		--fs-body: 12px;
+		--fs-ja-sm: 12px;
 	}
 }
 
@@ -144,6 +160,13 @@ body {
 
 :lang(ja) {
 	font-feature-settings: 'palt' 1;
+}
+
+/* Keyboard focus — underline/color cues alone are invisible to keyboard
+ * users. :focus-visible keeps mouse interaction clean. */
+:focus-visible {
+	outline: 1px solid var(--ink);
+	outline-offset: 3px;
 }
 
 a {
@@ -194,6 +217,22 @@ main {
 	margin: 0;
 }
 
+/* Uppercase — Aman-reference restraint: no weight change, just case + a
+ * touch of tracking so caps don't feel cramped. Applied to every title/label/
+ * UI class (.h1/.h2/.h3/.eyebrow/.meta/.btn); prose stays mixed-case
+ * (.body/.body-sm/.h-ja carry sentences, guest names, emails, addresses —
+ * never transform those). Dev/CLAUDE.md §5 forbids faking "title-ness" with
+ * uppercase outside a deliberate art-direction choice — this is that
+ * choice, explicitly scoped to non-prose classes only. */
+.h1,
+.h2,
+.h3,
+.eyebrow,
+.meta {
+	text-transform: uppercase;
+	letter-spacing: var(--ls-caps);
+}
+
 .h1 {
 	font-size: var(--fs-h1);
 }
@@ -215,7 +254,7 @@ main {
 .h-ja {
 	font-family: var(--ja-body);
 	font-weight: 400;
-	font-size: var(--fs-meta);
+	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
 	color: var(--ink-soft);
@@ -235,7 +274,7 @@ main {
 .body-sm {
 	font-family: var(--ja-body);
 	font-weight: 400;
-	font-size: var(--fs-meta);
+	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
 	color: var(--ink-soft);
@@ -315,19 +354,24 @@ main {
 	gap: 24px;
 	background: var(--ink);
 	border: none;
-	color: var(--bg);
+	/* TRIAL: navy bg / terracotta text (was var(--bg)). */
+	color: var(--accent);
 	font-family: var(--display);
 	font-size: var(--fs-sm);
-	letter-spacing: var(--ls-en);
+	text-transform: uppercase;
+	letter-spacing: var(--ls-caps);
 	line-height: var(--lh-en);
 	padding: 18px 44px;
 	text-decoration: none;
 	cursor: pointer;
-	transition: background 400ms ease;
+	transition:
+		background 400ms ease,
+		color 400ms ease;
 }
 
 .btn:hover {
 	background: var(--accent);
+	color: var(--ink);
 }
 
 .btn .arrow {
@@ -346,18 +390,23 @@ main {
 	align-items: center;
 	gap: 8px;
 	background: var(--ink);
-	color: var(--bg);
+	/* TRIAL: navy bg / terracotta text (was var(--bg)). */
+	color: var(--accent);
 	font-family: var(--display);
 	font-size: 12.5px;
-	letter-spacing: var(--ls-en);
+	text-transform: uppercase;
+	letter-spacing: var(--ls-caps);
 	line-height: var(--lh-en);
 	padding: 15px;
 	text-decoration: none;
 	border: none;
 	cursor: pointer;
-	transition: background 300ms ease;
+	transition:
+		background 300ms ease,
+		color 300ms ease;
 }
 
 .btn-sm:hover {
 	background: var(--accent);
+	color: var(--ink);
 }
