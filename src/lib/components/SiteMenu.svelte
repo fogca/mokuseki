@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import { propertyIndex } from '$lib/data/propertyIndex';
+	import { RESERVE_URL } from '$lib/site';
 
 	type Props = { open: boolean; onClose: () => void };
 	let { open, onClose }: Props = $props();
@@ -8,12 +9,13 @@
 	const i18n = useI18n();
 
 	const exploreLinks = $derived([
-		{ href: '/', label: i18n.t.footer.nav.home },
-		{ href: '/about', label: i18n.t.footer.nav.about },
-		{ href: '/#concept', label: i18n.t.footer.nav.concept },
-		{ href: '/#experience', label: i18n.t.footer.nav.experience },
-		{ href: '/reserve', label: i18n.t.footer.nav.reserve },
-		{ href: '/contact', label: i18n.t.footer.nav.contact }
+		{ href: '/', label: i18n.t.footer.nav.home, external: false },
+		{ href: '/about', label: i18n.t.footer.nav.about, external: false },
+		{ href: '/#concept', label: i18n.t.footer.nav.concept, external: false },
+		{ href: '/#experience', label: i18n.t.footer.nav.experience, external: false },
+		// Booking now lives entirely on an external platform (see $lib/site).
+		{ href: RESERVE_URL, label: i18n.t.footer.nav.reserve, external: true },
+		{ href: '/contact', label: i18n.t.footer.nav.contact, external: false }
 	]);
 
 	let menuEl = $state<HTMLDivElement | null>(null);
@@ -71,9 +73,15 @@
 		<nav class="col" aria-label="Explore">
 			<p class="eyebrow">{i18n.t.menu.exploreHeading}</p>
 			<ul class="links">
-				{#each exploreLinks as link (link.href)}
+				{#each exploreLinks as link (link.label)}
 					<li>
-						<a class="h2" href={link.href} onclick={onClose}>
+						<a
+							class="h2"
+							href={link.href}
+							onclick={onClose}
+							target={link.external ? '_blank' : undefined}
+							rel={link.external ? 'noopener' : undefined}
+						>
 							{link.label}
 						</a>
 					</li>

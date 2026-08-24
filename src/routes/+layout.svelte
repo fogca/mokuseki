@@ -5,6 +5,7 @@
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import SiteMenu from '$lib/components/SiteMenu.svelte';
 	import { provideI18n } from '$lib/i18n/store.svelte';
+	import { RESERVE_URL } from '$lib/site';
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -106,6 +107,9 @@
 					{menuOpen ? i18n.t.menu.close : i18n.t.menu.open}
 				</span>
 			</button>
+			<!-- SP only — language switch sits beside the menu button here;
+			     the .brand-right instance below is hidden on SP instead. -->
+			<div class="lang-sp"><LanguageToggle /></div>
 		</div>
 
 		<a href="/" class="wordmark" aria-label="MOKUSEKI">
@@ -113,7 +117,12 @@
 		</a>
 
 		<div class="brand-right">
-			<LanguageToggle />
+			<div class="lang-desktop"><LanguageToggle /></div>
+			<!-- SP only — colored external booking link replaces the language
+			     switch's spot on the right. -->
+			<a class="btn-sm reserve-chip" href={RESERVE_URL} target="_blank" rel="noopener">
+				<span>{i18n.t.nav.reserve}</span>
+			</a>
 		</div>
 	</header>
 
@@ -127,10 +136,13 @@
 		Floating reservation dock (top page only). The outer .reserve-dock
 		owns the horizontal padding (--padding) so the inner button can use
 		width: 100% and still keep left/right margins from the viewport.
+		Booking now lives entirely on an external platform (see $lib/site),
+		so this no longer gates on the (now-unused-for-this-purpose)
+		bookingOpen flag — it always shows and opens that platform.
 	-->
-	{#if isTop && data.bookingOpen}
+	{#if isTop}
 		<div class="reserve-dock">
-			<a class="btn-sm reserve-floating" href="/reserve">
+			<a class="btn-sm reserve-floating" href={RESERVE_URL} target="_blank" rel="noopener">
 				<span>{i18n.t.nav.reserve}</span>
 			</a>
 		</div>
@@ -203,6 +215,17 @@
 		justify-self: end;
 		display: inline-flex;
 		align-items: center;
+		gap: 16px;
+	}
+
+	/* SP-only header elements — hidden by default, swapped in at the 540px
+	 * breakpoint below (see also .lang-desktop / .reserve-chip there). */
+	.lang-sp {
+		display: none;
+	}
+
+	.reserve-chip {
+		display: none;
 	}
 
 	.menu-btn {
@@ -286,6 +309,24 @@
 
 		.menu-label {
 			display: none;
+		}
+
+		.wordmark :global(svg) {
+			height: 20px;
+		}
+
+		.lang-sp {
+			display: inline-flex;
+		}
+
+		.lang-desktop {
+			display: none;
+		}
+
+		.reserve-chip {
+			display: inline-flex;
+			padding: 8px 14px;
+			font-size: 11px;
 		}
 
 		.reserve-dock {

@@ -2,6 +2,7 @@
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import { messages } from '$lib/i18n/messages';
 	import SEO from '$lib/components/SEO.svelte';
+	import { RESERVE_URL } from '$lib/site';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -45,53 +46,9 @@
 			</p>
 		{/if}
 	</div>
-	<div class="scroll" aria-hidden="true">
-		<span class="meta">{i18n.t.home.hero.scrollHint}</span>
-		<span class="scroll-line"></span>
-	</div>
 </section>
 
-<!-- ─── 02 Properties ──────────────────────────────── -->
-<section class="section properties" id="houses">
-	<header class="sec-head">
-		<p class="eyebrow">{en.properties.eyebrow}</p>
-		<h2 class="h2">{en.properties.heading}</h2>
-		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.properties.heading}</p>
-		{/if}
-		<p class="body-sm sec-sub">
-			{#each i18n.t.home.properties.sub.split('\n') as line, i (i)}
-				{#if i > 0}<br />{/if}{line}
-			{/each}
-		</p>
-	</header>
-
-	<ul class="prop-list">
-		{#each data.properties as p, i (p.id)}
-			<li class="prop-row" class:reverse={i % 2 === 1}>
-				<div
-					class="prop-thumb"
-					aria-hidden="true"
-					style:background-image={`url(${p.images[0]})`}
-				></div>
-				<div class="prop-body">
-					<p class="meta">No. {String(i + 1).padStart(2, '0')}</p>
-					<h3 class="h2">{p.name.en}</h3>
-					<p class="meta">
-						{p.location[i18n.locale]}{#if i18n.locale === 'ja'}・{p.name.ja}{/if}
-					</p>
-					<p class="body-sm prop-desc">{p.description[i18n.locale]}</p>
-					<a class="link" href={`/properties/${p.slug}`}>
-						<span>{i18n.t.home.properties.viewDetails}</span>
-						<span class="arrow" aria-hidden="true">→</span>
-					</a>
-				</div>
-			</li>
-		{/each}
-	</ul>
-</section>
-
-<!-- ─── 03 Philosophy ──────────────────────────────── -->
+<!-- ─── 02 Concept (Philosophy) ─────────────────────── -->
 <section class="section philosophy" id="concept">
 	<p class="eyebrow">{en.philosophy.eyebrow}</p>
 	<h2 class="h1 philo-heading">
@@ -112,6 +69,47 @@
 		{/each}
 	</div>
 	<p class="meta philo-sig">— {i18n.t.home.philosophy.signature}</p>
+</section>
+
+<!-- ─── 03 Properties (Houses) ──────────────────────── -->
+<section class="section properties" id="houses">
+	<header class="sec-head">
+		<p class="eyebrow">{en.properties.eyebrow}</p>
+		<h2 class="h2">{en.properties.heading}</h2>
+		{#if i18n.locale === 'ja'}
+			<p class="h-ja">{i18n.t.home.properties.heading}</p>
+		{/if}
+		<p class="body-sm sec-sub">
+			{#each i18n.t.home.properties.sub.split('\n') as line, i (i)}
+				{#if i > 0}<br />{/if}{line}
+			{/each}
+		</p>
+	</header>
+
+	<ul class="prop-list">
+		{#each data.properties as p, i (p.id)}
+			<li class="prop-row" class:reverse={i % 2 === 1}>
+				<a
+					class="prop-thumb"
+					href={`/properties/${p.slug}`}
+					aria-label={p.name.en}
+					style:background-image={`url(${p.images[0]})`}
+				></a>
+				<div class="prop-body">
+					<p class="meta">No. {String(i + 1).padStart(2, '0')}</p>
+					<h3 class="h2">{p.name.en}</h3>
+					<p class="meta">
+						{p.location[i18n.locale]}{#if i18n.locale === 'ja'}・{p.name.ja}{/if}
+					</p>
+					<p class="body-sm prop-desc">{p.description[i18n.locale]}</p>
+					<a class="link" href={`/properties/${p.slug}`}>
+						<span>{i18n.t.home.properties.viewDetails}</span>
+						<span class="arrow" aria-hidden="true">→</span>
+					</a>
+				</div>
+			</li>
+		{/each}
+	</ul>
 </section>
 
 <!-- ─── 04 Experience ──────────────────────────────── -->
@@ -180,7 +178,7 @@
 			{#if i > 0}<br />{/if}{line}
 		{/each}
 	</p>
-	<a class="btn" href="/reserve">
+	<a class="btn" href={RESERVE_URL} target="_blank" rel="noopener">
 		<span>{en.reserveCta.cta}</span>
 		<span class="arrow" aria-hidden="true">→</span>
 	</a>
@@ -216,7 +214,7 @@
 		margin-left: calc(-1 * var(--padding));
 		margin-right: calc(-1 * var(--padding));
 		margin-top: calc(-1 * clamp(72px, 9vh, 100px));
-		min-height: 100svh;
+		min-height: 80svh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -257,46 +255,7 @@
 
 	.hero :global(.h-ja) {
 		color: rgba(255, 255, 255, 0.82);
-	}
-
-	.scroll {
-		position: absolute;
-		bottom: 28px;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 14px;
-	}
-
-	.scroll :global(.meta) {
-		color: rgba(255, 255, 255, 0.8);
-	}
-
-	.scroll-line {
-		width: 1px;
-		height: 56px;
-		background: var(--white);
-		opacity: 0.5;
-		animation: scrollPulse 2400ms ease-in-out infinite;
-	}
-
-	@keyframes scrollPulse {
-		0% {
-			transform: scaleY(0.2);
-			transform-origin: top;
-			opacity: 0.1;
-		}
-		50% {
-			transform: scaleY(1);
-			opacity: 0.5;
-		}
-		100% {
-			transform: scaleY(0.2);
-			transform-origin: bottom;
-			opacity: 0.1;
-		}
+		white-space: nowrap;
 	}
 
 	/* ─── 02 Properties ──────────────────────────────── */
@@ -329,6 +288,7 @@
 	}
 
 	.prop-thumb {
+		display: block;
 		aspect-ratio: 4 / 5;
 		background-color: var(--bg-soft);
 		background-size: cover;
@@ -549,6 +509,49 @@
 	}
 
 	@media (max-width: 540px) {
+		/* Houses cards go full-bleed: text overlays the photo instead of
+		 * sitting beside it, rows sit edge-to-edge with a 2px hairline gap. */
+		.prop-list {
+			gap: 2px;
+		}
+
+		.prop-row,
+		.prop-row.reverse {
+			position: relative;
+			width: 100vw;
+			margin-inline: calc(50% - 50vw);
+		}
+
+		.prop-thumb {
+			width: 100%;
+			height: 120vw;
+			aspect-ratio: auto;
+		}
+
+		.prop-body {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			max-width: none;
+			justify-content: flex-end;
+			padding: 20px 0 20px 20px;
+			background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
+		}
+
+		.prop-body :global(.meta),
+		.prop-body :global(.h2) {
+			color: var(--white);
+		}
+
+		.prop-desc {
+			color: rgba(255, 255, 255, 0.85);
+		}
+
+		.link {
+			color: var(--white);
+			border-bottom-color: var(--white);
+		}
+
 		.exp-row {
 			grid-template-columns: 64px 1fr;
 			gap: 24px;
@@ -572,10 +575,6 @@
 
 		.gal-cell-1 {
 			grid-row: span 2;
-		}
-
-		.scroll {
-			bottom: 16px;
 		}
 	}
 </style>

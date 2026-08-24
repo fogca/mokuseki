@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import Wordmark from './Wordmark.svelte';
+	import { RESERVE_URL } from '$lib/site';
 
 	const i18n = useI18n();
 </script>
@@ -15,36 +16,32 @@
 			<p class="body-sm tagline">{i18n.t.footer.tagline}</p>
 		</div>
 
-		<!-- Column 2 — Navigation -->
+		<!-- Column 2 — Navigation. Heading kept for a11y (aria-label) only —
+		     visually removed per representative's "Navigation不要" direction.
+		     Simplified to 4 links (Houses/About/Reserve/Contact). -->
 		<nav class="col" aria-label={i18n.t.footer.navHeading}>
-			<h2 class="eyebrow">{i18n.t.footer.navHeading}</h2>
 			<ul class="links">
-				<li><a class="body-sm uppercase" href="/">{i18n.t.footer.nav.home}</a></li>
 				<li><a class="body-sm uppercase" href="/#houses">{i18n.t.footer.nav.houses}</a></li>
 				<li><a class="body-sm uppercase" href="/about">{i18n.t.footer.nav.about}</a></li>
-				<li><a class="body-sm uppercase" href="/#concept">{i18n.t.footer.nav.concept}</a></li>
-				<li><a class="body-sm uppercase" href="/#experience">{i18n.t.footer.nav.experience}</a></li>
-				<li><a class="body-sm uppercase" href="/reserve">{i18n.t.footer.nav.reserve}</a></li>
+				<li>
+					<a class="body-sm uppercase" href={RESERVE_URL} target="_blank" rel="noopener">
+						{i18n.t.footer.nav.reserve}
+					</a>
+				</li>
 				<li><a class="body-sm uppercase" href="/contact">{i18n.t.footer.nav.contact}</a></li>
 			</ul>
 		</nav>
 
-		<!-- Column 3 — Contact + Social -->
-		<div class="col">
-			<h2 class="eyebrow">{i18n.t.footer.contactHeading}</h2>
-			<address class="address">
-				{#each i18n.t.footer.contactLines as line (line)}
-					<span class="body-sm">{line}</span>
-				{/each}
-			</address>
+		<!-- Column 3 (Contact/address) parked for now — the address/tel are
+		     still placeholder values (see representative's 2026-08-13 note).
+		     Restore once real contact details are ready. -->
 
-			<!-- TODO(launch): Journal/social links — restore once the brand
-			     accounts exist (hrefs in messages.ts currently point at the
-			     platform homepages). -->
+		<!-- TODO(launch): Journal/social links — restore once the brand
+		     accounts exist (hrefs in messages.ts currently point at the
+		     platform homepages). -->
 
-			<!-- TODO(launch): newsletter column — restore once a real signup
-			     endpoint exists; the previous form silently discarded emails. -->
-		</div>
+		<!-- TODO(launch): newsletter column — restore once a real signup
+		     endpoint exists; the previous form silently discarded emails. -->
 	</div>
 
 	<div class="rule" aria-hidden="true"></div>
@@ -84,9 +81,10 @@
 		max-width: 1280px;
 		margin: 0 auto;
 		padding: 0 clamp(24px, 5vw, 80px);
-		/* 3 columns while the newsletter column is parked (see TODO above). */
+		/* 2 columns — Contact/newsletter/social columns are parked (see
+		 * TODOs above). */
 		display: grid;
-		grid-template-columns: 1.4fr 0.9fr 1.1fr;
+		grid-template-columns: 1.4fr 0.6fr;
 		gap: clamp(32px, 4vw, 64px);
 		align-items: start;
 	}
@@ -99,8 +97,7 @@
 
 	.footer-wordmark {
 		display: inline-flex;
-		/* TRIAL: was var(--bg) — terracotta-on-navy per moodboard card 2. */
-		color: var(--accent);
+		color: var(--ink-fg);
 		text-decoration: none;
 		line-height: 0;
 	}
@@ -132,13 +129,6 @@
 
 	.links a:hover {
 		color: var(--accent);
-	}
-
-	.address {
-		font-style: normal;
-		display: flex;
-		flex-direction: column;
-		gap: 7px;
 	}
 
 	.rule {

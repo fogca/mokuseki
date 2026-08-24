@@ -2,6 +2,7 @@
 	import { useI18n } from '$lib/i18n/store.svelte';
 	import { messages } from '$lib/i18n/messages';
 	import SEO from '$lib/components/SEO.svelte';
+	import { RESERVE_URL } from '$lib/site';
 
 	const i18n = useI18n();
 	const en = messages.en.about;
@@ -88,7 +89,7 @@
 	{#if i18n.locale === 'ja'}
 		<p class="h-ja closing-heading-ja">{i18n.t.about.closing.heading}</p>
 	{/if}
-	<a class="btn" href="/reserve">
+	<a class="btn" href={RESERVE_URL} target="_blank" rel="noopener">
 		<span>{en.closing.cta}</span>
 		<span class="arrow" aria-hidden="true">→</span>
 	</a>

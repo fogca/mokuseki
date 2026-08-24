@@ -615,11 +615,11 @@ export const messages: Record<Locale, Dict> = {
 			navHeading: 'Navigation',
 			nav: {
 				home: 'ホーム',
-				houses: '棟一覧',
+				houses: '施設案内',
 				about: '私たちについて',
 				concept: 'コンセプト',
 				experience: '滞在体験',
-				reserve: 'ご予約',
+				reserve: '宿泊予約',
 				contact: 'お問い合わせ'
 			},
 			contactHeading: 'Contact',
@@ -633,10 +633,12 @@ export const messages: Record<Locale, Dict> = {
 				{ label: 'Instagram', href: 'https://instagram.com/' },
 				{ label: 'Note', href: 'https://note.com/' }
 			],
+			// English labels here by design — keeps the footer-bottom row to
+			// one line (the JA equivalents wrapped on mobile).
 			legal: {
-				privacy: 'プライバシーポリシー',
-				terms: '利用規約',
-				tokushoho: '特定商取引法に基づく表記'
+				privacy: 'Privacy',
+				terms: 'Terms',
+				tokushoho: 'Legal'
 			},
 			copy: '© MOKUSEKI'
 		}
