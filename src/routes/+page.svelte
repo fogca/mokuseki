@@ -517,9 +517,13 @@
 
 		.prop-row,
 		.prop-row.reverse {
+			/* Break out of main's padding using the padding value itself
+			 * (not calc(50% - 50vw)) — the vw-based trick can drift a few
+			 * px on real devices depending on scrollbar/safe-area handling.
+			 * This version is exact regardless of that. */
 			position: relative;
-			width: 100vw;
-			margin-inline: calc(50% - 50vw);
+			width: calc(100% + 2 * var(--padding));
+			margin-inline: calc(-1 * var(--padding));
 		}
 
 		.prop-thumb {

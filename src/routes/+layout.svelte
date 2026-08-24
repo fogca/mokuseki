@@ -329,8 +329,11 @@
 			font-size: 11px;
 		}
 
+		/* Redundant with the header's .reserve-chip on SP — hide the
+		 * floating bottom dock there; desktop keeps it as its only
+		 * persistent reserve CTA. */
 		.reserve-dock {
-			bottom: 16px;
+			display: none;
 		}
 	}
 </style>
