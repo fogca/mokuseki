@@ -301,7 +301,7 @@
 			margin-block: -16px -14px;
 			margin-right: calc(-1 * clamp(24px, 5vw, 80px));
 			padding: 0 19px;
-			font-size: 11px;
+			font-size: 12.5px;
 		}
 
 		.reserve-chip span {

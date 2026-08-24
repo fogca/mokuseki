@@ -215,11 +215,11 @@
 
 	/* Title (.h2 / .h-ja) and concept (.body-sm) keep their existing faces;
 	 * everything else inside the card (labels, capacity, price meta, select)
-	 * uses TsukuGo Light for a softer informational tone. */
+	 * uses TsukuGo for a softer informational tone. */
 	.card :global(.meta),
 	.card .select {
 		font-family: var(--font-tsuku);
-		font-weight: 300;
+		font-weight: 400;
 	}
 
 	.thumb {

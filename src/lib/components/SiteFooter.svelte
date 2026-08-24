@@ -72,7 +72,7 @@
 	.site-footer :global(.h-ja),
 	.site-footer :global(address span) {
 		font-family: var(--font-tsuku);
-		font-weight: 300;
+		font-weight: 400;
 	}
 
 	/* One unified text color for the whole footer (wordmark, tagline, nav,

@@ -45,7 +45,7 @@
 	<div class="hero-media" aria-hidden="true"></div>
 	<div class="hero-inner">
 		<h1 class="h1">
-			{en.hero.ledeLine1}<br />
+			{en.hero.ledeLine1}
 			{en.hero.ledeLine2}
 		</h1>
 		{#if i18n.locale === 'ja'}
@@ -83,7 +83,7 @@
 <section class="section properties" id="houses">
 	<header class="sec-head">
 		<p class="eyebrow">{en.properties.eyebrow}</p>
-		<h2 class="h2">{en.properties.heading}</h2>
+		<h2 class="h1">{en.properties.heading}</h2>
 		{#if i18n.locale === 'ja'}
 			<p class="h-ja">{i18n.t.home.properties.heading}</p>
 		{/if}
@@ -131,7 +131,7 @@
 <section class="section experience" id="experience">
 	<header class="sec-head">
 		<p class="eyebrow">{en.experience.eyebrow}</p>
-		<h2 class="h2">{en.experience.heading}</h2>
+		<h2 class="h1">{en.experience.heading}</h2>
 		{#if i18n.locale === 'ja'}
 			<p class="h-ja">{i18n.t.home.experience.heading}</p>
 		{/if}
@@ -163,7 +163,7 @@
 <section class="section gallery" id="gallery">
 	<header class="sec-head">
 		<p class="eyebrow">{en.gallery.eyebrow}</p>
-		<h2 class="h2">{en.gallery.heading}</h2>
+		<h2 class="h1">{en.gallery.heading}</h2>
 		{#if i18n.locale === 'ja'}
 			<p class="h-ja">{i18n.t.home.gallery.heading}</p>
 		{/if}
@@ -351,7 +351,10 @@
 	.philo-heading-ja {
 		/* Tightened 5px closer to the eyebrow above (was 24px). */
 		margin-top: 19px;
-		line-height: 1.2;
+	}
+
+	.philo-heading-ja {
+		font-size: 18px;
 	}
 
 	.philo-body {
@@ -392,7 +395,7 @@
 	/* exp-index is the only intentionally-large numeral on the page. */
 	.exp-index {
 		font-family: var(--display);
-		font-weight: 300;
+		font-weight: 400;
 		font-size: clamp(32px, 4vw, 48px);
 		letter-spacing: 0;
 		color: var(--accent);
