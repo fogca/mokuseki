@@ -80,7 +80,7 @@
 	--fs-h1: 30px;
 	--fs-h2: 24px;
 	--fs-h3: 19px;
-	--fs-body: 14px;
+	--fs-body: 14.5px;
 	/* Dedicated JA small size (.h-ja/.body-sm) — kept separate from --fs-sm
 	 * (used by .eyebrow/.meta, Latin/uppercase) so sizing the heavier Std D
 	 * face down doesn't shrink unrelated Latin UI labels. */
