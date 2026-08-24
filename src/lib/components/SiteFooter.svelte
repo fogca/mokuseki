@@ -47,14 +47,12 @@
 	<div class="rule" aria-hidden="true"></div>
 
 	<div class="bottom">
-		<p class="meta copy">{i18n.t.footer.copy}</p>
 		<ul class="legal">
 			<li><a class="meta" href="/privacy">{i18n.t.footer.legal.privacy}</a></li>
-			<li aria-hidden="true" class="meta sep">/</li>
 			<li><a class="meta" href="/terms">{i18n.t.footer.legal.terms}</a></li>
-			<li aria-hidden="true" class="meta sep">/</li>
 			<li><a class="meta" href="/legal">{i18n.t.footer.legal.tokushoho}</a></li>
 		</ul>
+		<p class="meta copy">{i18n.t.footer.copy}</p>
 	</div>
 </footer>
 
@@ -77,6 +75,16 @@
 		font-weight: 300;
 	}
 
+	/* One unified text color for the whole footer (wordmark, tagline, nav,
+	 * legal, copyright) — brighter and a touch aqua-blue vs. base.css's
+	 * default .inverse treatment (which otherwise gives .body-sm and .meta
+	 * two different opacities of white). */
+	.footer-wordmark,
+	.site-footer :global(.body-sm),
+	.site-footer :global(.meta) {
+		color: #a8d0d4;
+	}
+
 	.top {
 		max-width: 1280px;
 		margin: 0 auto;
@@ -97,7 +105,7 @@
 
 	.footer-wordmark {
 		display: inline-flex;
-		color: var(--ink-fg);
+		/* color set by the unified footer-color rule above. */
 		text-decoration: none;
 		line-height: 0;
 	}
@@ -155,7 +163,7 @@
 		margin: 0;
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 14px;
 	}
 
 	.legal a {
@@ -166,10 +174,6 @@
 
 	.legal a:hover {
 		opacity: 1;
-	}
-
-	.legal .sep {
-		opacity: 0.5;
 	}
 
 	@media (max-width: 960px) {

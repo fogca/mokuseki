@@ -209,7 +209,7 @@
 		 * gap above Houses/Experience/Gallery/Reservation read as too
 		 * much. Concept (.philosophy) keeps the original, larger value
 		 * below (untouched — it follows straight after the hero). */
-		padding: clamp(40px, 10vh, 120px) 0 clamp(80px, 14vh, 160px);
+		padding: clamp(0px, 6vh, 80px) 0 clamp(80px, 14vh, 160px);
 	}
 
 	.philosophy {

@@ -44,10 +44,11 @@
 	--ink-faint: #7c7375;
 	--rule: #391f27;
 	--accent: #5c5c5c;
-	/* Brighter grey for logo/link text sitting on the --ink (wine) background
-	 * — buttons, footer wordmark. Kept separate from --accent so the
-	 * light-bg hover state (.link:hover) stays unaffected. */
-	--ink-fg: #a8a8a8;
+	/* Brighter, slightly blue-leaning grey for logo/link text sitting on the
+	 * --ink (wine) background — buttons, footer wordmark. Kept separate
+	 * from --accent so the light-bg hover state (.link:hover) stays
+	 * unaffected. */
+	--ink-fg: #b7bfc8;
 	--white: #ffffff;
 
 	/* Japanese — FOT-筑紫オールドゴシック Std D (served via fontplus in prod).

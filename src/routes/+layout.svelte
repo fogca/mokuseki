@@ -289,7 +289,7 @@
 		}
 
 		.reserve-chip {
-			order: 3;
+			order: 4;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -307,7 +307,7 @@
 		}
 
 		.menu-btn {
-			order: 4;
+			order: 3;
 		}
 
 		.menu-label {

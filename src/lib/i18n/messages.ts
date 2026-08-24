@@ -642,7 +642,7 @@ export const messages: Record<Locale, Dict> = {
 				terms: 'Terms',
 				tokushoho: 'Legal'
 			},
-			copy: '© MOKUSEKI'
+			copy: '© MOKUSEKI, 2026'
 		}
 	},
 	en: {
@@ -1048,7 +1048,7 @@ export const messages: Record<Locale, Dict> = {
 				{ label: 'Note', href: 'https://note.com/' }
 			],
 			legal: { privacy: 'Privacy', terms: 'Terms', tokushoho: 'Commercial Disclosure' },
-			copy: '© MOKUSEKI'
+			copy: '© MOKUSEKI, 2026'
 		}
 	}
 };
