@@ -19,6 +19,14 @@
 		'/images/mood_02.webp',
 		'/images/mood_03.webp'
 	];
+
+	// Houses card top-row (SP overlay): "愛知県名古屋市" → "名古屋",
+	// "岐阜県" → "岐阜" — city if there is one, else the prefecture name
+	// with its administrative suffix dropped.
+	function shortArea(location: string): string {
+		const city = location.replace(/^.*?[都道府県]/, '').replace(/[市区町村]$/, '');
+		return city || location.replace(/[都道府県]$/, '');
+	}
 </script>
 
 <SEO
@@ -94,12 +102,24 @@
 					<p class="meta prop-no">No. {String(i + 1).padStart(2, '0')}</p>
 					<h3 class="h2 prop-title">{p.name.en}</h3>
 					<p class="meta prop-loc">
-						{p.location[i18n.locale]}{#if i18n.locale === 'ja'}・{p.name.ja}{/if}
+						{#if i18n.locale === 'ja'}
+							<span class="loc-full">{p.location.ja}・{p.name.ja}</span>
+							<span class="loc-short">{shortArea(p.location.ja)} / {p.name.ja}</span>
+						{:else}
+							{p.location.en}
+						{/if}
 					</p>
-					<p class="body-sm prop-desc">{p.description[i18n.locale]}</p>
+					<p class="body-sm prop-desc">
+						{#if i18n.locale === 'ja'}
+							{#each p.description.ja.split('。').filter(Boolean) as sentence, i (i)}
+								{#if i > 0}<br />{/if}{sentence}。
+							{/each}
+						{:else}
+							{p.description.en}
+						{/if}
+					</p>
 					<a class="link prop-link" href={`/properties/${p.slug}`}>
 						<span>{i18n.t.home.properties.viewDetails}</span>
-						<span class="arrow" aria-hidden="true">→</span>
 					</a>
 				</div>
 			</li>
@@ -303,6 +323,12 @@
 		margin-top: 12px;
 	}
 
+	/* Two location formats: full ("愛知県名古屋市・名古屋城") on desktop,
+	 * short ("名古屋 / 名古屋城") on SP — swapped in the 540px block below. */
+	.loc-short {
+		display: none;
+	}
+
 	/* ─── 03 Philosophy ──────────────────────────────── */
 	.philosophy {
 		max-width: 720px;
@@ -450,18 +476,8 @@
 		transition: color 400ms ease;
 	}
 
-	.link .arrow {
-		letter-spacing: 0;
-		text-transform: none;
-		transition: transform 400ms ease;
-	}
-
 	.link:hover {
 		color: var(--accent);
-	}
-
-	.link:hover .arrow {
-		transform: translateX(4px);
 	}
 
 	/* ─── Responsive ─────────────────────────────────── */
@@ -558,6 +574,15 @@
 			grid-area: loc;
 			justify-self: end;
 			padding-right: 20px;
+			font-size: calc(var(--fs-sm) - 2px);
+		}
+
+		.loc-full {
+			display: none;
+		}
+
+		.loc-short {
+			display: inline;
 		}
 
 		.prop-title {
@@ -570,6 +595,10 @@
 
 		.prop-link {
 			grid-area: link;
+			/* Grid items stretch to fill their area by default — without
+			 * this the link (and its border-bottom underline) spans the
+			 * full card width instead of hugging the label. */
+			justify-self: start;
 		}
 
 		.prop-body :global(.meta),
@@ -579,6 +608,9 @@
 
 		.prop-desc {
 			color: rgba(255, 255, 255, 0.85);
+			/* Pull 8px closer to the title above (grid row-gap is 8px by
+			 * default here, inherited from .prop-body's flex gap). */
+			margin-top: -8px;
 		}
 
 		.link {

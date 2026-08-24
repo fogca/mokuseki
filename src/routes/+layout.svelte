@@ -108,8 +108,10 @@
 				</span>
 			</button>
 			<!-- SP only — compact language switch (active locale only, tap to
-			     flip) sits beside the menu button here; the .brand-right
-			     instance below is hidden on SP instead. -->
+			     flip); reordered to sit rightmost of the SP row (Reserve →
+			     Menu → Language) via .brand-left { display: contents } and
+			     flex `order` — see @media 540px below. Hidden on desktop
+			     (the .brand-right instance below is used there instead). -->
 			<div class="lang-sp"><LanguageToggle compact /></div>
 		</div>
 
@@ -119,9 +121,8 @@
 
 		<div class="brand-right">
 			<div class="lang-desktop"><LanguageToggle /></div>
-			<!-- SP only — colored external booking badge, breaks out of the
-			     header's padding to sit flush against the right edge at full
-			     header height (see @media 540px below). -->
+			<!-- SP only — colored booking badge; reordered to sit right after
+			     the (now left-aligned) wordmark, before Menu/Language. -->
 			<a class="btn-sm reserve-chip" href={RESERVE_URL} target="_blank" rel="noopener">
 				<span>Reserve</span>
 			</a>
@@ -310,49 +311,57 @@
 
 	@media (max-width: 540px) {
 		.brand {
-			gap: 12px;
+			/* Grid → flex row: logo left, everything else clustered right
+			 * (Reserve, Menu, Language, in that order). */
+			display: flex;
+			align-items: center;
+			gap: 10px;
 			/* -8px total header height (was 20px/18px top/bottom). */
 			padding-top: 16px;
 			padding-bottom: 14px;
 		}
 
-		.brand-left {
-			gap: 14px;
+		/* .brand-left/.brand-right are just DOM grouping — display: contents
+		 * lets their children become direct flex items of .brand so each
+		 * can carry its own `order`, regardless of nesting. */
+		.brand-left,
+		.brand-right {
+			display: contents;
+		}
+
+		.wordmark {
+			order: 1;
+			/* Pushes every later (order > 1) item to the right. */
+			margin-right: auto;
+		}
+
+		.wordmark :global(svg) {
+			height: 15px;
+		}
+
+		.reserve-chip {
+			order: 2;
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 14px;
+			font-size: 11px;
+		}
+
+		.menu-btn {
+			order: 3;
 		}
 
 		.menu-label {
 			display: none;
 		}
 
-		.wordmark :global(svg) {
-			height: 17px;
-		}
-
 		.lang-sp {
+			order: 4;
 			display: inline-flex;
 		}
 
 		.lang-desktop {
 			display: none;
-		}
-
-		.reserve-chip {
-			/* Ignores .brand's padding and the grid flow entirely — anchored
-			 * to .brand (position: fixed, so it's the containing block),
-			 * flush with the true right edge, filled top-to-bottom. */
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			right: 0;
-			padding: 0 22px;
-			font-size: 12px;
-		}
-
-		.reserve-chip span {
-			transform: translateY(2px);
 		}
 
 		/* Redundant with the header's .reserve-chip on SP — hide the
