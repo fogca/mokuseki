@@ -1,29 +1,64 @@
 <script lang="ts">
 	import { useI18n } from './store.svelte';
 	const i18n = useI18n();
+
+	// compact: SP header — show only the active locale as a single tap
+	// target that flips to the other one (both stay reachable, just not
+	// both visible at once).
+	let { compact = false }: { compact?: boolean } = $props();
 </script>
 
-<div class="toggle" role="group" aria-label="Language">
+{#if compact}
 	<button
 		type="button"
-		class:active={i18n.locale === 'ja'}
-		aria-pressed={i18n.locale === 'ja'}
-		onclick={() => i18n.setLocale('ja')}
+		class="toggle-compact"
+		aria-label={i18n.locale === 'ja' ? 'Switch to English' : '日本語に切り替え'}
+		onclick={() => i18n.setLocale(i18n.locale === 'ja' ? 'en' : 'ja')}
 	>
-		JP
+		{i18n.locale === 'ja' ? 'JP' : 'EN'}
 	</button>
-	<span class="sep" aria-hidden="true">/</span>
-	<button
-		type="button"
-		class:active={i18n.locale === 'en'}
-		aria-pressed={i18n.locale === 'en'}
-		onclick={() => i18n.setLocale('en')}
-	>
-		EN
-	</button>
-</div>
+{:else}
+	<div class="toggle" role="group" aria-label="Language">
+		<button
+			type="button"
+			class:active={i18n.locale === 'ja'}
+			aria-pressed={i18n.locale === 'ja'}
+			onclick={() => i18n.setLocale('ja')}
+		>
+			JP
+		</button>
+		<span class="sep" aria-hidden="true">/</span>
+		<button
+			type="button"
+			class:active={i18n.locale === 'en'}
+			aria-pressed={i18n.locale === 'en'}
+			onclick={() => i18n.setLocale('en')}
+		>
+			EN
+		</button>
+	</div>
+{/if}
 
 <style>
+	.toggle-compact {
+		appearance: none;
+		background: transparent;
+		border: none;
+		padding: 4px 0;
+		font-family: var(--display);
+		font-size: var(--fs-sm);
+		letter-spacing: var(--ls-en);
+		line-height: var(--lh-en);
+		text-transform: uppercase;
+		color: var(--ink-faint);
+		cursor: pointer;
+		transition: color 300ms ease;
+	}
+
+	.toggle-compact:hover {
+		color: var(--ink);
+	}
+
 	.toggle {
 		display: inline-flex;
 		align-items: center;

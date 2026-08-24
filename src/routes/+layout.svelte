@@ -107,9 +107,10 @@
 					{menuOpen ? i18n.t.menu.close : i18n.t.menu.open}
 				</span>
 			</button>
-			<!-- SP only — language switch sits beside the menu button here;
-			     the .brand-right instance below is hidden on SP instead. -->
-			<div class="lang-sp"><LanguageToggle /></div>
+			<!-- SP only — compact language switch (active locale only, tap to
+			     flip) sits beside the menu button here; the .brand-right
+			     instance below is hidden on SP instead. -->
+			<div class="lang-sp"><LanguageToggle compact /></div>
 		</div>
 
 		<a href="/" class="wordmark" aria-label="MOKUSEKI">
@@ -118,10 +119,11 @@
 
 		<div class="brand-right">
 			<div class="lang-desktop"><LanguageToggle /></div>
-			<!-- SP only — colored external booking link replaces the language
-			     switch's spot on the right. -->
+			<!-- SP only — colored external booking badge, breaks out of the
+			     header's padding to sit flush against the right edge at full
+			     header height (see @media 540px below). -->
 			<a class="btn-sm reserve-chip" href={RESERVE_URL} target="_blank" rel="noopener">
-				<span>{i18n.t.nav.reserve}</span>
+				<span>Book</span>
 			</a>
 		</div>
 	</header>
@@ -200,6 +202,14 @@
 
 	.brand.over-hero :global(.toggle .sep) {
 		color: rgba(255, 255, 255, 0.5);
+	}
+
+	.brand.over-hero :global(.toggle-compact) {
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.brand.over-hero :global(.toggle-compact:hover) {
+		color: var(--white);
 	}
 
 	.brand-left {
@@ -324,9 +334,18 @@
 		}
 
 		.reserve-chip {
+			/* Ignores .brand's padding and the grid flow entirely — anchored
+			 * to .brand (position: fixed, so it's the containing block),
+			 * flush with the true right edge, filled top-to-bottom. */
 			display: inline-flex;
-			padding: 8px 14px;
-			font-size: 11px;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			padding: 0 22px;
+			font-size: 12px;
 		}
 
 		/* Redundant with the header's .reserve-chip on SP — hide the
