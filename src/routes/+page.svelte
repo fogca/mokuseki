@@ -205,7 +205,15 @@
 		width: 100%;
 		max-width: 1180px;
 		margin: 0 auto;
-		padding: clamp(80px, 14vh, 160px) 0;
+		/* Top trimmed ~40px vs. bottom — representative's direction, the
+		 * gap above Houses/Experience/Gallery/Reservation read as too
+		 * much. Concept (.philosophy) keeps the original, larger value
+		 * below (untouched — it follows straight after the hero). */
+		padding: clamp(40px, 10vh, 120px) 0 clamp(80px, 14vh, 160px);
+	}
+
+	.philosophy {
+		padding-top: clamp(80px, 14vh, 160px);
 	}
 
 	.sec-head {
@@ -224,11 +232,13 @@
 
 	/* ─── 01 Hero — full-bleed, full-height, white text ── */
 	.hero {
-		/* Break out of main's horizontal padding to span the viewport, and
-		 * pull up under the fixed header (matches .shell padding-top). */
+		/* Break out of main's horizontal padding to span the viewport.
+		 * No negative margin-top anymore — the header now always has a
+		 * background (no more transparent-over-hero state), so the hero
+		 * sits below it like any other page, using .shell's padding-top
+		 * reservation instead of cancelling it out. */
 		margin-left: calc(-1 * var(--padding));
 		margin-right: calc(-1 * var(--padding));
-		margin-top: calc(-1 * clamp(72px, 9vh, 100px));
 		min-height: 85svh;
 		display: flex;
 		flex-direction: column;
@@ -564,6 +574,12 @@
 			max-width: none;
 			padding: 20px 0 35px 20px;
 			background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
+			/* This overlay's box covers the whole card (inset: 0), which
+			 * would otherwise catch every click before it reaches
+			 * .prop-thumb underneath. Ignore pointer events here so the
+			 * image link works across its full area; re-enable them just
+			 * on .prop-link so Discover stays independently clickable. */
+			pointer-events: none;
 		}
 
 		.prop-no {
@@ -599,6 +615,9 @@
 			 * this the link (and its border-bottom underline) spans the
 			 * full card width instead of hugging the label. */
 			justify-self: start;
+			/* .prop-body (its parent) ignores pointer events — opt this
+			 * link back in so Discover stays clickable on its own. */
+			pointer-events: auto;
 		}
 
 		.prop-body :global(.meta),

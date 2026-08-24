@@ -44,33 +44,11 @@
 	let menuOpen = $state(false);
 	const isTop = $derived($page.url.pathname === '/');
 
-	// On the home page, the header floats transparent over the full-screen
-	// hero (white text) until the hero scrolls past, then turns solid.
-	let overHero = $state(false);
-
 	$effect(() => {
 		if (!browser) return;
 		document.body.style.overflow = menuOpen ? 'hidden' : '';
 		return () => {
 			document.body.style.overflow = '';
-		};
-	});
-
-	$effect(() => {
-		if (!browser) return;
-		if ($page.url.pathname !== '/') {
-			overHero = false;
-			return;
-		}
-		const update = () => {
-			overHero = window.scrollY < window.innerHeight - 120;
-		};
-		update();
-		window.addEventListener('scroll', update, { passive: true });
-		window.addEventListener('resize', update);
-		return () => {
-			window.removeEventListener('scroll', update);
-			window.removeEventListener('resize', update);
 		};
 	});
 </script>
@@ -91,7 +69,7 @@
 </svelte:head>
 
 <div class="shell" lang={i18n.locale}>
-	<header class="brand" class:over-hero={overHero && !menuOpen}>
+	<header class="brand">
 		<div class="brand-left">
 			<button
 				class="meta menu-btn"
@@ -177,40 +155,6 @@
 		transition:
 			background 400ms ease,
 			color 400ms ease;
-	}
-
-	/* Transparent header with white controls while over the home hero. */
-	.brand.over-hero {
-		background: transparent;
-	}
-
-	.brand.over-hero .menu-btn {
-		color: rgba(255, 255, 255, 0.85);
-	}
-
-	.brand.over-hero .wordmark {
-		color: var(--white);
-	}
-
-	.brand.over-hero :global(.toggle button) {
-		color: rgba(255, 255, 255, 0.6);
-	}
-
-	.brand.over-hero :global(.toggle button.active),
-	.brand.over-hero :global(.toggle button:hover) {
-		color: var(--white);
-	}
-
-	.brand.over-hero :global(.toggle .sep) {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
-	.brand.over-hero :global(.toggle-compact) {
-		color: rgba(255, 255, 255, 0.7);
-	}
-
-	.brand.over-hero :global(.toggle-compact:hover) {
-		color: var(--white);
 	}
 
 	.brand-left {
@@ -339,25 +283,35 @@
 			height: 15px;
 		}
 
-		.reserve-chip {
+		.lang-sp {
 			order: 2;
 			display: inline-flex;
+		}
+
+		.reserve-chip {
+			order: 3;
+			display: inline-flex;
 			align-items: center;
-			padding: 8px 14px;
+			justify-content: center;
+			/* Full header height: stretch the flex item, then bleed past
+			 * .brand's own vertical padding with matching negative margins
+			 * so the fill reaches the true top/bottom edge. */
+			align-self: stretch;
+			margin-block: -16px -14px;
+			padding: 0 14px;
 			font-size: 11px;
 		}
 
+		.reserve-chip span {
+			transform: translateY(2px);
+		}
+
 		.menu-btn {
-			order: 3;
+			order: 4;
 		}
 
 		.menu-label {
 			display: none;
-		}
-
-		.lang-sp {
-			order: 4;
-			display: inline-flex;
 		}
 
 		.lang-desktop {
