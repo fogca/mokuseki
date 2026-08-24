@@ -52,12 +52,16 @@
 	--ink-fg: #aeb7ba;
 	--white: #ffffff;
 
-	/* Japanese — FOT-筑紫オールドゴシック Std D (served via fontplus in prod).
-	 * Both quoted and unquoted name forms are listed so fontplus matches
-	 * whichever it registers; local dev falls back to 筑紫ゴシック D / Hiragino. */
+	/* Japanese — FOT-筑紫オールドゴシック Std M, top priority (served via
+	 * fontplus in prod). Reverted from Std D: fontplus's registered box only
+	 * matches the family names actually registered on their dashboard, and
+	 * the D-weight names weren't recognized there — text silently fell back
+	 * to Hiragino instead of erroring. 筑紫ゴシック M follows as the next
+	 * priority. Both quoted and unquoted name forms are listed so fontplus
+	 * matches whichever it registers; local dev falls back to Hiragino. */
 	--font-ja:
-		'FOT-筑紫オールドゴシック Std D', 'TsukuOldGothicStd-D', TsukuOldGothicStd-D,
-		'FOT-筑紫ゴシック Std D', 'TsukuGoStd-D', 'TsukuGoPro-D', 'FOT-TsukuGoPro-D',
+		'FOT-筑紫オールドゴシック Std M', 'TsukuOldGothicStd-M', TsukuOldGothicStd-M,
+		'FOT-筑紫ゴシック Std M', 'TsukuGoStd-M', 'TsukuGoPro-M', 'FOT-TsukuGoPro-M',
 		'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
 
 	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
