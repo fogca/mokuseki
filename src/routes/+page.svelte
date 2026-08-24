@@ -79,11 +79,6 @@
 		{#if i18n.locale === 'ja'}
 			<p class="h-ja">{i18n.t.home.properties.heading}</p>
 		{/if}
-		<p class="body-sm sec-sub">
-			{#each i18n.t.home.properties.sub.split('\n') as line, i (i)}
-				{#if i > 0}<br />{/if}{line}
-			{/each}
-		</p>
 	</header>
 
 	<ul class="prop-list">
@@ -96,13 +91,13 @@
 					style:background-image={`url(${p.images[0]})`}
 				></a>
 				<div class="prop-body">
-					<p class="meta">No. {String(i + 1).padStart(2, '0')}</p>
-					<h3 class="h2">{p.name.en}</h3>
-					<p class="meta">
+					<p class="meta prop-no">No. {String(i + 1).padStart(2, '0')}</p>
+					<h3 class="h2 prop-title">{p.name.en}</h3>
+					<p class="meta prop-loc">
 						{p.location[i18n.locale]}{#if i18n.locale === 'ja'}・{p.name.ja}{/if}
 					</p>
 					<p class="body-sm prop-desc">{p.description[i18n.locale]}</p>
-					<a class="link" href={`/properties/${p.slug}`}>
+					<a class="link prop-link" href={`/properties/${p.slug}`}>
 						<span>{i18n.t.home.properties.viewDetails}</span>
 						<span class="arrow" aria-hidden="true">→</span>
 					</a>
@@ -214,7 +209,7 @@
 		margin-left: calc(-1 * var(--padding));
 		margin-right: calc(-1 * var(--padding));
 		margin-top: calc(-1 * clamp(72px, 9vh, 100px));
-		min-height: 80svh;
+		min-height: 85svh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -533,13 +528,48 @@
 		}
 
 		.prop-body {
+			/* Grid instead of the flex column used elsewhere — No./location
+			 * sit on their own top row (No. left, location flush right),
+			 * title/desc/link are pushed to the bottom by the flexible (1fr)
+			 * empty row between them. grid-area placement means this doesn't
+			 * depend on DOM order matching the visual order. */
 			position: absolute;
 			inset: 0;
 			z-index: 1;
+			display: grid;
+			grid-template-columns: 1fr auto;
+			grid-template-rows: auto 1fr auto auto auto;
+			grid-template-areas:
+				'no    loc'
+				'.     .'
+				'title title'
+				'desc  desc'
+				'link  link';
 			max-width: none;
-			justify-content: flex-end;
-			padding: 20px 0 20px 20px;
+			padding: 20px 0 35px 20px;
 			background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
+		}
+
+		.prop-no {
+			grid-area: no;
+		}
+
+		.prop-loc {
+			grid-area: loc;
+			justify-self: end;
+			padding-right: 20px;
+		}
+
+		.prop-title {
+			grid-area: title;
+		}
+
+		.prop-desc {
+			grid-area: desc;
+		}
+
+		.prop-link {
+			grid-area: link;
 		}
 
 		.prop-body :global(.meta),
@@ -554,6 +584,9 @@
 		.link {
 			color: var(--white);
 			border-bottom-color: var(--white);
+			/* Bring the underline closer to the label than the desktop
+			 * default (8px). */
+			padding-bottom: 3px;
 		}
 
 		.exp-row {

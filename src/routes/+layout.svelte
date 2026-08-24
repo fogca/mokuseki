@@ -123,7 +123,7 @@
 			     header's padding to sit flush against the right edge at full
 			     header height (see @media 540px below). -->
 			<a class="btn-sm reserve-chip" href={RESERVE_URL} target="_blank" rel="noopener">
-				<span>Book</span>
+				<span>Reserve</span>
 			</a>
 		</div>
 	</header>
@@ -311,6 +311,9 @@
 	@media (max-width: 540px) {
 		.brand {
 			gap: 12px;
+			/* -8px total header height (was 20px/18px top/bottom). */
+			padding-top: 16px;
+			padding-bottom: 14px;
 		}
 
 		.brand-left {
@@ -322,7 +325,7 @@
 		}
 
 		.wordmark :global(svg) {
-			height: 20px;
+			height: 17px;
 		}
 
 		.lang-sp {
@@ -346,6 +349,10 @@
 			right: 0;
 			padding: 0 22px;
 			font-size: 12px;
+		}
+
+		.reserve-chip span {
+			transform: translateY(2px);
 		}
 
 		/* Redundant with the header's .reserve-chip on SP — hide the

@@ -313,7 +313,9 @@ export const messages: Record<Locale, Dict> = {
 				eyebrow: 'Houses',
 				heading: '四棟の、一棟貸し。',
 				sub: '名古屋と飛騨に、それぞれの一棟。\n土地の名を冠した四棟から、お選びいただけます。',
-				viewDetails: '詳細を見る'
+				// English by design, both locales — matches the header's
+				// "Reserve" chip as a fixed brand-voice CTA word.
+				viewDetails: 'Discover'
 			},
 			philosophy: {
 				eyebrow: 'Philosophy',
@@ -715,7 +717,7 @@ export const messages: Record<Locale, Dict> = {
 				eyebrow: 'Houses',
 				heading: 'Four private houses.',
 				sub: 'Each rooted in its corner of Nagoya and Hida.\nChoose from four, each named for the place it belongs to.',
-				viewDetails: 'View details'
+				viewDetails: 'Discover'
 			},
 			philosophy: {
 				eyebrow: 'Philosophy',
