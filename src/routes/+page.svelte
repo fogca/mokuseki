@@ -227,6 +227,14 @@
 		align-items: center;
 	}
 
+	/* JA sub-heading under a title (hero, Houses/Experience/Gallery) —
+	 * fixed 16px at every breakpoint (was following --fs-ja-sm, 16px
+	 * desktop but 13px on SP). */
+	.sec-head .h-ja,
+	.hero-inner .h-ja {
+		font-size: 16px;
+	}
+
 	.sec-sub {
 		margin-top: 20px;
 	}

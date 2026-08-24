@@ -265,6 +265,15 @@
 			padding-bottom: 14px;
 		}
 
+		/* .shell's padding-top reserves space for the fixed header so the
+		 * hero (and every other page's content) starts right below it —
+		 * but the header shrank (see .brand above) and this was never
+		 * updated, leaving a ~17px gap. Measured: .brand's actual height
+		 * at this breakpoint is 56.2px; 57px rounds up a hair for safety. */
+		.shell {
+			padding-top: 57px;
+		}
+
 		/* .brand-left/.brand-right are just DOM grouping — display: contents
 		 * lets their children become direct flex items of .brand so each
 		 * can carry its own `order`, regardless of nesting. */
