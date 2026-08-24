@@ -213,12 +213,13 @@
 	}
 
 	.philosophy {
-		padding-top: clamp(80px, 14vh, 160px);
+		padding-top: clamp(85px, 14vh, 165px);
 	}
 
 	.sec-head {
 		max-width: 720px;
-		margin: 0 auto clamp(56px, 8vh, 96px);
+		/* -10px vs. the content below (was clamp(56px,8vh,96px)). */
+		margin: 0 auto clamp(46px, 8vh, 86px);
 		text-align: center;
 		display: flex;
 		flex-direction: column;
@@ -342,18 +343,23 @@
 	/* ─── 03 Philosophy ──────────────────────────────── */
 	.philosophy {
 		max-width: 720px;
-		text-align: left;
+		margin: 0 auto;
+		text-align: center;
 	}
 
-	.philo-heading {
-		margin-top: 24px;
+	.philo-heading,
+	.philo-heading-ja {
+		/* Tightened 5px closer to the eyebrow above (was 24px). */
+		margin-top: 19px;
+		line-height: 1.2;
 	}
 
 	.philo-body {
 		display: flex;
 		flex-direction: column;
 		gap: 24px;
-		margin: clamp(48px, 6vh, 72px) 0 0;
+		/* -8px vs. the title above (was clamp(48px,6vh,72px)). */
+		margin: clamp(40px, 6vh, 64px) 0 0;
 	}
 
 	.philo-sig {
@@ -549,7 +555,7 @@
 
 		.prop-thumb {
 			width: 100%;
-			height: 120vw;
+			height: 130vw;
 			aspect-ratio: auto;
 		}
 

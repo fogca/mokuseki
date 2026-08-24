@@ -76,13 +76,14 @@
 	}
 
 	/* One unified text color for the whole footer (wordmark, tagline, nav,
-	 * legal, copyright) — brighter and a touch aqua-blue vs. base.css's
-	 * default .inverse treatment (which otherwise gives .body-sm and .meta
-	 * two different opacities of white). */
+	 * legal, copyright) — reuses --ink-fg so it stays identical to the
+	 * buttons' text color (previously diverged from base.css's default
+	 * .inverse treatment, which gives .body-sm and .meta two different
+	 * opacities of white). */
 	.footer-wordmark,
 	.site-footer :global(.body-sm),
 	.site-footer :global(.meta) {
-		color: #a8d0d4;
+		color: var(--ink-fg);
 	}
 
 	.top {
@@ -187,11 +188,6 @@
 		.top {
 			grid-template-columns: 1fr;
 			row-gap: clamp(40px, 5vh, 56px);
-		}
-
-		.bottom {
-			justify-content: center;
-			text-align: center;
 		}
 	}
 </style>

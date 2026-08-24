@@ -294,11 +294,13 @@
 			align-items: center;
 			justify-content: center;
 			/* Full header height: stretch the flex item, then bleed past
-			 * .brand's own vertical padding with matching negative margins
-			 * so the fill reaches the true top/bottom edge. */
+			 * .brand's own padding with matching negative margins so the
+			 * fill reaches the true top/bottom edge AND (being the last,
+			 * rightmost item) the true right edge too. */
 			align-self: stretch;
 			margin-block: -16px -14px;
-			padding: 0 14px;
+			margin-right: calc(-1 * clamp(24px, 5vw, 80px));
+			padding: 0 19px;
 			font-size: 11px;
 		}
 
@@ -308,6 +310,14 @@
 
 		.menu-btn {
 			order: 3;
+		}
+
+		.menu-bars {
+			gap: 5px;
+		}
+
+		.menu-bars span {
+			width: 20px;
 		}
 
 		.menu-label {

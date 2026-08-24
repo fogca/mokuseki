@@ -318,8 +318,8 @@ export const messages: Record<Locale, Dict> = {
 				viewDetails: 'Discover'
 			},
 			philosophy: {
-				eyebrow: 'Philosophy',
-				heading: '身体と精神に、\n余白を。',
+				eyebrow: 'Concept',
+				heading: '身体と精神に、余白を。',
 				body: 'MOKUSEKI は、「滞在のなかで、五感が静かにほどけてゆく。」というステイコンセプトのもと、身体と精神に余白をもたらすスモールホテルブランドです。\n\n日本の伝統的な素材と技法を採り入れた各客室には、日々の喧騒から離れて静かに自分と向き合う時間を、という想いから、ヨガや書道、抹茶や茶の焙煎といった体験のできる道具を設えています。',
 				signature: 'MOKUSEKI'
 			},
@@ -720,7 +720,7 @@ export const messages: Record<Locale, Dict> = {
 				viewDetails: 'Discover'
 			},
 			philosophy: {
-				eyebrow: 'Philosophy',
+				eyebrow: 'Concept',
 				heading: 'Space, for body\nand mind.',
 				body: 'MOKUSEKI is a small hotel brand built on a single stay concept — that within a stay, the senses quietly come undone — bringing a sense of space to both body and mind.\n\nEach room draws on traditional Japanese materials and craft, and is furnished for quiet practice — yoga and calligraphy, matcha and the roasting of tea — so that you can step away from the noise of the everyday and sit quietly with yourself.',
 				signature: 'MOKUSEKI'
