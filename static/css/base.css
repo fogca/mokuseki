@@ -16,11 +16,11 @@
 
 /* Primary Latin face — Andersen / Steiner (in-house variable
  * font, wght 1–950: Hair / Book / Ultra masters). Family name carries the
- * version (VF74) on request — bump it, the 4 stacks below, and the URL
+ * version (VF75) on request — bump it, the 4 stacks below, and the URL
  * together on every export. */
 @font-face {
-	font-family: 'Steiner VF74';
-	src: url('/fonts/Steiner-VF74.woff2?v=20260828e') format('woff2');
+	font-family: 'Steiner VF75';
+	src: url('/fonts/Steiner-VF75.woff2?v=20260828f') format('woff2');
 	font-weight: 1 950;
 	font-style: normal;
 	font-display: swap;
@@ -66,13 +66,13 @@
 
 	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
 	 * gothic face, display and body share the same JP stack. */
-	--display: 'Steiner VF74', 'Mokuseki Sans', 'Inter', var(--font-ja);
+	--display: 'Steiner VF75', 'Mokuseki Sans', 'Inter', var(--font-ja);
 	--sans:
-		'Steiner VF74', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
+		'Steiner VF75', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
 		'Helvetica Neue', var(--font-ja);
-	--ja-body: 'Steiner VF74', var(--font-ja);
+	--ja-body: 'Steiner VF75', var(--font-ja);
 	/* Footer / card meta JA — same JP face, Latin still Steiner. */
-	--font-tsuku: 'Steiner VF74', 'Mokuseki Sans', var(--font-ja);
+	--font-tsuku: 'Steiner VF75', 'Mokuseki Sans', var(--font-ja);
 
 	/* Type scale — titles sized up a full step (representative's direction),
 	 * body/UI copy nudged +1px. */
