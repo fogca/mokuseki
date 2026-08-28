@@ -111,7 +111,7 @@
 
 	.ref-code {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: 28px;
 		letter-spacing: 0;
 		line-height: 1.1;
@@ -149,7 +149,7 @@
 
 	.total-amount {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: 22px;
 		letter-spacing: 0;
 		line-height: 1.2;

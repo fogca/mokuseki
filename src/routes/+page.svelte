@@ -403,7 +403,7 @@
 	/* exp-index is the only intentionally-large numeral on the page. */
 	.exp-index {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: clamp(32px, 4vw, 48px);
 		letter-spacing: 0;
 		color: var(--accent);
