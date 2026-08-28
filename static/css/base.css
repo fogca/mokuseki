@@ -41,17 +41,15 @@
 	 *   --ink-faint:#767676 --rule:#353535 --accent:#484848 */
 	--bg: #e4e9ec;
 	--bg-soft: #dae0e3;
-	--ink: #391f27;
+	--ink: #3f2727;
 	--ink-soft: #4c303a;
 	--ink-faint: #7c7375;
-	--rule: #391f27;
+	--rule: #3f2727;
 	--accent: #5c5c5c;
-	/* Brighter, low-saturation blue-grey for text/logo sitting on the --ink
-	 * (wine) background — buttons AND the footer share this one value now
-	 * (previously diverged: footer had its own, more saturated aqua).
-	 * Kept separate from --accent so the light-bg hover state
-	 * (.link:hover) stays unaffected. */
-	--ink-fg: #aeb7ba;
+	/* Cool blue-lavender for text/logo sitting on the --ink background —
+	 * buttons AND the footer share this one value (kept separate from
+	 * --accent so the light-bg hover state, .link:hover, stays unaffected). */
+	--ink-fg: #a0acce;
 	--white: #ffffff;
 
 	/* Japanese — FOT-筑紫オールドゴシック Std M, top priority (served via
