@@ -201,16 +201,40 @@
 	}
 
 	.menu-bars {
-		display: inline-flex;
-		flex-direction: column;
-		gap: 4px;
+		position: relative;
+		display: inline-block;
+		width: 16px;
+		height: 6px; /* 2 × 1px bar + 4px gap */
 	}
 
 	.menu-bars span {
-		width: 16px;
+		position: absolute;
+		left: 0;
+		width: 100%;
 		height: 1px;
 		background: currentColor;
-		display: block;
+		top: 0;
+		transition:
+			top 300ms ease,
+			transform 300ms ease;
+	}
+
+	.menu-bars span:last-child {
+		top: 5px;
+	}
+
+	/* Morphs into an ✕ when the menu is open — both bars meet at the
+	 * container's vertical center and rotate to cross. */
+	.menu-bars.open span {
+		top: 2.5px;
+	}
+
+	.menu-bars.open span:first-child {
+		transform: rotate(45deg);
+	}
+
+	.menu-bars.open span:last-child {
+		transform: rotate(-45deg);
 	}
 
 	.wordmark {
@@ -322,11 +346,16 @@
 		}
 
 		.menu-bars {
-			gap: 5px;
+			width: 20px;
+			height: 7px; /* 2 × 1px bar + 5px gap */
 		}
 
-		.menu-bars span {
-			width: 20px;
+		.menu-bars span:last-child {
+			top: 6px;
+		}
+
+		.menu-bars.open span {
+			top: 3px;
 		}
 
 		.menu-label {

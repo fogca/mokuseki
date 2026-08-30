@@ -171,9 +171,17 @@
 		gap: 16px;
 	}
 
+	/* One grey for the whole menu (was two: --ink for the link label,
+	 * --ink-faint for the eyebrow/house-number/JA-name — inconsistent). */
+	.eyebrow,
+	.links a,
+	.house-num,
+	.house-name-ja {
+		color: var(--ink);
+	}
+
 	.links a {
 		text-decoration: none;
-		color: var(--ink);
 		transition: color 300ms ease;
 		display: inline-flex;
 		align-items: baseline;
@@ -190,7 +198,6 @@
 
 	.house-name-ja {
 		margin-left: 10px;
-		color: var(--ink-faint);
 	}
 
 	@media (max-width: 720px) {
@@ -201,6 +208,13 @@
 
 		.links {
 			gap: 12px;
+		}
+	}
+
+	@media (max-width: 540px) {
+		/* Section titles as a nav LIST read too large at --fs-h2 (29px). */
+		.links a {
+			font-size: 20px;
 		}
 	}
 </style>
