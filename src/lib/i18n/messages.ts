@@ -331,9 +331,9 @@ export const messages: Record<Locale, Dict> = {
 				signature: 'MOKUSEKI'
 			},
 			area: {
-				eyebrow: 'Area',
+				eyebrow: 'Nagoya Area',
 				heading: 'その土地に、根を下ろす。',
-				sub: '観光地として切り取られた場所ではなく、\n名古屋・飛騨という土地そのものに根を下ろして。',
+				sub: '観光地として切り取られた場所ではなく、\n名古屋という土地そのものに根を下ろして。',
 				items: [
 					{
 						index: '01',
@@ -352,12 +352,6 @@ export const messages: Record<Locale, Dict> = {
 						title: '大須・栄',
 						description:
 							'大須観音の門前町として発展し、今は古着屋と食堂とアーケードが入り混じる、\n名古屋でいちばん猥雑で自由な街。'
-					},
-					{
-						index: '04',
-						title: '飛騨',
-						description:
-							'山あいの蔵を改修した一棟。\n冬は雪深く、夏は涼やかな、木曽の山国の暮らしそのままに。'
 					}
 				]
 			},
@@ -738,9 +732,9 @@ export const messages: Record<Locale, Dict> = {
 				signature: 'MOKUSEKI'
 			},
 			area: {
-				eyebrow: 'Area',
-				heading: 'Rooted in the neighborhood, not apart from it.',
-				sub: 'Not a place set apart as a destination, but a stay rooted in\nthe land itself — Nagoya, Hida.',
+				eyebrow: 'Nagoya Area',
+				heading: 'Rooted in the neighborhood.',
+				sub: 'Not a place set apart as a destination, but a stay rooted in\nthe land itself — Nagoya.',
 				items: [
 					{
 						index: '01',
@@ -759,12 +753,6 @@ export const messages: Record<Locale, Dict> = {
 						title: 'Osu / Sakae',
 						description:
 							"Grown as the temple town before Osu Kannon, now a tangle of vintage shops, diners, and arcades —\nNagoya's most unruly, most free corner."
-					},
-					{
-						index: '04',
-						title: 'Hida',
-						description:
-							'A mountain storehouse, converted to a single house.\nDeep snow in winter, cool air in summer — the mountain life of Kiso, unchanged.'
 					}
 				]
 			},
