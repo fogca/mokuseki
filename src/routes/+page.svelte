@@ -127,11 +127,13 @@
 		{#if i18n.locale === 'ja'}
 			<p class="h-ja">{i18n.t.home.area.heading}</p>
 		{/if}
-		<p class="body-sm sec-sub">
-			{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
-				{#if i > 0}<br />{/if}{line}
-			{/each}
-		</p>
+		{#if i18n.t.home.area.sub}
+			<p class="body-sm sec-sub">
+				{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
+					{#if i > 0}<br />{/if}{line}
+				{/each}
+			</p>
+		{/if}
 	</header>
 
 	<!-- Placeholder — swap for real neighborhood photography. -->

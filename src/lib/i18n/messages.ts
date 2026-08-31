@@ -331,9 +331,9 @@ export const messages: Record<Locale, Dict> = {
 				signature: 'MOKUSEKI'
 			},
 			area: {
-				eyebrow: 'Nagoya Area',
-				heading: 'その土地に、根を下ろす。',
-				sub: '名古屋という土地に根を下ろす宿泊体験。',
+				eyebrow: 'Where we are',
+				heading: 'その土地に、根を下ろす宿泊体験。',
+				sub: '',
 				items: [
 					{
 						index: '01',
@@ -732,7 +732,7 @@ export const messages: Record<Locale, Dict> = {
 				signature: 'MOKUSEKI'
 			},
 			area: {
-				eyebrow: 'Nagoya Area',
+				eyebrow: 'Where we are',
 				heading: 'Rooted in the neighborhood.',
 				sub: 'A stay rooted in the land of Nagoya.',
 				items: [
