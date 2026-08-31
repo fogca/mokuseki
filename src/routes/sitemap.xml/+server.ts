@@ -4,7 +4,16 @@ import type { RequestHandler } from './$types';
 
 // Indexable, canonical pages only — transactional routes (results,
 // booking, confirmation) are noindex and excluded.
-const STATIC_PATHS = ['/', '/about', '/reserve', '/contact', '/privacy', '/terms', '/legal'];
+const STATIC_PATHS = [
+	'/',
+	'/houses',
+	'/about',
+	'/reserve',
+	'/contact',
+	'/privacy',
+	'/terms',
+	'/legal'
+];
 
 export const GET: RequestHandler = ({ url }) => {
 	const origin = SITE_ORIGIN ?? url.origin;

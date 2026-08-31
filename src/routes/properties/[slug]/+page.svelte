@@ -66,7 +66,7 @@
 
 <!-- ─── Hero ────────────────────────────────────────── -->
 <section class="hero">
-	<a class="meta back" href="/#houses">← Houses</a>
+	<a class="meta back" href="/houses">← Houses</a>
 	<h1 class="h1">{data.property.name.en}</h1>
 	{#if i18n.locale === 'ja'}
 		<p class="h-ja">{data.property.name.ja}</p>

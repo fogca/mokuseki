@@ -19,6 +19,7 @@ type Dict = {
 		ogLocale: string;
 		defaultDescription: string;
 		home: { title: string; description: string };
+		houses: { title: string; description: string };
 		about: { title: string; description: string };
 		reserve: { title: string; description: string };
 		results: { title: string; description: string };
@@ -44,6 +45,7 @@ type Dict = {
 			heading: string;
 			sub: string;
 			viewDetails: string;
+			reserveLabel: string;
 		};
 		philosophy: {
 			eyebrow: string;
@@ -261,6 +263,10 @@ export const messages: Record<Locale, Dict> = {
 				description:
 					'五感が、静かにほどけてゆく。名古屋・飛騨に四棟、身体と精神に余白をもたらすスモールホテル。'
 			},
+			houses: {
+				title: '施設一覧 — MOKUSEKI',
+				description: '名古屋・飛騨に四棟、一棟貸しの宿。それぞれの土地の名を冠した施設のご紹介。'
+			},
 			about: {
 				title: 'About — MOKUSEKI',
 				description: 'MOKUSEKI の理念と、運営における五つの所作について。'
@@ -315,7 +321,8 @@ export const messages: Record<Locale, Dict> = {
 				sub: '名古屋と飛騨に、それぞれの一棟。\n土地の名を冠した四棟から、お選びいただけます。',
 				// English by design, both locales — matches the header's
 				// "Reserve" chip as a fixed brand-voice CTA word.
-				viewDetails: 'Discover'
+				viewDetails: 'Discover',
+				reserveLabel: '予約する'
 			},
 			philosophy: {
 				eyebrow: 'Concept',
@@ -664,6 +671,11 @@ export const messages: Record<Locale, Dict> = {
 				description:
 					'Four private houses in Nagoya and Hida. A stay where the senses quietly come undone.'
 			},
+			houses: {
+				title: 'Houses — MOKUSEKI',
+				description:
+					'Four private houses in Nagoya and Hida, each named for the place it belongs to.'
+			},
 			about: {
 				title: 'About — MOKUSEKI',
 				description:
@@ -717,7 +729,8 @@ export const messages: Record<Locale, Dict> = {
 				eyebrow: 'Houses',
 				heading: 'Four private houses.',
 				sub: 'Each rooted in its corner of Nagoya and Hida.\nChoose from four, each named for the place it belongs to.',
-				viewDetails: 'Discover'
+				viewDetails: 'Discover',
+				reserveLabel: 'Reserve'
 			},
 			philosophy: {
 				eyebrow: 'Concept',

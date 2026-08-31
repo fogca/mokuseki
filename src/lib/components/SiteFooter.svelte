@@ -21,7 +21,7 @@
 		     Simplified to 4 links (Houses/About/Reserve/Contact). -->
 		<nav class="col" aria-label={i18n.t.footer.navHeading}>
 			<ul class="links">
-				<li><a class="body-sm uppercase" href="/#houses">{i18n.t.footer.nav.houses}</a></li>
+				<li><a class="body-sm uppercase" href="/houses">{i18n.t.footer.nav.houses}</a></li>
 				<li><a class="body-sm uppercase" href="/about">{i18n.t.footer.nav.about}</a></li>
 				<li>
 					<a class="body-sm uppercase" href={RESERVE_URL} target="_blank" rel="noopener">
