@@ -461,6 +461,10 @@
 		width: 100%;
 		height: 100%;
 		border: 0;
+		/* The free /maps?...&output=embed iframe has no style parameter (that
+		 * needs the paid Maps JS API + a styled map ID) — grayscale via CSS
+		 * filter instead. */
+		filter: grayscale(1);
 	}
 
 	/* ─── 05 Gallery ─────────────────────────────────── */
