@@ -333,7 +333,7 @@ export const messages: Record<Locale, Dict> = {
 			area: {
 				eyebrow: 'Nagoya Area',
 				heading: 'その土地に、根を下ろす。',
-				sub: '観光地として切り取られた場所ではなく、\n名古屋という土地そのものに根を下ろして。',
+				sub: '名古屋という土地に根を下ろす宿泊体験。',
 				items: [
 					{
 						index: '01',
@@ -734,7 +734,7 @@ export const messages: Record<Locale, Dict> = {
 			area: {
 				eyebrow: 'Nagoya Area',
 				heading: 'Rooted in the neighborhood.',
-				sub: 'Not a place set apart as a destination, but a stay rooted in\nthe land itself — Nagoya.',
+				sub: 'A stay rooted in the land of Nagoya.',
 				items: [
 					{
 						index: '01',

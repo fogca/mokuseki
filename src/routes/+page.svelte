@@ -134,6 +134,13 @@
 		</p>
 	</header>
 
+	<!-- Placeholder — swap for real neighborhood photography. -->
+	<div
+		class="area-thumb"
+		aria-hidden="true"
+		style:background-image="url(/images/mood_02.webp)"
+	></div>
+
 	<ul class="exp-list">
 		{#each i18n.t.home.area.items as item (item.index)}
 			<li class="exp-row">
@@ -149,6 +156,19 @@
 			</li>
 		{/each}
 	</ul>
+
+	<!-- Placeholder — centered on Nagoya Castle as a stand-in landmark
+	     until each house's real address is finalized. No API key needed
+	     (the plain /maps?...&output=embed form), but it does load an
+	     iframe from google.com — fine given no CSP restricts frame-src. -->
+	<div class="area-map">
+		<iframe
+			title="MOKUSEKI — Nagoya area map"
+			src="https://www.google.com/maps?q=%E5%90%8D%E5%8F%A4%E5%B1%8B%E5%9F%8E&output=embed"
+			loading="lazy"
+			referrerpolicy="no-referrer-when-downgrade"
+		></iframe>
+	</div>
 </section>
 
 <!-- ─── 05 Gallery ─────────────────────────────────── -->
@@ -375,7 +395,18 @@
 		margin-top: clamp(48px, 6vh, 72px);
 	}
 
-	/* ─── 04 Experience ──────────────────────────────── */
+	/* ─── 04 Area ──────────────────────────────────────── */
+	.area-thumb {
+		width: 100vw;
+		height: 120vw;
+		margin-inline: calc(-1 * var(--padding));
+		margin-bottom: clamp(48px, 8vh, 88px);
+		background-color: var(--bg-soft);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
 	.exp-list {
 		list-style: none;
 		padding: 0;
@@ -402,7 +433,7 @@
 	.exp-index {
 		font-family: var(--display);
 		font-weight: 250;
-		font-size: clamp(32px, 4vw, 48px);
+		font-size: clamp(24px, 3vw, 34px);
 		letter-spacing: 0;
 		color: var(--accent);
 		line-height: 1;
@@ -412,6 +443,24 @@
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
+	}
+
+	.exp-body :global(.h2) {
+		font-size: 18px;
+	}
+
+	.area-map {
+		margin: clamp(48px, 8vh, 88px) auto 0;
+		max-width: 860px;
+		aspect-ratio: 16 / 9;
+		background: var(--bg-soft);
+	}
+
+	.area-map iframe {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border: 0;
 	}
 
 	/* ─── 05 Gallery ─────────────────────────────────── */
