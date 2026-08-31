@@ -42,7 +42,12 @@
 	--bg: #e4e9ec;
 	--bg-soft: #dae0e3;
 	--ink: #414144;
-	--ink-soft: #4c303a;
+	/* Neutral grey, lighter than --ink — was #4c303a, a leftover wine/
+	 * maroon tone from an earlier palette that never got updated when
+	 * --ink itself moved to neutral grey. This is the .body/.body-sm/
+	 * .h-ja color, i.e. most JA paragraph text sitewide, so it read as a
+	 * stray "purple" against everything else. */
+	--ink-soft: #59595c;
 	--ink-faint: #7c7375;
 	--rule: #414144;
 	--accent: #5c5c5c;

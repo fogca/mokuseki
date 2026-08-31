@@ -53,7 +53,7 @@ type Dict = {
 			body: string;
 			signature: string;
 		};
-		experience: {
+		area: {
 			eyebrow: string;
 			heading: string;
 			sub: string;
@@ -226,7 +226,7 @@ type Dict = {
 			houses: string;
 			about: string;
 			concept: string;
-			experience: string;
+			area: string;
 			reserve: string;
 			contact: string;
 		};
@@ -330,35 +330,34 @@ export const messages: Record<Locale, Dict> = {
 				body: 'MOKUSEKI は、「滞在のなかで、五感が静かにほどけてゆく。」というステイコンセプトのもと、身体と精神に余白をもたらすスモールホテルブランドです。\n\n日本の伝統的な素材と技法を採り入れた各客室には、日々の喧騒から離れて静かに自分と向き合う時間を、という想いから、ヨガや書道、抹茶や茶の焙煎といった体験のできる道具を設えています。',
 				signature: 'MOKUSEKI'
 			},
-			experience: {
-				eyebrow: 'Experience',
-				heading: '滞在を、構成するもの。',
-				sub: '夜のしじま、朝の光、土地の食材。\n五つの要素が、静かに重なります。',
+			area: {
+				eyebrow: 'Area',
+				heading: 'その土地に、根を下ろす。',
+				sub: '観光地として切り取られた場所ではなく、\n名古屋・飛騨という土地そのものに根を下ろして。',
 				items: [
 					{
 						index: '01',
-						title: '静寂',
-						description: '夜は完全な無音のなかへ。\n谷川と、風と、ご自身の呼吸だけが残ります。'
+						title: '名古屋城',
+						description:
+							'清須越しから四百年、尾張徳川家の城下町として栄えた一帯。\n石垣と濠の気配を残す町家から、今も変わらぬ城下の静けさへ。'
 					},
 					{
 						index: '02',
-						title: '湯',
-						description: '檜と石で組まれた湯殿。\n源泉を、ご滞在の間ずっと貸し切りで。'
+						title: '亀島',
+						description:
+							'かつて木材・繊維を扱う問屋が軒を連ねた商都の記憶。\n看板建築の意匠を残す低層の一室から、名古屋駅の喧騒までは歩いてすぐ。'
 					},
 					{
 						index: '03',
-						title: '食',
-						description: '土地の生産者から届く季節の素材を、\nひとつひとつ、ていねいに。'
+						title: '大須・栄',
+						description:
+							'大須観音の門前町として発展し、今は古着屋と食堂とアーケードが入り混じる、\n名古屋でいちばん猥雑で自由な街。'
 					},
 					{
 						index: '04',
-						title: '光と影',
-						description: '朝の障子、夕の橙、夜の燭。\n光が時間そのものになります。'
-					},
-					{
-						index: '05',
-						title: '余白',
-						description: '何もしないという贅沢を。\n余白は、最も上質な体験です。'
+						title: '飛騨',
+						description:
+							'山あいの蔵を改修した一棟。\n冬は雪深く、夏は涼やかな、木曽の山国の暮らしそのままに。'
 					}
 				]
 			},
@@ -627,7 +626,7 @@ export const messages: Record<Locale, Dict> = {
 				houses: '施設案内',
 				about: '私たちについて',
 				concept: 'コンセプト',
-				experience: '滞在体験',
+				area: 'エリア',
 				reserve: '宿泊予約',
 				contact: 'お問い合わせ'
 			},
@@ -738,38 +737,34 @@ export const messages: Record<Locale, Dict> = {
 				body: 'MOKUSEKI is a small hotel brand built on a single stay concept — that within a stay, the senses quietly come undone — bringing a sense of space to both body and mind.\n\nEach room draws on traditional Japanese materials and craft, and is furnished for quiet practice — yoga and calligraphy, matcha and the roasting of tea — so that you can step away from the noise of the everyday and sit quietly with yourself.',
 				signature: 'MOKUSEKI'
 			},
-			experience: {
-				eyebrow: 'Experience',
-				heading: 'What composes the stay.',
-				sub: 'The hush of night, the morning light, the food of the land.\nFive elements that quietly overlap.',
+			area: {
+				eyebrow: 'Area',
+				heading: 'Rooted in the neighborhood, not apart from it.',
+				sub: 'Not a place set apart as a destination, but a stay rooted in\nthe land itself — Nagoya, Hida.',
 				items: [
 					{
 						index: '01',
-						title: 'Silence',
+						title: 'Nagoya Castle',
 						description:
-							'Nights of complete silence.\nOnly the stream, the wind, and your own breath remain.'
+							"Four hundred years since the move from Kiyosu, this quarter grew as the Owari-Tokugawa castle town.\nA machiya still holding the presence of stone walls and moat, in the castle town's same quiet."
 					},
 					{
 						index: '02',
-						title: 'Bath',
+						title: 'Kamejima',
 						description:
-							'A bathhouse of hinoki and stone.\nThe spring is yours alone for the length of your stay.'
+							'The memory of a merchant quarter once lined with timber and textile wholesalers.\nA low-rise room that keeps its kanban-kenchiku detailing, a short walk from Nagoya Station.'
 					},
 					{
 						index: '03',
-						title: 'Cuisine',
-						description: 'Seasonal ingredients from local producers,\nattended to one by one.'
+						title: 'Osu / Sakae',
+						description:
+							"Grown as the temple town before Osu Kannon, now a tangle of vintage shops, diners, and arcades —\nNagoya's most unruly, most free corner."
 					},
 					{
 						index: '04',
-						title: 'Light',
+						title: 'Hida',
 						description:
-							'Morning through shoji, amber dusk, candle by night.\nLight becomes the measure of time.'
-					},
-					{
-						index: '05',
-						title: 'Space',
-						description: 'The luxury of doing nothing.\nEmpty space is the finest of experiences.'
+							'A mountain storehouse, converted to a single house.\nDeep snow in winter, cool air in summer — the mountain life of Kiso, unchanged.'
 					}
 				]
 			},
@@ -1045,7 +1040,7 @@ export const messages: Record<Locale, Dict> = {
 				houses: 'Houses',
 				about: 'About',
 				concept: 'Concept',
-				experience: 'Experience',
+				area: 'Area',
 				reserve: 'Reserve',
 				contact: 'Contact'
 			},

@@ -119,23 +119,23 @@
 	</ul>
 </section>
 
-<!-- ─── 04 Experience ──────────────────────────────── -->
-<section class="section experience" id="experience">
+<!-- ─── 04 Area ────────────────────────────────────── -->
+<section class="section area" id="area">
 	<header class="sec-head">
-		<p class="eyebrow">{en.experience.eyebrow}</p>
-		<h2 class="h1">{en.experience.heading}</h2>
+		<p class="eyebrow">{en.area.eyebrow}</p>
+		<h2 class="h1">{en.area.heading}</h2>
 		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.experience.heading}</p>
+			<p class="h-ja">{i18n.t.home.area.heading}</p>
 		{/if}
 		<p class="body-sm sec-sub">
-			{#each i18n.t.home.experience.sub.split('\n') as line, i (i)}
+			{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
 				{#if i > 0}<br />{/if}{line}
 			{/each}
 		</p>
 	</header>
 
 	<ul class="exp-list">
-		{#each i18n.t.home.experience.items as item (item.index)}
+		{#each i18n.t.home.area.items as item (item.index)}
 			<li class="exp-row">
 				<span class="exp-index">{item.index}</span>
 				<div class="exp-body">

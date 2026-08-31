@@ -12,7 +12,7 @@
 		{ href: '/', label: i18n.t.footer.nav.home, external: false },
 		{ href: '/about', label: i18n.t.footer.nav.about, external: false },
 		{ href: '/#concept', label: i18n.t.footer.nav.concept, external: false },
-		{ href: '/#experience', label: i18n.t.footer.nav.experience, external: false },
+		{ href: '/#area', label: i18n.t.footer.nav.area, external: false },
 		// Booking now lives entirely on an external platform (see $lib/site).
 		{ href: RESERVE_URL, label: i18n.t.footer.nav.reserve, external: true },
 		{ href: '/contact', label: i18n.t.footer.nav.contact, external: false }
