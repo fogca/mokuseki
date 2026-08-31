@@ -81,14 +81,6 @@
 
 <!-- ─── 03 Properties (Houses) ──────────────────────── -->
 <section class="section properties" id="houses">
-	<header class="sec-head">
-		<p class="eyebrow">{en.properties.eyebrow}</p>
-		<h2 class="h1">{en.properties.heading}</h2>
-		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.properties.heading}</p>
-		{/if}
-	</header>
-
 	<ul class="prop-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="prop-row" class:reverse={i % 2 === 1}>
@@ -214,6 +206,12 @@
 
 	.philosophy {
 		padding-top: clamp(85px, 14vh, 165px);
+	}
+
+	/* No header left in this section (removed) — the first house image
+	 * should start right under Concept, not under empty top padding. */
+	.properties {
+		padding-top: 0;
 	}
 
 	.sec-head {
