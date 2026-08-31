@@ -425,6 +425,10 @@
 		align-items: baseline;
 	}
 
+	.exp-row:first-child {
+		border-top: none;
+	}
+
 	.exp-row:last-child {
 		border-bottom: 1px solid var(--rule);
 	}
