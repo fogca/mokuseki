@@ -170,7 +170,7 @@ body {
 	background: var(--bg);
 	color: var(--ink);
 	font-family: var(--sans);
-	font-weight: 250;
+	font-weight: 400;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -227,7 +227,7 @@ main {
 .eyebrow,
 .meta {
 	font-family: var(--display);
-	font-weight: 250;
+	font-weight: 400;
 	line-height: var(--lh-en);
 	letter-spacing: var(--ls-en);
 	color: var(--ink);
@@ -276,7 +276,7 @@ main {
 
 .h-ja {
 	font-family: var(--ja-body);
-	font-weight: 250;
+	font-weight: 400;
 	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
@@ -286,7 +286,7 @@ main {
 
 .body {
 	font-family: var(--ja-body);
-	font-weight: 250;
+	font-weight: 400;
 	font-size: var(--fs-body);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
@@ -296,7 +296,7 @@ main {
 
 .body-sm {
 	font-family: var(--ja-body);
-	font-weight: 250;
+	font-weight: 400;
 	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
