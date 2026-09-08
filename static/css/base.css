@@ -431,3 +431,73 @@ main {
 	background: var(--accent);
 	color: var(--ink);
 }
+
+/* ─── Scroll-reveal (IntersectionObserver via src/lib/actions/reveal.ts) ──
+ * Pattern studied from omaivillas.com's reference OP/scroll motion: fade
+ * (+rise, for text) into place once, the moment a section's content enters
+ * view. Timings/easing match that reference exactly (.7s text / 1s image,
+ * both on --ease-default, which is already the same curve). `use:reveal`
+ * toggles .is-visible; this file owns all the "how", never the "when". */
+.reveal-text {
+	opacity: 0;
+	transform: translateY(40px);
+	transition:
+		opacity 0.7s var(--ease-default) 0.1s,
+		transform 0.7s var(--ease-default) 0.1s;
+}
+
+.reveal-text.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.reveal-img {
+	opacity: 0;
+	transition: opacity 1s var(--ease-default) 0.1s;
+}
+
+.reveal-img.is-visible {
+	opacity: 1;
+}
+
+/* !important here is deliberate: prefers-reduced-motion must win outright
+ * over any other transition declared on the same element (present or
+ * future — e.g. .reveal-img.card-hover-zoom below combines two transition
+ * shorthands that would otherwise out-specificity this block by file
+ * order alone). */
+@media (prefers-reduced-motion: reduce) {
+	.reveal-text,
+	.reveal-img,
+	.reveal-img.card-hover-zoom {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
+	}
+}
+
+/* ─── Card hover — property/villa cards ──────────────────
+ * Image settles with a slight zoom on hover, studied from the same
+ * reference (omaivillas.com villa cards). Combined with .reveal-img on the
+ * same element (the property photo also fades in on scroll) — a plain
+ * `transition` shorthand doesn't merge across two class rules, it's
+ * whichever applies last that wins outright, so the pairing needs its own
+ * explicit combined rule rather than relying on the two separately. */
+.card-hover-zoom {
+	transition: transform 0.6s cubic-bezier(0.25, 0.5, 0, 1);
+}
+
+.card-hover:hover .card-hover-zoom {
+	transform: scale(1.04);
+}
+
+.reveal-img.card-hover-zoom {
+	transition:
+		opacity 1s var(--ease-default) 0.1s,
+		transform 0.6s cubic-bezier(0.25, 0.5, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.card-hover-zoom {
+		transition: none;
+	}
+}

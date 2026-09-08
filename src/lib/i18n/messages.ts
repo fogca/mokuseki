@@ -733,7 +733,7 @@ export const messages: Record<Locale, Dict> = {
 			},
 			area: {
 				eyebrow: 'Where we are',
-				heading: 'Rooted in the neighborhood.',
+				heading: 'Welcome home, rooted in the neighborhood.',
 				sub: 'A stay rooted in the land of Nagoya.',
 				items: [
 					{

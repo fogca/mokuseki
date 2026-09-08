@@ -3,6 +3,7 @@
 	import { messages } from '$lib/i18n/messages';
 	import SEO from '$lib/components/SEO.svelte';
 	import { RESERVE_URL } from '$lib/site';
+	import { reveal } from '$lib/actions/reveal';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -22,23 +23,24 @@
 
 <section class="section">
 	<header class="sec-head">
-		<p class="eyebrow">{en.properties.eyebrow}</p>
-		<h1 class="h1">{en.properties.heading}</h1>
+		<p class="eyebrow reveal-text" use:reveal>{en.properties.eyebrow}</p>
+		<h1 class="h1 reveal-text" use:reveal>{en.properties.heading}</h1>
 		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.properties.heading}</p>
+			<p class="h-ja reveal-text" use:reveal>{i18n.t.home.properties.heading}</p>
 		{/if}
 	</header>
 
 	<ul class="house-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="house-card">
-				<a
-					class="house-thumb"
-					href={`/properties/${p.slug}`}
-					aria-label={p.name.en}
-					style:background-image={`url(${p.images[0]})`}
-				></a>
-				<div class="house-overlay">
+				<a class="house-thumb card-hover" href={`/properties/${p.slug}`} aria-label={p.name.en}>
+					<span
+						class="house-thumb-img card-hover-zoom reveal-img"
+						use:reveal
+						style:background-image={`url(${p.images[0]})`}
+					></span>
+				</a>
+				<div class="house-overlay reveal-text" use:reveal>
 					<p class="meta house-no">No. {String(i + 1).padStart(2, '0')}</p>
 					<p class="meta house-loc">
 						{#if i18n.locale === 'ja'}
@@ -106,9 +108,19 @@
 
 	.house-thumb {
 		display: block;
+		position: relative;
 		width: 100%;
 		height: 100%;
 		background-color: var(--bg-soft);
+		overflow: hidden;
+	}
+
+	/* Fills .house-thumb; separate from the frame so .card-hover-zoom
+	 * (base.css) can scale just the photo on hover without also scaling —
+	 * and thereby exposing the edges of — the fixed-size frame clipping it. */
+	.house-thumb-img {
+		position: absolute;
+		inset: 0;
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;

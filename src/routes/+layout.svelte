@@ -6,6 +6,7 @@
 	import SiteMenu from '$lib/components/SiteMenu.svelte';
 	import { provideI18n } from '$lib/i18n/store.svelte';
 	import { RESERVE_URL } from '$lib/site';
+	import { HERO_IMAGE_START_EVENT } from '$lib/heroEvents';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
@@ -50,6 +51,29 @@
 		document.body.style.overflow = menuOpen ? 'hidden' : '';
 		return () => {
 			document.body.style.overflow = '';
+		};
+	});
+
+	// Header entrance, synced to the hero's OP effect (see +page.svelte):
+	// hidden on the home page until the hero photo starts revealing, then
+	// fades/slides in at that exact instant (HERO_IMAGE_START_EVENT). Off
+	// the home page — or if that event never arrives (safety timeout below)
+	// — the header is just shown; it never gets stuck invisible.
+	let headerRevealed = $state(true);
+
+	$effect(() => {
+		if (!browser) return;
+		if (!isTop) {
+			headerRevealed = true;
+			return;
+		}
+		headerRevealed = false;
+		const reveal = () => (headerRevealed = true);
+		document.addEventListener(HERO_IMAGE_START_EVENT, reveal, { once: true });
+		const fallback = window.setTimeout(reveal, 3500);
+		return () => {
+			document.removeEventListener(HERO_IMAGE_START_EVENT, reveal);
+			window.clearTimeout(fallback);
 		};
 	});
 
@@ -98,7 +122,7 @@
 </svelte:head>
 
 <div class="shell" lang={i18n.locale}>
-	<header class="brand">
+	<header class="brand" class:brand-hero-sync={isTop} class:is-revealed={headerRevealed}>
 		<div class="brand-left">
 			<button
 				class="meta menu-btn"
@@ -184,6 +208,35 @@
 		transition:
 			background 400ms ease,
 			color 400ms ease;
+	}
+
+	/* Home-page-only entrance, synced to the hero's OP effect via
+	 * headerRevealed (see script above) — hidden until the hero photo
+	 * starts revealing, then fades/slides down into place. Off the home
+	 * page .brand-hero-sync is never applied, so the header just shows. */
+	.brand.brand-hero-sync {
+		opacity: 0;
+		transform: translateY(-16px);
+		transition:
+			opacity 900ms var(--ease-default),
+			transform 900ms var(--ease-default),
+			background 400ms ease,
+			color 400ms ease;
+	}
+
+	.brand.brand-hero-sync.is-revealed {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.brand.brand-hero-sync {
+			opacity: 1;
+			transform: none;
+			transition:
+				background 400ms ease,
+				color 400ms ease;
+		}
 	}
 
 	.brand-left {

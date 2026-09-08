@@ -3,11 +3,100 @@
 	import { messages } from '$lib/i18n/messages';
 	import SEO from '$lib/components/SEO.svelte';
 	import { RESERVE_URL } from '$lib/site';
+	import { reveal } from '$lib/actions/reveal';
+	import { HERO_IMAGE_START_EVENT } from '$lib/heroEvents';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const i18n = useI18n();
 	const en = messages.en.home;
+
+	// ─── Hero OP effect (studied from omaivillas.com) ──────
+	// Words settle in from the left over the page's plain background while
+	// still --ink-dark; the instant the hero photo starts revealing behind
+	// them, they flip to white in step with it. HERO_IMAGE_START_EVENT lets
+	// +layout.svelte's header sync its own entrance to that exact moment
+	// without any direct coupling between the two components.
+	const heroWordsEn = `${en.hero.ledeLine1} ${en.hero.ledeLine2}`.split(' ');
+	const heroCharsJa = $derived(
+		`${i18n.t.home.hero.ledeLine1}${i18n.t.home.hero.ledeLine2}`.split('')
+	);
+
+	let heroTitleEl = $state<HTMLElement | null>(null);
+	let heroJaEl = $state<HTMLElement | null>(null);
+	let heroMediaEl = $state<HTMLElement | null>(null);
+	let heroScrollEl = $state<HTMLElement | null>(null);
+
+	onMount(() => {
+		if (!browser || !heroTitleEl || !heroMediaEl) return;
+		const announceImageStart = () =>
+			document.dispatchEvent(new CustomEvent(HERO_IMAGE_START_EVENT));
+
+		const words = Array.from(heroTitleEl.querySelectorAll('.hero-word'));
+		const jaChars = heroJaEl ? Array.from(heroJaEl.querySelectorAll('.hero-char')) : [];
+		const allWords = [...words, ...jaChars];
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		// No motion (reduced-motion, or nothing to stagger) — skip straight to
+		// the header/scroll-hint sync signal so the rest of the page never
+		// waits on an animation that isn't going to run.
+		if (reduceMotion || !allWords.length) {
+			announceImageStart();
+			return;
+		}
+
+		let cancelled = false;
+		import('gsap').then(({ gsap }) => {
+			if (cancelled) return;
+
+			gsap.set(heroMediaEl, { autoAlpha: 0, scale: 1.05 });
+			gsap.set(allWords, { autoAlpha: 0, x: -20, color: 'var(--ink)' });
+			if (heroScrollEl) gsap.set(heroScrollEl, { autoAlpha: 0 });
+
+			const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+			// Phase 1 — words cascade in, left → right, still dark-on-page.
+			tl.to(allWords, { x: 0, autoAlpha: 1, duration: 1, stagger: 0.05 });
+			// Phase 2 — the photo reveals; words flip to white in the same
+			// instant ("<"), so the color change reads as landing together
+			// with the image rather than as a separate step.
+			tl.to(heroMediaEl, {
+				autoAlpha: 1,
+				scale: 1,
+				duration: 1.8,
+				ease: 'power3.out',
+				onStart: announceImageStart
+			});
+			// EN flips to full white; JA keeps its established 82%-white (a
+			// touch dimmer, matching the existing display/translation
+			// hierarchy) — same instant, same easing, separate targets.
+			tl.to(
+				words,
+				{ color: 'var(--white)', duration: 0.8, stagger: 0.05, ease: 'power1.out' },
+				'<'
+			);
+			if (jaChars.length) {
+				tl.to(
+					jaChars,
+					{
+						color: 'rgba(255, 255, 255, 0.82)',
+						duration: 0.8,
+						stagger: 0.03,
+						ease: 'power1.out'
+					},
+					'<'
+				);
+			}
+			if (heroScrollEl) {
+				tl.to(heroScrollEl, { autoAlpha: 1, duration: 0.8, ease: 'power1.out' }, '<');
+			}
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	});
 
 	// Cool neutral fallback tones shown behind the gallery photography.
 	const galleryTones = ['#e4e4e4', '#d4d4d4', '#bdbdbd', '#c8c8c8', '#ececec', '#dadada'];
@@ -42,41 +131,44 @@
 
 <!-- ─── 01 Hero ─────────────────────────────────────── -->
 <section class="hero">
-	<div class="hero-media" aria-hidden="true"></div>
+	<div class="hero-media" aria-hidden="true" bind:this={heroMediaEl}></div>
 	<div class="hero-inner">
-		<h1 class="h1">
-			{en.hero.ledeLine1}
-			{en.hero.ledeLine2}
+		<h1 class="h1" bind:this={heroTitleEl}>
+			{#each heroWordsEn as word, i (i)}{#if i > 0}{' '}{/if}<span class="hero-word">{word}</span
+				>{/each}
 		</h1>
 		{#if i18n.locale === 'ja'}
-			<p class="h-ja">
-				{i18n.t.home.hero.ledeLine1}{i18n.t.home.hero.ledeLine2}
+			<p class="h-ja" bind:this={heroJaEl}>
+				{#each heroCharsJa as ch, i (i)}<span class="hero-char">{ch}</span>{/each}
 			</p>
 		{/if}
+		<p class="meta hero-scroll" bind:this={heroScrollEl} aria-hidden="true">
+			{i18n.t.home.hero.scrollHint}
+		</p>
 	</div>
 </section>
 
 <!-- ─── 02 Concept (Philosophy) ─────────────────────── -->
 <section class="section philosophy" id="concept">
-	<p class="eyebrow">{en.philosophy.eyebrow}</p>
-	<h2 class="h1 philo-heading">
+	<p class="eyebrow reveal-text" use:reveal>{en.philosophy.eyebrow}</p>
+	<h2 class="h1 philo-heading reveal-text" use:reveal>
 		{#each en.philosophy.heading.split('\n') as line, i (i)}
 			{#if i > 0}<br />{/if}{line}
 		{/each}
 	</h2>
 	{#if i18n.locale === 'ja'}
-		<p class="h-ja philo-heading-ja">
+		<p class="h-ja philo-heading-ja reveal-text" use:reveal>
 			{#each i18n.t.home.philosophy.heading.split('\n') as line, i (i)}
 				{#if i > 0}<br />{/if}{line}
 			{/each}
 		</p>
 	{/if}
-	<div class="philo-body">
+	<div class="philo-body reveal-text" use:reveal>
 		{#each i18n.t.home.philosophy.body.split('\n\n') as para (para)}
 			<p class="body">{para}</p>
 		{/each}
 	</div>
-	<p class="meta philo-sig">— {i18n.t.home.philosophy.signature}</p>
+	<p class="meta philo-sig reveal-text" use:reveal>— {i18n.t.home.philosophy.signature}</p>
 </section>
 
 <!-- ─── 03 Properties (Houses) ──────────────────────── -->
@@ -84,13 +176,14 @@
 	<ul class="prop-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="prop-row" class:reverse={i % 2 === 1}>
-				<a
-					class="prop-thumb"
-					href={`/properties/${p.slug}`}
-					aria-label={p.name.en}
-					style:background-image={`url(${p.images[0]})`}
-				></a>
-				<div class="prop-body">
+				<a class="prop-thumb card-hover" href={`/properties/${p.slug}`} aria-label={p.name.en}>
+					<span
+						class="prop-thumb-img card-hover-zoom reveal-img"
+						use:reveal
+						style:background-image={`url(${p.images[0]})`}
+					></span>
+				</a>
+				<div class="prop-body reveal-text" use:reveal>
 					<p class="meta prop-no">No. {String(i + 1).padStart(2, '0')}</p>
 					<h3 class="h2 prop-title">{p.name.en}</h3>
 					<p class="meta prop-loc">
@@ -122,13 +215,13 @@
 <!-- ─── 04 Area ────────────────────────────────────── -->
 <section class="section area" id="area">
 	<header class="sec-head">
-		<p class="eyebrow">{en.area.eyebrow}</p>
-		<h2 class="h1">{en.area.heading}</h2>
+		<p class="eyebrow reveal-text" use:reveal>{en.area.eyebrow}</p>
+		<h2 class="h1 reveal-text" use:reveal>{en.area.heading}</h2>
 		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.area.heading}</p>
+			<p class="h-ja reveal-text" use:reveal>{i18n.t.home.area.heading}</p>
 		{/if}
 		{#if i18n.t.home.area.sub}
-			<p class="body-sm sec-sub">
+			<p class="body-sm sec-sub reveal-text" use:reveal>
 				{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
 					{#if i > 0}<br />{/if}{line}
 				{/each}
@@ -138,14 +231,15 @@
 
 	<!-- Placeholder — swap for real neighborhood photography. -->
 	<div
-		class="area-thumb"
+		class="area-thumb reveal-img"
+		use:reveal
 		aria-hidden="true"
 		style:background-image="url(/images/mood_02.webp)"
 	></div>
 
 	<ul class="exp-list">
 		{#each i18n.t.home.area.items as item (item.index)}
-			<li class="exp-row">
+			<li class="exp-row reveal-text" use:reveal>
 				<span class="exp-index">{item.index}</span>
 				<div class="exp-body">
 					<h3 class="h2">{item.title}</h3>
@@ -163,7 +257,7 @@
 	     until each house's real address is finalized. No API key needed
 	     (the plain /maps?...&output=embed form), but it does load an
 	     iframe from google.com — fine given no CSP restricts frame-src. -->
-	<div class="area-map">
+	<div class="area-map reveal-img" use:reveal>
 		<iframe
 			title="MOKUSEKI — Nagoya area map"
 			src="https://www.google.com/maps?q=%E5%90%8D%E5%8F%A4%E5%B1%8B%E5%9F%8E&output=embed"
@@ -176,17 +270,18 @@
 <!-- ─── 05 Gallery ─────────────────────────────────── -->
 <section class="section gallery" id="gallery">
 	<header class="sec-head">
-		<p class="eyebrow">{en.gallery.eyebrow}</p>
-		<h2 class="h1">{en.gallery.heading}</h2>
+		<p class="eyebrow reveal-text" use:reveal>{en.gallery.eyebrow}</p>
+		<h2 class="h1 reveal-text" use:reveal>{en.gallery.heading}</h2>
 		{#if i18n.locale === 'ja'}
-			<p class="h-ja">{i18n.t.home.gallery.heading}</p>
+			<p class="h-ja reveal-text" use:reveal>{i18n.t.home.gallery.heading}</p>
 		{/if}
 	</header>
 
 	<div class="gal-grid">
 		{#each galleryTones as tone, i (i)}
 			<div
-				class="gal-cell gal-cell-{i + 1}"
+				class="gal-cell gal-cell-{i + 1} reveal-img"
+				use:reveal
 				style:background-color={tone}
 				style:background-image={`url(${galleryImages[i % galleryImages.length]})`}
 				aria-hidden="true"
@@ -197,12 +292,12 @@
 
 <!-- ─── 06 Reserve CTA ─────────────────────────────── -->
 <section class="section cta">
-	<p class="eyebrow">{en.reserveCta.eyebrow}</p>
-	<h2 class="h1 cta-heading">{en.reserveCta.heading}</h2>
+	<p class="eyebrow reveal-text" use:reveal>{en.reserveCta.eyebrow}</p>
+	<h2 class="h1 cta-heading reveal-text" use:reveal>{en.reserveCta.heading}</h2>
 	{#if i18n.locale === 'ja'}
-		<p class="h-ja cta-heading-ja">{i18n.t.home.reserveCta.heading}</p>
+		<p class="h-ja cta-heading-ja reveal-text" use:reveal>{i18n.t.home.reserveCta.heading}</p>
 	{/if}
-	<p class="body-sm cta-sub">
+	<p class="body-sm cta-sub reveal-text" use:reveal>
 		{#each i18n.t.home.reserveCta.sub.split('\n') as line, i (i)}
 			{#if i > 0}<br />{/if}{line}
 		{/each}
@@ -312,6 +407,20 @@
 		white-space: nowrap;
 	}
 
+	/* Per-word/-char spans the OP effect (see onMount above) animates —
+	 * inline-block so GSAP's x/color tweens have something to move.
+	 * Without JS these are inert and the text just reads normally,
+	 * already in its final white-on-photo state (see rules above). */
+	.hero :global(.hero-word),
+	.hero :global(.hero-char) {
+		display: inline-block;
+	}
+
+	.hero-scroll {
+		margin-top: 4px;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
 	/* ─── 02 Properties ──────────────────────────────── */
 	.prop-list {
 		list-style: none;
@@ -343,12 +452,21 @@
 
 	.prop-thumb {
 		display: block;
+		position: relative;
 		aspect-ratio: 4 / 5;
 		background-color: var(--bg-soft);
+		overflow: hidden;
+	}
+
+	/* Fills .prop-thumb; separate from the frame so .card-hover-zoom (base.css)
+	 * can scale just the photo on hover without also scaling — and thereby
+	 * exposing the edges of — the fixed-size frame clipping it. */
+	.prop-thumb-img {
+		position: absolute;
+		inset: 0;
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
-		overflow: hidden;
 	}
 
 	.prop-body {
