@@ -148,7 +148,17 @@
 	</div>
 </section>
 
-<!-- ─── 02 Concept (Philosophy) ─────────────────────── -->
+<!-- ─── 02 Brand intro ─────────────────────────────── -->
+<!-- New: a single opening statement right after the hero — the reference's
+     own opening move (one centered paragraph, no image) before it commits
+     to anything else. Says plainly what MOKUSEKI is, once, so the sections
+     that follow (Concept, Houses) don't each have to re-introduce it. -->
+<section class="section intro" id="intro">
+	<p class="eyebrow reveal-text" use:reveal>{en.intro.eyebrow}</p>
+	<p class="intro-body reveal-text" use:reveal>{i18n.t.home.intro.body}</p>
+</section>
+
+<!-- ─── 03 Concept (Philosophy) ─────────────────────── -->
 <section class="section philosophy" id="concept">
 	<p class="eyebrow reveal-text" use:reveal>{en.philosophy.eyebrow}</p>
 	<h2 class="h1 philo-heading reveal-text" use:reveal>
@@ -171,13 +181,22 @@
 	<p class="meta philo-sig reveal-text" use:reveal>— {i18n.t.home.philosophy.signature}</p>
 </section>
 
-<!-- ─── 03 Properties (Houses) ──────────────────────── -->
+<!-- ─── 04 Properties (Houses) ──────────────────────── -->
 <!-- Bold pass: a wall of large photography (2-up grid), not an alternating
      photo+paragraph list — the whole card is the link, caption is a single
      name/location line, matching the density of the reference's villa
      cards. The longer atmospheric description still lives on each
      property's own detail page; nothing is lost, just deferred. -->
 <section class="section properties" id="houses">
+	<header class="sec-head">
+		<p class="eyebrow reveal-text" use:reveal>{en.properties.eyebrow}</p>
+		<h2 class="h1 reveal-text" use:reveal>{en.properties.heading}</h2>
+		{#if i18n.locale === 'ja'}
+			<p class="h-ja reveal-text" use:reveal>{i18n.t.home.properties.heading}</p>
+		{/if}
+		<p class="body-sm sec-sub reveal-text" use:reveal>{i18n.t.home.properties.sub}</p>
+	</header>
+
 	<ul class="hg-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="hg-card card-hover">
@@ -203,7 +222,7 @@
 	</ul>
 </section>
 
-<!-- ─── 04 Area ────────────────────────────────────── -->
+<!-- ─── 05 Area ────────────────────────────────────── -->
 <!-- Bold pass: a full-bleed cinematic photo carries the section (like the
      hero), with the copy overlaid bottom-left instead of sitting in a
      centered text header above a small thumbnail. The historical/
@@ -259,7 +278,7 @@
 	</div>
 </section>
 
-<!-- ─── 05 Gallery ─────────────────────────────────── -->
+<!-- ─── 06 Gallery ─────────────────────────────────── -->
 <section class="section gallery" id="gallery">
 	<header class="sec-head">
 		<p class="eyebrow reveal-text" use:reveal>{en.gallery.eyebrow}</p>
@@ -282,7 +301,7 @@
 	</div>
 </section>
 
-<!-- ─── 06 Reserve CTA ─────────────────────────────── -->
+<!-- ─── 07 Reserve CTA ─────────────────────────────── -->
 <!-- Bold pass: full-bleed dark (--ink), flowing straight into SiteFooter
      (already dark/.inverse) so the two read as one continuous block —
      the tonal drop the reference uses to close a light, airy page. -->
@@ -313,19 +332,8 @@
 		margin: 0 auto;
 		/* Top trimmed ~40px vs. bottom — representative's direction, the
 		 * gap above Houses/Experience/Gallery/Reservation read as too
-		 * much. Concept (.philosophy) keeps the original, larger value
-		 * below (untouched — it follows straight after the hero). */
+		 * much. */
 		padding: clamp(0px, 6vh, 80px) 0 clamp(80px, 14vh, 160px);
-	}
-
-	.philosophy {
-		padding-top: clamp(85px, 14vh, 165px);
-	}
-
-	/* No header left in this section (removed) — the first house image
-	 * should start right under Concept, not under empty top padding. */
-	.properties {
-		padding-top: 0;
 	}
 
 	.sec-head {
@@ -425,7 +433,22 @@
 		color: rgba(255, 255, 255, 0.7);
 	}
 
-	/* ─── 02 Properties — bold pass: 2-up photo grid ──── */
+	/* ─── 02 Brand intro ─────────────────────────────── */
+	.intro {
+		max-width: 720px;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.intro-body {
+		margin-top: 20px;
+		font-family: var(--display);
+		font-size: clamp(19px, 2.2vw, 26px);
+		line-height: var(--lh-title);
+		color: var(--ink);
+	}
+
+	/* ─── 04 Properties — bold pass: 2-up photo grid ──── */
 	.hg-list {
 		list-style: none;
 		padding: 0;
@@ -504,7 +527,7 @@
 		margin-top: clamp(48px, 6vh, 72px);
 	}
 
-	/* ─── 04 Area — bold pass: full-bleed cinematic photo ─── */
+	/* ─── 05 Area — bold pass: full-bleed cinematic photo ─── */
 	/* Full-bleed like .hero — breaks out of main's padding, no top gap
 	 * after Houses (keeps the wall-of-photography momentum going). */
 	.area-hero {
@@ -617,7 +640,7 @@
 		filter: grayscale(1);
 	}
 
-	/* ─── 05 Gallery ─────────────────────────────────── */
+	/* ─── 06 Gallery ─────────────────────────────────── */
 	.gal-grid {
 		display: grid;
 		grid-template-columns: repeat(6, 1fr);
@@ -667,7 +690,7 @@
 		grid-row: span 2;
 	}
 
-	/* ─── 06 CTA — bold pass: full-bleed dark, flows into the footer ── */
+	/* ─── 07 CTA — bold pass: full-bleed dark, flows into the footer ── */
 	.cta-dark {
 		margin-left: calc(-1 * var(--padding));
 		margin-right: calc(-1 * var(--padding));

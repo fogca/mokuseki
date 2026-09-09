@@ -40,6 +40,10 @@ type Dict = {
 			ledeLine2: string;
 			scrollHint: string;
 		};
+		intro: {
+			eyebrow: string;
+			body: string;
+		};
 		properties: {
 			eyebrow: string;
 			heading: string;
@@ -315,10 +319,14 @@ export const messages: Record<Locale, Dict> = {
 				ledeLine2: 'ほどけてゆく。',
 				scrollHint: 'Scroll'
 			},
+			intro: {
+				eyebrow: 'MOKUSEKI',
+				body: 'モクセキは、名古屋と飛騨に佇む四棟の一棟貸し宿。町家をその土地に残したまま、伝統の素材と手仕事で受け継ぐ。滞在を貫くのは、ただひとつの思想——静けさを迎え入れること、それだけで十分だということ。'
+			},
 			properties: {
 				eyebrow: 'Houses',
-				heading: '四棟の、一棟貸し。',
-				sub: '名古屋と飛騨に、それぞれの一棟。\n土地の名を冠した四棟から、お選びいただけます。',
+				heading: '一棟ごとに、立つ土地の名を冠して。',
+				sub: '名古屋城、亀島、大須、そして飛騨。四棟の町家は、それぞれが立つ土地に、そのまま残る。',
 				// English by design, both locales — matches the header's
 				// "Reserve" chip as a fixed brand-voice CTA word.
 				viewDetails: 'Discover',
@@ -327,7 +335,11 @@ export const messages: Record<Locale, Dict> = {
 			philosophy: {
 				eyebrow: 'Concept',
 				heading: '身体と精神に、余白を。',
-				body: 'MOKUSEKI は、「滞在のなかで、五感が静かにほどけてゆく。」というステイコンセプトのもと、身体と精神に余白をもたらすスモールホテルブランドです。\n\n日本の伝統的な素材と技法を採り入れた各客室には、日々の喧騒から離れて静かに自分と向き合う時間を、という想いから、ヨガや書道、抹茶や茶の焙煎といった体験のできる道具を設えています。',
+				// Trimmed: the "MOKUSEKI is..." brand statement now lives in
+				// home.intro (a new section right after the hero) — kept
+				// here only what's specific to this section, the craft/
+				// sensory detail.
+				body: '日本の伝統的な素材と技法を採り入れた各客室には、日々の喧騒から離れて静かに自分と向き合う時間を、という想いから、ヨガや書道、抹茶や茶の焙煎といった体験のできる道具を設えています。',
 				signature: 'MOKUSEKI'
 			},
 			area: {
@@ -718,17 +730,25 @@ export const messages: Record<Locale, Dict> = {
 				ledeLine2: 'quietly come undone.',
 				scrollHint: 'Scroll'
 			},
+			intro: {
+				eyebrow: 'MOKUSEKI',
+				body: 'MOKUSEKI is four private houses in Nagoya and Hida, each a machiya restored in place. Traditional materials, unhurried craft, and a single idea carry every stay — that quiet, once let in, is enough.'
+			},
 			properties: {
 				eyebrow: 'Houses',
-				heading: 'Four private houses.',
-				sub: 'Each rooted in its corner of Nagoya and Hida.\nChoose from four, each named for the place it belongs to.',
+				heading: 'Each house, named for the ground it stands on.',
+				sub: 'Nagoya Castle, Kamejima, Osu, and Hida — four machiya, each restored where it has always stood.',
 				viewDetails: 'Discover',
 				reserveLabel: 'Reserve'
 			},
 			philosophy: {
 				eyebrow: 'Concept',
 				heading: 'Space, for body\nand mind.',
-				body: 'MOKUSEKI is a small hotel brand built on a single stay concept — that within a stay, the senses quietly come undone — bringing a sense of space to both body and mind.\n\nEach room draws on traditional Japanese materials and craft, and is furnished for quiet practice — yoga and calligraphy, matcha and the roasting of tea — so that you can step away from the noise of the everyday and sit quietly with yourself.',
+				// Trimmed: the "MOKUSEKI is..." brand statement now lives in
+				// home.intro (a new section right after the hero) — kept
+				// here only what's specific to this section, the craft/
+				// sensory detail.
+				body: 'Each room draws on traditional Japanese materials and craft, and is furnished for quiet practice — yoga and calligraphy, matcha and the roasting of tea — so that you can step away from the noise of the everyday and sit quietly with yourself.',
 				signature: 'MOKUSEKI'
 			},
 			area: {
