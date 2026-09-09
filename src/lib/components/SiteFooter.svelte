@@ -3,10 +3,16 @@
 	import Wordmark from './Wordmark.svelte';
 	import { RESERVE_URL } from '$lib/site';
 
+	// flushTop: the page above already ends in a dark/full-bleed section
+	// (currently just the home page's CTA) — skip this footer's own
+	// top margin so the two read as one continuous dark block instead of
+	// showing a strip of the page's light background between them.
+	let { flushTop = false }: { flushTop?: boolean } = $props();
+
 	const i18n = useI18n();
 </script>
 
-<footer class="site-footer inverse">
+<footer class="site-footer inverse" class:flush-top={flushTop}>
 	<div class="top">
 		<!-- Column 1 — Brand mark + tagline -->
 		<div class="col col-brand">
@@ -63,6 +69,10 @@
 		margin-top: clamp(64px, 8vh, 96px);
 		padding-top: clamp(64px, 8vh, 96px);
 		padding-bottom: 24px;
+	}
+
+	.site-footer.flush-top {
+		margin-top: 0;
 	}
 
 	/* TsukuGo L for the footer's Japanese text (Latin stays Mokuseki Sans

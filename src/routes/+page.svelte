@@ -172,40 +172,31 @@
 </section>
 
 <!-- ─── 03 Properties (Houses) ──────────────────────── -->
+<!-- Bold pass: a wall of large photography (2-up grid), not an alternating
+     photo+paragraph list — the whole card is the link, caption is a single
+     name/location line, matching the density of the reference's villa
+     cards. The longer atmospheric description still lives on each
+     property's own detail page; nothing is lost, just deferred. -->
 <section class="section properties" id="houses">
-	<ul class="prop-list">
+	<ul class="hg-list">
 		{#each data.properties as p, i (p.id)}
-			<li class="prop-row" class:reverse={i % 2 === 1}>
-				<a class="prop-thumb card-hover" href={`/properties/${p.slug}`} aria-label={p.name.en}>
+			<li class="hg-card card-hover">
+				<a class="hg-thumb" href={`/properties/${p.slug}`} aria-label={p.name.en}>
 					<span
-						class="prop-thumb-img card-hover-zoom reveal-img"
+						class="hg-thumb-img card-hover-zoom reveal-img"
 						use:reveal
 						style:background-image={`url(${p.images[0]})`}
 					></span>
 				</a>
-				<div class="prop-body reveal-text" use:reveal>
-					<p class="meta prop-no">No. {String(i + 1).padStart(2, '0')}</p>
-					<h3 class="h2 prop-title">{p.name.en}</h3>
-					<p class="meta prop-loc">
+				<div class="hg-caption reveal-text" use:reveal>
+					<h3 class="h2">{p.name.en}</h3>
+					<p class="meta hg-meta">
 						{#if i18n.locale === 'ja'}
-							<span class="loc-full">{p.location.ja}・{p.name.ja}</span>
-							<span class="loc-short">{shortArea(p.location.ja)} / {p.name.ja}</span>
+							{shortArea(p.location.ja)} · {p.name.ja}
 						{:else}
 							{p.location.en}
 						{/if}
 					</p>
-					<p class="body-sm prop-desc">
-						{#if i18n.locale === 'ja'}
-							{#each p.description.ja.split('。').filter(Boolean) as sentence, i (i)}
-								{#if i > 0}<br />{/if}{sentence}。
-							{/each}
-						{:else}
-							{p.description.en}
-						{/if}
-					</p>
-					<a class="link prop-link" href={`/properties/${p.slug}`}>
-						<span>{i18n.t.home.properties.viewDetails}</span>
-					</a>
 				</div>
 			</li>
 		{/each}
@@ -213,57 +204,58 @@
 </section>
 
 <!-- ─── 04 Area ────────────────────────────────────── -->
-<section class="section area" id="area">
-	<header class="sec-head">
-		<p class="eyebrow reveal-text" use:reveal>{en.area.eyebrow}</p>
-		<h2 class="h1 reveal-text" use:reveal>{en.area.heading}</h2>
-		{#if i18n.locale === 'ja'}
-			<p class="h-ja reveal-text" use:reveal>{i18n.t.home.area.heading}</p>
-		{/if}
-		{#if i18n.t.home.area.sub}
-			<p class="body-sm sec-sub reveal-text" use:reveal>
-				{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
-					{#if i > 0}<br />{/if}{line}
-				{/each}
-			</p>
-		{/if}
-	</header>
+<!-- Bold pass: a full-bleed cinematic photo carries the section (like the
+     hero), with the copy overlaid bottom-left instead of sitting in a
+     centered text header above a small thumbnail. The historical/
+     neighborhood copy (area.items) still follows below, just in a
+     tighter, quieter list — the photo is the statement now. -->
+<section class="area" id="area">
+	<div class="area-hero reveal-img" use:reveal style:background-image="url(/images/mood_02.webp)">
+		<div class="area-hero-overlay">
+			<p class="eyebrow reveal-text" use:reveal>{en.area.eyebrow}</p>
+			<h2 class="h1 reveal-text" use:reveal>{en.area.heading}</h2>
+			{#if i18n.locale === 'ja'}
+				<p class="h-ja reveal-text" use:reveal>{i18n.t.home.area.heading}</p>
+			{/if}
+			{#if i18n.t.home.area.sub}
+				<p class="body-sm area-hero-sub reveal-text" use:reveal>
+					{#each i18n.t.home.area.sub.split('\n') as line, i (i)}
+						{#if i > 0}<br />{/if}{line}
+					{/each}
+				</p>
+			{/if}
+		</div>
+	</div>
 
-	<!-- Placeholder — swap for real neighborhood photography. -->
-	<div
-		class="area-thumb reveal-img"
-		use:reveal
-		aria-hidden="true"
-		style:background-image="url(/images/mood_02.webp)"
-	></div>
+	<div class="section area-content">
+		<ul class="exp-list">
+			{#each i18n.t.home.area.items as item (item.index)}
+				<li class="exp-row reveal-text" use:reveal>
+					<span class="exp-index">{item.index}</span>
+					<div class="exp-body">
+						<h3 class="h2">{item.title}</h3>
+						<p class="body-sm">
+							{#each item.description.split('\n') as line, i (i)}
+								{#if i > 0}<br />{/if}{line}
+							{/each}
+						</p>
+					</div>
+				</li>
+			{/each}
+		</ul>
 
-	<ul class="exp-list">
-		{#each i18n.t.home.area.items as item (item.index)}
-			<li class="exp-row reveal-text" use:reveal>
-				<span class="exp-index">{item.index}</span>
-				<div class="exp-body">
-					<h3 class="h2">{item.title}</h3>
-					<p class="body-sm">
-						{#each item.description.split('\n') as line, i (i)}
-							{#if i > 0}<br />{/if}{line}
-						{/each}
-					</p>
-				</div>
-			</li>
-		{/each}
-	</ul>
-
-	<!-- Placeholder — centered on Nagoya Castle as a stand-in landmark
-	     until each house's real address is finalized. No API key needed
-	     (the plain /maps?...&output=embed form), but it does load an
-	     iframe from google.com — fine given no CSP restricts frame-src. -->
-	<div class="area-map reveal-img" use:reveal>
-		<iframe
-			title="MOKUSEKI — Nagoya area map"
-			src="https://www.google.com/maps?q=%E5%90%8D%E5%8F%A4%E5%B1%8B%E5%9F%8E&output=embed"
-			loading="lazy"
-			referrerpolicy="no-referrer-when-downgrade"
-		></iframe>
+		<!-- Placeholder — centered on Nagoya Castle as a stand-in landmark
+		     until each house's real address is finalized. No API key needed
+		     (the plain /maps?...&output=embed form), but it does load an
+		     iframe from google.com — fine given no CSP restricts frame-src. -->
+		<div class="area-map reveal-img" use:reveal>
+			<iframe
+				title="MOKUSEKI — Nagoya area map"
+				src="https://www.google.com/maps?q=%E5%90%8D%E5%8F%A4%E5%B1%8B%E5%9F%8E&output=embed"
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+			></iframe>
+		</div>
 	</div>
 </section>
 
@@ -291,21 +283,26 @@
 </section>
 
 <!-- ─── 06 Reserve CTA ─────────────────────────────── -->
-<section class="section cta">
-	<p class="eyebrow reveal-text" use:reveal>{en.reserveCta.eyebrow}</p>
-	<h2 class="h1 cta-heading reveal-text" use:reveal>{en.reserveCta.heading}</h2>
-	{#if i18n.locale === 'ja'}
-		<p class="h-ja cta-heading-ja reveal-text" use:reveal>{i18n.t.home.reserveCta.heading}</p>
-	{/if}
-	<p class="body-sm cta-sub reveal-text" use:reveal>
-		{#each i18n.t.home.reserveCta.sub.split('\n') as line, i (i)}
-			{#if i > 0}<br />{/if}{line}
-		{/each}
-	</p>
-	<a class="btn" href={RESERVE_URL} target="_blank" rel="noopener">
-		<span>{en.reserveCta.cta}</span>
-		<span class="arrow" aria-hidden="true">→</span>
-	</a>
+<!-- Bold pass: full-bleed dark (--ink), flowing straight into SiteFooter
+     (already dark/.inverse) so the two read as one continuous block —
+     the tonal drop the reference uses to close a light, airy page. -->
+<section class="cta-dark inverse">
+	<div class="cta-dark-inner">
+		<p class="eyebrow reveal-text" use:reveal>{en.reserveCta.eyebrow}</p>
+		<h2 class="h1 cta-heading reveal-text" use:reveal>{en.reserveCta.heading}</h2>
+		{#if i18n.locale === 'ja'}
+			<p class="h-ja cta-heading-ja reveal-text" use:reveal>{i18n.t.home.reserveCta.heading}</p>
+		{/if}
+		<p class="body-sm cta-sub reveal-text" use:reveal>
+			{#each i18n.t.home.reserveCta.sub.split('\n') as line, i (i)}
+				{#if i > 0}<br />{/if}{line}
+			{/each}
+		</p>
+		<a class="btn" href={RESERVE_URL} target="_blank" rel="noopener">
+			<span>{en.reserveCta.cta}</span>
+			<span class="arrow" aria-hidden="true">→</span>
+		</a>
+	</div>
 </section>
 
 <style>
@@ -342,11 +339,11 @@
 		align-items: center;
 	}
 
-	/* JA sub-heading under a title (hero, Houses/Experience/Gallery) —
-	 * fixed 16px at every breakpoint (was following --fs-ja-sm, 16px
-	 * desktop but 13px on SP). */
-	.sec-head .h-ja,
-	.hero-inner .h-ja {
+	/* JA sub-heading under a title (Houses/Experience/Gallery) — fixed 16px
+	 * at every breakpoint (was following --fs-ja-sm, 16px desktop but 13px
+	 * on SP). The hero's own JA line scales with its much larger EN
+	 * headline instead — see .hero-inner .h-ja below. */
+	.sec-head .h-ja {
 		font-size: 16px;
 	}
 
@@ -400,11 +397,18 @@
 
 	.hero :global(.h1) {
 		color: var(--white);
+		/* Bold pass: the hero statement should dominate the frame, not sit
+		 * at the same scale as a body-copy section heading. */
+		font-size: clamp(40px, 7vw, 92px);
+		max-width: 18ch;
 	}
 
 	.hero :global(.h-ja) {
 		color: rgba(255, 255, 255, 0.82);
 		white-space: nowrap;
+		/* Scales with the bigger EN headline above it (was a fixed 16px
+		 * shared with every other section's sub-heading). */
+		font-size: clamp(18px, 2.2vw, 30px);
 	}
 
 	/* Per-word/-char spans the OP effect (see onMount above) animates —
@@ -421,36 +425,17 @@
 		color: rgba(255, 255, 255, 0.7);
 	}
 
-	/* ─── 02 Properties ──────────────────────────────── */
-	.prop-list {
+	/* ─── 02 Properties — bold pass: 2-up photo grid ──── */
+	.hg-list {
 		list-style: none;
 		padding: 0;
 		margin: 0;
-		display: flex;
-		flex-direction: column;
-		gap: clamp(64px, 8vh, 104px);
-	}
-
-	.prop-row {
 		display: grid;
-		grid-template-columns: 1.05fr 1fr;
-		gap: clamp(40px, 5vw, 88px);
-		align-items: center;
+		grid-template-columns: 1fr 1fr;
+		gap: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 56px);
 	}
 
-	.prop-row.reverse {
-		grid-template-columns: 1fr 1.05fr;
-	}
-
-	.prop-row.reverse .prop-thumb {
-		order: 2;
-	}
-
-	.prop-row.reverse .prop-body {
-		order: 1;
-	}
-
-	.prop-thumb {
+	.hg-thumb {
 		display: block;
 		position: relative;
 		aspect-ratio: 4 / 5;
@@ -458,10 +443,10 @@
 		overflow: hidden;
 	}
 
-	/* Fills .prop-thumb; separate from the frame so .card-hover-zoom (base.css)
+	/* Fills .hg-thumb; separate from the frame so .card-hover-zoom (base.css)
 	 * can scale just the photo on hover without also scaling — and thereby
 	 * exposing the edges of — the fixed-size frame clipping it. */
-	.prop-thumb-img {
+	.hg-thumb-img {
 		position: absolute;
 		inset: 0;
 		background-size: cover;
@@ -469,26 +454,24 @@
 		background-repeat: no-repeat;
 	}
 
-	.prop-body {
+	.hg-caption {
 		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		max-width: 460px;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		margin-top: 20px;
 	}
 
-	.prop-desc {
-		margin-top: 12px;
-	}
-
-	/* Two location formats: full ("愛知県名古屋市・名古屋城") on desktop,
-	 * short ("名古屋 / 名古屋城") on SP — swapped in the 540px block below. */
-	.loc-short {
-		display: none;
+	.hg-meta {
+		color: var(--ink-faint);
+		text-align: right;
 	}
 
 	/* ─── 03 Philosophy ──────────────────────────────── */
 	.philosophy {
-		max-width: 720px;
+		/* Widened from 720px so the bolder heading below has room to breathe
+		 * without wrapping too tightly. */
+		max-width: 860px;
 		margin: 0 auto;
 		text-align: center;
 	}
@@ -499,8 +482,14 @@
 		margin-top: 19px;
 	}
 
+	.philo-heading {
+		/* Bold pass — this is the site's second big statement after the
+		 * hero; it read the same size as any other section heading before. */
+		font-size: clamp(30px, 4.2vw, 56px);
+	}
+
 	.philo-heading-ja {
-		font-size: 18px;
+		font-size: clamp(18px, 2vw, 26px);
 	}
 
 	.philo-body {
@@ -515,16 +504,53 @@
 		margin-top: clamp(48px, 6vh, 72px);
 	}
 
-	/* ─── 04 Area ──────────────────────────────────────── */
-	.area-thumb {
-		width: 100vw;
-		height: 120vw;
-		margin-inline: calc(-1 * var(--padding));
-		margin-bottom: clamp(48px, 8vh, 88px);
+	/* ─── 04 Area — bold pass: full-bleed cinematic photo ─── */
+	/* Full-bleed like .hero — breaks out of main's padding, no top gap
+	 * after Houses (keeps the wall-of-photography momentum going). */
+	.area-hero {
+		margin-left: calc(-1 * var(--padding));
+		margin-right: calc(-1 * var(--padding));
+		height: clamp(480px, 80vh, 860px);
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
 		background-color: var(--bg-soft);
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
+		display: flex;
+		align-items: flex-end;
+	}
+
+	.area-hero::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(0deg, rgba(18, 18, 18, 0.6) 0%, rgba(18, 18, 18, 0) 45%);
+	}
+
+	.area-hero-overlay {
+		max-width: 560px;
+		padding: 0 var(--padding) clamp(48px, 8vh, 88px);
+	}
+
+	.area-hero-overlay :global(.h1),
+	.area-hero-overlay :global(.eyebrow) {
+		color: var(--white);
+	}
+
+	.area-hero-overlay :global(.h-ja) {
+		color: rgba(255, 255, 255, 0.82);
+	}
+
+	.area-hero-sub {
+		margin-top: 20px;
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.area-content {
+		padding-top: clamp(56px, 9vh, 104px);
 	}
 
 	.exp-list {
@@ -641,9 +667,17 @@
 		grid-row: span 2;
 	}
 
-	/* ─── 06 CTA ─────────────────────────────────────── */
-	.cta {
+	/* ─── 06 CTA — bold pass: full-bleed dark, flows into the footer ── */
+	.cta-dark {
+		margin-left: calc(-1 * var(--padding));
+		margin-right: calc(-1 * var(--padding));
+		margin-top: clamp(56px, 9vh, 104px);
+	}
+
+	.cta-dark-inner {
 		max-width: 620px;
+		margin: 0 auto;
+		padding: clamp(80px, 14vh, 160px) var(--padding) clamp(64px, 10vh, 104px);
 		text-align: left;
 		display: flex;
 		flex-direction: column;
@@ -651,54 +685,36 @@
 		gap: 8px;
 	}
 
+	/* .btn is a dark-filled pill everywhere else on the site; on this
+	 * already-dark section it would read as dark-on-dark, invisible.
+	 * Scoped invert — .btn itself stays untouched for every other page. */
+	.cta-dark :global(.btn) {
+		background: var(--bg);
+		color: var(--ink);
+	}
+
+	.cta-dark :global(.btn:hover) {
+		background: var(--white);
+	}
+
 	.cta-heading {
 		margin-top: 24px;
+		font-size: clamp(28px, 3.6vw, 48px);
 	}
 
 	.cta-sub {
 		margin: 24px 0 clamp(40px, 5vh, 56px);
 	}
 
-	/* ─── Inline link (utility) ──────────────────────── */
-	.link {
-		display: inline-flex;
-		align-items: center;
-		gap: 16px;
-		text-decoration: none;
-		border-bottom: 1px solid var(--ink);
-		padding-bottom: 8px;
-		align-self: flex-start;
-		margin-top: 16px;
-		font-family: var(--display);
-		font-size: var(--fs-sm);
-		text-transform: uppercase;
-		letter-spacing: var(--ls-en);
-		line-height: var(--lh-en);
-		color: var(--ink);
-		transition: color 400ms ease;
-	}
-
-	.link:hover {
-		color: var(--accent);
-	}
-
 	/* ─── Responsive ─────────────────────────────────── */
-	@media (max-width: 880px) {
-		.prop-row,
-		.prop-row.reverse {
+	@media (max-width: 720px) {
+		.hg-list {
 			grid-template-columns: 1fr;
-			gap: 28px;
+			gap: 40px;
 		}
+	}
 
-		.prop-row.reverse .prop-thumb,
-		.prop-row.reverse .prop-body {
-			order: initial;
-		}
-
-		.prop-thumb {
-			aspect-ratio: 3 / 2;
-		}
-
+	@media (max-width: 880px) {
 		.gal-grid {
 			grid-template-columns: repeat(4, 1fr);
 			grid-auto-rows: 14vw;
@@ -722,114 +738,8 @@
 	}
 
 	@media (max-width: 540px) {
-		/* Houses cards go full-bleed: text overlays the photo instead of
-		 * sitting beside it, rows sit edge-to-edge with a 2px hairline gap. */
-		.prop-list {
-			gap: 2px;
-		}
-
-		.prop-row,
-		.prop-row.reverse {
-			/* Break out of main's padding using the padding value itself
-			 * (not calc(50% - 50vw)) — the vw-based trick can drift a few
-			 * px on real devices depending on scrollbar/safe-area handling.
-			 * This version is exact regardless of that. */
-			position: relative;
-			width: calc(100% + 2 * var(--padding));
-			margin-inline: calc(-1 * var(--padding));
-		}
-
-		.prop-thumb {
-			width: 100%;
-			height: 130vw;
-			aspect-ratio: auto;
-		}
-
-		.prop-body {
-			/* Grid instead of the flex column used elsewhere — No./location
-			 * sit on their own top row (No. left, location flush right),
-			 * title/desc/link are pushed to the bottom by the flexible (1fr)
-			 * empty row between them. grid-area placement means this doesn't
-			 * depend on DOM order matching the visual order. */
-			position: absolute;
-			inset: 0;
-			z-index: 1;
-			display: grid;
-			grid-template-columns: 1fr auto;
-			grid-template-rows: auto 1fr auto auto auto;
-			grid-template-areas:
-				'no    loc'
-				'.     .'
-				'title title'
-				'desc  desc'
-				'link  link';
-			max-width: none;
-			padding: 20px 0 35px 20px;
-			background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
-			/* This overlay's box covers the whole card (inset: 0), which
-			 * would otherwise catch every click before it reaches
-			 * .prop-thumb underneath. Ignore pointer events here so the
-			 * image link works across its full area; re-enable them just
-			 * on .prop-link so Discover stays independently clickable. */
-			pointer-events: none;
-		}
-
-		.prop-no {
-			grid-area: no;
-		}
-
-		.prop-loc {
-			grid-area: loc;
-			justify-self: end;
-			padding-right: 20px;
-			font-size: calc(var(--fs-sm) - 2px);
-		}
-
-		.loc-full {
-			display: none;
-		}
-
-		.loc-short {
-			display: inline;
-		}
-
-		.prop-title {
-			grid-area: title;
-		}
-
-		.prop-desc {
-			grid-area: desc;
-		}
-
-		.prop-link {
-			grid-area: link;
-			/* Grid items stretch to fill their area by default — without
-			 * this the link (and its border-bottom underline) spans the
-			 * full card width instead of hugging the label. */
-			justify-self: start;
-			/* .prop-body (its parent) ignores pointer events — opt this
-			 * link back in so Discover stays clickable on its own. */
-			pointer-events: auto;
-		}
-
-		.prop-body :global(.meta),
-		.prop-body :global(.h2) {
-			color: var(--white);
-		}
-
-		.prop-desc {
-			color: rgba(255, 255, 255, 0.85);
-			/* Pull 8px closer to the title above (grid row-gap is 8px by
-			 * default here, inherited from .prop-body's flex gap). */
-			margin-top: -8px;
-		}
-
-		.link {
-			color: var(--white);
-			border-bottom-color: var(--white);
-			/* Bring the underline closer to the label than the desktop
-			 * default (8px). */
-			padding-bottom: 3px;
+		.hg-caption {
+			margin-top: 12px;
 		}
 
 		.exp-row {

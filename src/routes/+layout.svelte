@@ -164,7 +164,11 @@
 		{@render children()}
 	</main>
 
-	<SiteFooter />
+	<!-- flushTop: the home page's CTA section is already dark/full-bleed
+	     (see +page.svelte) and should read as one continuous block with
+	     the footer below it — no gap gets the page's light background to
+	     show through between them. -->
+	<SiteFooter flushTop={isTop} />
 
 	<!--
 		Floating reservation dock (top page only). The outer .reserve-dock
