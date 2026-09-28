@@ -18,13 +18,12 @@
  * Steiner — renamed 2026-09-05, name table now says "Norma" too). wght
  * 1–950: Hair / Book / Ultra masters. Family name carries the version
  * on request — bump it, the 4 stacks below, and the URL together on
- * every export. VF08 (2026-09-26): accent system unified — accented
- * letters position marks from the base letter's own anchors (205
- * composites had drifted), grave/caron derived as mirrored acute/
- * circumflex, plus outline touch-ups. baht/ogonekcomb remain excluded. */
+ * every export. VF09 (2026-09-29): 'A' outline refined (width
+ * change cascades to Aacute-type composites and parenleft/parenright);
+ * the only real change vs VF08. baht/ogonekcomb remain excluded. */
 @font-face {
-	font-family: 'Norma VF08';
-	src: url('/fonts/Norma-VF08.woff2?v=20260926a') format('woff2');
+	font-family: 'Norma VF09';
+	src: url('/fonts/Norma-VF09.woff2?v=20260929a') format('woff2');
 	font-weight: 1 950;
 	font-style: normal;
 	font-display: swap;
@@ -75,13 +74,13 @@
 
 	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
 	 * gothic face, display and body share the same JP stack. */
-	--display: 'Norma VF08', 'Mokuseki Sans', 'Inter', var(--font-ja);
+	--display: 'Norma VF09', 'Mokuseki Sans', 'Inter', var(--font-ja);
 	--sans:
-		'Norma VF08', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
+		'Norma VF09', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
 		'Helvetica Neue', var(--font-ja);
-	--ja-body: 'Norma VF08', var(--font-ja);
+	--ja-body: 'Norma VF09', var(--font-ja);
 	/* Footer / card meta JA — same JP face, Latin still Steiner. */
-	--font-tsuku: 'Norma VF08', 'Mokuseki Sans', var(--font-ja);
+	--font-tsuku: 'Norma VF09', 'Mokuseki Sans', var(--font-ja);
 
 	/* Type scale — titles sized up a full step (representative's direction),
 	 * body/UI copy nudged +1px. */
