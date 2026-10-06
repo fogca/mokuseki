@@ -130,7 +130,7 @@
 />
 
 <!-- ─── 01 Hero ─────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" data-header="dark">
 	<div class="hero-media" aria-hidden="true" bind:this={heroMediaEl}></div>
 	<div class="hero-inner">
 		<h1 class="h1" bind:this={heroTitleEl}>
@@ -200,7 +200,12 @@
 	<ul class="hg-list">
 		{#each data.properties as p, i (p.id)}
 			<li class="hg-card card-hover">
-				<a class="hg-thumb" href={`/properties/${p.slug}`} aria-label={p.name.en}>
+				<a
+					class="hg-thumb"
+					data-header="dark"
+					href={`/properties/${p.slug}`}
+					aria-label={p.name.en}
+				>
 					<span
 						class="hg-thumb-img card-hover-zoom reveal-img"
 						use:reveal
@@ -229,7 +234,12 @@
      neighborhood copy (area.items) still follows below, just in a
      tighter, quieter list — the photo is the statement now. -->
 <section class="area" id="area">
-	<div class="area-hero reveal-img" use:reveal style:background-image="url(/images/mood_02.webp)">
+	<div
+		class="area-hero reveal-img"
+		data-header="dark"
+		use:reveal
+		style:background-image="url(/images/mood_02.webp)"
+	>
 		<div class="area-hero-overlay">
 			<p class="eyebrow reveal-text" use:reveal>{en.area.eyebrow}</p>
 			<h2 class="h1 reveal-text" use:reveal>{en.area.heading}</h2>
@@ -288,7 +298,7 @@
 		{/if}
 	</header>
 
-	<div class="gal-grid">
+	<div class="gal-grid" data-header="dark">
 		{#each galleryTones as tone, i (i)}
 			<div
 				class="gal-cell gal-cell-{i + 1} reveal-img"
@@ -305,7 +315,7 @@
 <!-- Bold pass: full-bleed dark (--ink), flowing straight into SiteFooter
      (already dark/.inverse) so the two read as one continuous block —
      the tonal drop the reference uses to close a light, airy page. -->
-<section class="cta-dark inverse">
+<section class="cta-dark inverse" data-header="dark">
 	<div class="cta-dark-inner">
 		<p class="eyebrow reveal-text" use:reveal>{en.reserveCta.eyebrow}</p>
 		<h2 class="h1 cta-heading reveal-text" use:reveal>{en.reserveCta.heading}</h2>
@@ -362,13 +372,16 @@
 	/* ─── 01 Hero — full-bleed, full-height, white text ── */
 	.hero {
 		/* Break out of main's horizontal padding to span the viewport.
-		 * No negative margin-top anymore — the header now always has a
-		 * background (no more transparent-over-hero state), so the hero
-		 * sits below it like any other page, using .shell's padding-top
-		 * reservation instead of cancelling it out. */
+		 * The header has no background now, so the hero runs UNDER it: the
+		 * negative margin-top cancels exactly the space .shell reserves for
+		 * the header (--header-space, see +layout.svelte), and 100svh makes
+		 * the hero the whole first view. svh, not vh: on iOS Safari plain
+		 * vh is the toolbar-collapsed height, which would push the bottom of
+		 * the hero (and the vertical center of the text) under the toolbar. */
 		margin-left: calc(-1 * var(--padding));
 		margin-right: calc(-1 * var(--padding));
-		min-height: 85svh;
+		margin-top: calc(-1 * var(--header-space));
+		min-height: 100svh;
 		display: flex;
 		flex-direction: column;
 		/* Headline block sits left, vertically centered in the hero (was
@@ -409,21 +422,19 @@
 
 	.hero :global(.h1) {
 		color: var(--white);
-		/* 48px on PC (representative's direction; was scaling up to 92px).
-		 * 7vw only reaches 48px at a 686px viewport, so every PC width lands
-		 * on a flat 48px instead of the headline growing past it. The 40px
-		 * floor only matters for 541–685px now — SP (≤540px) is pinned to
-		 * 24px in the media block at the bottom. */
-		font-size: clamp(40px, 7vw, 48px);
+		/* 42px on PC (representative's direction; 92px → 48px → 42px). A
+		 * flat value, no clamp: everything above 540px gets it, and SP
+		 * (≤540px) is pinned to 24px in the media block at the bottom. */
+		font-size: 42px;
 		max-width: 18ch;
 	}
 
 	.hero :global(.h-ja) {
 		color: rgba(255, 255, 255, 0.82);
 		white-space: nowrap;
-		/* 24px on PC (representative's direction; was clamp(18px, 2.2vw,
-		 * 30px)) — the SP value is in the 540px block at the bottom. */
-		font-size: 24px;
+		/* 20px on PC (representative's direction; was clamp(18px, 2.2vw,
+		 * 30px), then 24px) — the SP value is in the 540px block below. */
+		font-size: 20px;
 	}
 
 	/* Per-word/-char spans the OP effect (see onMount above) animates —
@@ -437,12 +448,10 @@
 
 	/* The headline block is now vertically centered, so the scroll cue can't
 	 * keep trailing it (it only sat at the bottom because the text did).
-	 * Pinned to the bottom, centered — and at the SAME distance from the
-	 * hero's bottom edge as before (the old padding-bottom), not flush with
-	 * it: on desktop the floating Reservation bar covers the lowest ~70px of
-	 * the viewport, which on a short window overlaps the hero's bottom edge.
-	 * left/right + text-align rather than a transform, so it can't collide
-	 * with GSAP's autoAlpha tween. */
+	 * Pinned to the bottom, centered, at the distance from the hero's bottom
+	 * edge it has always had (the old padding-bottom) — kept as is rather
+	 * than moved flush to the edge. left/right + text-align rather than a
+	 * transform, so it can't collide with GSAP's autoAlpha tween. */
 	.hero-scroll {
 		position: absolute;
 		left: 0;

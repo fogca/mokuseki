@@ -41,10 +41,54 @@
 		// DOM on its own. First load ('enter') -> reload(true): reset + fetch
 		// all. Real navigations -> reload(false): fetch newly seen chars only.
 		if (browser) whenFontplusReady((fp) => fp.reload(nav.type === 'enter'));
+		// A new page brings its own dark/light sections — re-probe what's
+		// under the header.
+		queueHeaderTheme();
 	});
 
 	let menuOpen = $state(false);
 	const isTop = $derived($page.url.pathname === '/');
+
+	// ─── Header text color (the header has no background) ─────────────────
+	// With no fill behind it, the header's text has to follow whatever it is
+	// currently sitting on: white over the hero photo (the home page's
+	// first view), ink over the light page. Sections that are dark (a photo,
+	// or the --ink CTA/footer) opt in with data-header="dark"; the header
+	// checks which tagged section covers its vertical center. Probing by
+	// position, not by "scrollY === 0", means the white holds for as long as
+	// the hero is still behind the header, not just at the very top.
+	// Starts true on the home page so SSR/first paint is already white there
+	// (no dark-to-white flash); every other route starts light.
+	let overDark = $state($page.url.pathname === '/');
+	let headerEl = $state<HTMLElement | null>(null);
+	let themeRaf = 0;
+
+	function updateHeaderTheme() {
+		if (!headerEl) return;
+		const probeY = headerEl.getBoundingClientRect().height / 2;
+		overDark = Array.from(document.querySelectorAll('[data-header="dark"]')).some((el) => {
+			const r = el.getBoundingClientRect();
+			return r.top <= probeY && r.bottom > probeY;
+		});
+	}
+
+	function queueHeaderTheme() {
+		if (!browser) return;
+		cancelAnimationFrame(themeRaf);
+		themeRaf = requestAnimationFrame(updateHeaderTheme);
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		window.addEventListener('scroll', queueHeaderTheme, { passive: true });
+		window.addEventListener('resize', queueHeaderTheme);
+		queueHeaderTheme();
+		return () => {
+			window.removeEventListener('scroll', queueHeaderTheme);
+			window.removeEventListener('resize', queueHeaderTheme);
+			cancelAnimationFrame(themeRaf);
+		};
+	});
 
 	$effect(() => {
 		if (!browser) return;
@@ -122,7 +166,13 @@
 </svelte:head>
 
 <div class="shell" lang={i18n.locale}>
-	<header class="brand" class:brand-hero-sync={isTop} class:is-revealed={headerRevealed}>
+	<header
+		class="brand"
+		class:brand-hero-sync={isTop}
+		class:is-revealed={headerRevealed}
+		class:on-dark={overDark && !menuOpen}
+		bind:this={headerEl}
+	>
 		<div class="brand-left">
 			<button
 				class="meta menu-btn"
@@ -170,35 +220,31 @@
 	     show through between them. -->
 	<SiteFooter flushTop={isTop} />
 
-	<!--
-		Floating reservation dock (top page only). The outer .reserve-dock
-		owns the horizontal padding (--padding) so the inner button can use
-		width: 100% and still keep left/right margins from the viewport.
-		Booking now lives entirely on an external platform (see $lib/site),
-		so this no longer gates on the (now-unused-for-this-purpose)
-		bookingOpen flag — it always shows and opens that platform.
-	-->
-	{#if isTop}
-		<div class="reserve-dock">
-			<a class="btn-sm reserve-floating" href={RESERVE_URL} target="_blank" rel="noopener">
-				<span>{i18n.t.nav.reserve}</span>
-			</a>
-		</div>
-	{/if}
-
 	<SiteMenu open={menuOpen} onClose={() => (menuOpen = false)} />
 </div>
 
 <style>
 	.shell {
+		/* Space reserved above the page content for the fixed header. A
+		 * variable (inherited by every page) so a page that wants its first
+		 * section to run UNDER the transparent header — the home hero — can
+		 * pull itself up by exactly this much instead of hard-coding a
+		 * second copy of the number. */
+		--header-space: clamp(72px, 9vh, 100px);
 		min-height: 100vh;
 		display: grid;
 		grid-template-rows: auto 1fr auto;
-		padding-top: clamp(72px, 9vh, 100px);
+		padding-top: var(--header-space);
 	}
 
 	/* ─── Fixed header ───────────────────────────────── */
+	/* No background of its own — the page (or the hero photo) shows through.
+	 * Text color comes from --hdr-fg / --hdr-fg-soft so everything in the
+	 * header (wordmark, Menu, language toggle) flips together; see the
+	 * overDark logic in the script. */
 	.brand {
+		--hdr-fg: var(--ink);
+		--hdr-fg-soft: var(--ink-faint);
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -208,10 +254,17 @@
 		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
 		padding: 20px clamp(24px, 5vw, 80px) 18px;
-		background: var(--bg);
-		transition:
-			background 400ms ease,
-			color 400ms ease;
+		background: transparent;
+		color: var(--hdr-fg);
+		transition: color 400ms ease;
+	}
+
+	/* Over a dark section (the hero photo, the dark CTA/footer): white. Not
+	 * while the menu is open — that overlay is a light full-screen panel
+	 * sitting under the header, where white text would vanish. */
+	.brand.on-dark {
+		--hdr-fg: var(--white);
+		--hdr-fg-soft: rgba(255, 255, 255, 0.7);
 	}
 
 	/* Home-page-only entrance, synced to the hero's OP effect via
@@ -224,7 +277,6 @@
 		transition:
 			opacity 900ms var(--ease-default),
 			transform 900ms var(--ease-default),
-			background 400ms ease,
 			color 400ms ease;
 	}
 
@@ -237,9 +289,7 @@
 		.brand.brand-hero-sync {
 			opacity: 1;
 			transform: none;
-			transition:
-				background 400ms ease,
-				color 400ms ease;
+			transition: color 400ms ease;
 		}
 	}
 
@@ -278,12 +328,12 @@
 		align-items: center;
 		gap: 10px;
 		padding: 4px 0;
-		color: var(--ink-faint);
+		color: var(--hdr-fg-soft);
 		transition: color 300ms ease;
 	}
 
 	.menu-btn:hover {
-		color: var(--ink);
+		color: var(--hdr-fg);
 	}
 
 	.menu-bars {
@@ -325,7 +375,7 @@
 
 	.wordmark {
 		grid-column: 2;
-		color: var(--ink);
+		color: var(--hdr-fg);
 		text-decoration: none;
 		display: inline-flex;
 		align-items: center;
@@ -336,26 +386,6 @@
 		height: clamp(14px, 1.4vw, 18px);
 		width: auto;
 		display: block;
-	}
-
-	/* ─── Floating reserve dock ──────────────────────── */
-	.reserve-dock {
-		position: fixed;
-		bottom: 20px;
-		left: 0;
-		right: 0;
-		padding-left: var(--padding);
-		padding-right: var(--padding);
-		z-index: var(--z-floating);
-		pointer-events: none;
-	}
-
-	.reserve-floating {
-		pointer-events: auto;
-		display: flex;
-		justify-content: center;
-		width: 100%;
-		box-shadow: 0 4px 16px rgba(26, 26, 26, 0.15);
 	}
 
 	.main {
@@ -375,13 +405,12 @@
 			padding-bottom: 14px;
 		}
 
-		/* .shell's padding-top reserves space for the fixed header so the
-		 * hero (and every other page's content) starts right below it —
-		 * but the header shrank (see .brand above) and this was never
-		 * updated, leaving a ~17px gap. Measured: .brand's actual height
-		 * at this breakpoint is 56.2px; 57px rounds up a hair for safety. */
+		/* The header shrank (see .brand above) and the space reserved for
+		 * it never followed, leaving a ~17px gap. Measured: .brand's actual
+		 * height at this breakpoint is 56.2px; 57px rounds up a hair for
+		 * safety. (Redefines the variable .shell reads — see its comment.) */
 		.shell {
-			padding-top: 57px;
+			--header-space: 57px;
 		}
 
 		/* .brand-left/.brand-right are just DOM grouping — display: contents
@@ -449,13 +478,6 @@
 		}
 
 		.lang-desktop {
-			display: none;
-		}
-
-		/* Redundant with the header's .reserve-chip on SP — hide the
-		 * floating bottom dock there; desktop keeps it as its only
-		 * persistent reserve CTA. */
-		.reserve-dock {
 			display: none;
 		}
 	}

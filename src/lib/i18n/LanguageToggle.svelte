@@ -40,6 +40,10 @@
 {/if}
 
 <style>
+	/* Colors come from the header's theme variables (--hdr-fg / --hdr-fg-soft,
+	 * set on .brand in +layout.svelte) so the toggle flips white/ink together with
+	 * the rest of the header; the fallbacks keep the old ink colors anywhere
+	 * those variables aren't defined. */
 	.toggle-compact {
 		appearance: none;
 		background: transparent;
@@ -50,13 +54,13 @@
 		letter-spacing: var(--ls-en);
 		line-height: var(--lh-en);
 		text-transform: uppercase;
-		color: var(--ink-faint);
+		color: var(--hdr-fg-soft, var(--ink-faint));
 		cursor: pointer;
 		transition: color 300ms ease;
 	}
 
 	.toggle-compact:hover {
-		color: var(--ink);
+		color: var(--hdr-fg, var(--ink));
 	}
 
 	.toggle {
@@ -77,21 +81,21 @@
 		padding: 4px 0;
 		font: inherit;
 		letter-spacing: inherit;
-		color: var(--ink-faint);
+		color: var(--hdr-fg-soft, var(--ink-faint));
 		cursor: pointer;
 		transition: color 300ms ease;
 	}
 
 	.toggle button:hover {
-		color: var(--ink);
+		color: var(--hdr-fg, var(--ink));
 	}
 
 	.toggle button.active {
-		color: var(--ink);
+		color: var(--hdr-fg, var(--ink));
 	}
 
 	.sep {
-		color: var(--ink-faint);
+		color: var(--hdr-fg-soft, var(--ink-faint));
 		opacity: 0.4;
 	}
 </style>

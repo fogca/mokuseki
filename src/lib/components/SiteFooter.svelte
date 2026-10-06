@@ -12,7 +12,7 @@
 	const i18n = useI18n();
 </script>
 
-<footer class="site-footer inverse" class:flush-top={flushTop}>
+<footer class="site-footer inverse" class:flush-top={flushTop} data-header="dark">
 	<div class="top">
 		<!-- Column 1 — Brand mark + tagline -->
 		<div class="col col-brand">
