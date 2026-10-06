@@ -1,12 +1,10 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
-	import LanguageToggle from '$lib/i18n/LanguageToggle.svelte';
-	import Wordmark from '$lib/components/Wordmark.svelte';
+	import SiteHeader from '$lib/components/SiteHeader.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import SiteMenu from '$lib/components/SiteMenu.svelte';
 	import { provideI18n } from '$lib/i18n/store.svelte';
-	import { RESERVE_URL } from '$lib/site';
-	import { HERO_IMAGE_START_EVENT } from '$lib/heroEvents';
+	import { settle as settleOpening } from '$lib/home/opening';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
@@ -18,6 +16,15 @@
 	// source of truth and setLocale() keeps the cookie in sync.
 	// svelte-ignore state_referenced_locally
 	const i18n = provideI18n(data.locale);
+
+	// Browser chrome colour. A <meta> can't read CSS tokens, so these mirror
+	// base.css by hand: --mk-rust on the Top (its hero and footer are rust),
+	// the legacy light page elsewhere.
+	const THEME_COLOR_TOP = '#932A00'; // = --mk-rust
+	const THEME_COLOR_DEFAULT = '#f6f6f6';
+	/** Same 4s as base.css's reveal failsafe: hydrating later than this means
+	 *  the failsafe has already shown the content — keep it shown. */
+	const REVEAL_ALL_AFTER_MS = 4000;
 
 	// FONTPLUS loads via the deferred <script> in app.html, so the global may
 	// not exist yet when navigation callbacks fire. Poll briefly, then run.
@@ -36,58 +43,32 @@
 		poll();
 	}
 
+	let menuOpen = $state(false);
+	// An error rendered at "/" is not the Top: it keeps the legacy palette
+	// and the compact header, or its text would be rust on the rust body.
+	const isTop = $derived($page.url.pathname === '/' && !$page.error);
+
 	afterNavigate((nav) => {
 		// SvelteKit navigates client-side, so FONTPLUS never re-scans the new
 		// DOM on its own. First load ('enter') -> reload(true): reset + fetch
 		// all. Real navigations -> reload(false): fetch newly seen chars only.
 		if (browser) whenFontplusReady((fp) => fp.reload(nav.type === 'enter'));
-		// A new page brings its own dark/light sections — re-probe what's
-		// under the header.
-		queueHeaderTheme();
+		// Any navigation (a menu link, back/forward) lands on the new page
+		// with the sheet closed.
+		menuOpen = false;
 	});
 
-	let menuOpen = $state(false);
-	const isTop = $derived($page.url.pathname === '/');
-
-	// ─── Header text color (the header has no background) ─────────────────
-	// With no fill behind it, the header's text has to follow whatever it is
-	// currently sitting on: white over the hero photo (the home page's
-	// first view), ink over the light page. Sections that are dark (a photo,
-	// or the --ink CTA/footer) opt in with data-header="dark"; the header
-	// checks which tagged section covers its vertical center. Probing by
-	// position, not by "scrollY === 0", means the white holds for as long as
-	// the hero is still behind the header, not just at the very top.
-	// Starts true on the home page so SSR/first paint is already white there
-	// (no dark-to-white flash); every other route starts light.
-	let overDark = $state($page.url.pathname === '/');
-	let headerEl = $state<HTMLElement | null>(null);
-	let themeRaf = 0;
-
-	function updateHeaderTheme() {
-		if (!headerEl) return;
-		const probeY = headerEl.getBoundingClientRect().height / 2;
-		overDark = Array.from(document.querySelectorAll('[data-header="dark"]')).some((el) => {
-			const r = el.getBoundingClientRect();
-			return r.top <= probeY && r.bottom > probeY;
-		});
-	}
-
-	function queueHeaderTheme() {
-		if (!browser) return;
-		cancelAnimationFrame(themeRaf);
-		themeRaf = requestAnimationFrame(updateHeaderTheme);
-	}
-
+	// A locale switch re-renders the page in the other language without a
+	// navigation, so FONTPLUS has the same blind spot: fetch the newly seen
+	// glyphs. The first run is the initial locale, already covered above.
+	let localeSeen = false;
 	$effect(() => {
-		if (!browser) return;
-		window.addEventListener('scroll', queueHeaderTheme, { passive: true });
-		window.addEventListener('resize', queueHeaderTheme);
-		queueHeaderTheme();
-		return () => {
-			window.removeEventListener('scroll', queueHeaderTheme);
-			window.removeEventListener('resize', queueHeaderTheme);
-			cancelAnimationFrame(themeRaf);
-		};
+		void i18n.locale;
+		if (!localeSeen) {
+			localeSeen = true;
+			return;
+		}
+		whenFontplusReady((fp) => fp.reload(false));
 	});
 
 	$effect(() => {
@@ -98,27 +79,18 @@
 		};
 	});
 
-	// Header entrance, synced to the hero's OP effect (see +page.svelte):
-	// hidden on the home page until the hero photo starts revealing, then
-	// fades/slides in at that exact instant (HERO_IMAGE_START_EVENT). Off
-	// the home page — or if that event never arrives (safety timeout below)
-	// — the header is just shown; it never gets stuck invisible.
-	let headerRevealed = $state(true);
-
-	$effect(() => {
-		if (!browser) return;
-		if (!isTop) {
-			headerRevealed = true;
-			return;
-		}
-		headerRevealed = false;
-		const reveal = () => (headerRevealed = true);
-		document.addEventListener(HERO_IMAGE_START_EVENT, reveal, { once: true });
-		const fallback = window.setTimeout(reveal, 3500);
-		return () => {
-			document.removeEventListener(HERO_IMAGE_START_EVENT, reveal);
-			window.clearTimeout(fallback);
-		};
+	// Hydration flags for base.css and the Top's OP CSS: .is-hydrated ends
+	// the no-JS failsafes; .reveal-all keeps content the reveal failsafe has
+	// already shown from being hidden again by a late hydration.
+	onMount(() => {
+		const root = document.documentElement;
+		root.classList.add('is-hydrated');
+		if (performance.now() > REVEAL_ALL_AFTER_MS) root.classList.add('reveal-all');
+		// Children mount first, so the Top's hero has already started the OP
+		// by now. No hero although the pre-paint script chose to play (a first
+		// load of "/" that rendered the error page): settle, or the header
+		// would keep the OP's hidden start state with nothing to end it.
+		if (root.dataset.op === 'play' && !document.querySelector('.mk-hero')) settleOpening();
 	});
 
 	// PWA wiring -- injectRegister:'auto' (vite.config.ts) only patches a
@@ -162,63 +134,23 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@mokuseki" />
 
-	<meta name="theme-color" content="#f6f6f6" />
+	<meta name="theme-color" content={isTop ? THEME_COLOR_TOP : THEME_COLOR_DEFAULT} />
 </svelte:head>
 
-<div class="shell" lang={i18n.locale}>
-	<header
-		class="brand"
-		class:brand-hero-sync={isTop}
-		class:is-revealed={headerRevealed}
-		class:on-dark={overDark && !menuOpen}
-		bind:this={headerEl}
-	>
-		<div class="brand-left">
-			<button
-				class="meta menu-btn"
-				type="button"
-				aria-expanded={menuOpen}
-				onclick={() => (menuOpen = !menuOpen)}
-			>
-				<span class="menu-bars" class:open={menuOpen} aria-hidden="true">
-					<span></span>
-					<span></span>
-				</span>
-				<span class="menu-label">
-					{menuOpen ? i18n.t.menu.close : i18n.t.menu.open}
-				</span>
-			</button>
-			<!-- SP only — compact language switch (active locale only, tap to
-			     flip); reordered to sit rightmost of the SP row (Reserve →
-			     Menu → Language) via .brand-left { display: contents } and
-			     flex `order` — see @media 540px below. Hidden on desktop
-			     (the .brand-right instance below is used there instead). -->
-			<div class="lang-sp"><LanguageToggle compact /></div>
-		</div>
+<!-- data-theme: the Top's MKSK palette, bound reactively here (not on <html>)
+     so a client navigation swaps it with the page — no palette flash. -->
+<div class="shell" lang={i18n.locale} data-theme={isTop ? 'mksk' : undefined}>
+	<SiteHeader {isTop} bind:menuOpen onToggleMenu={() => (menuOpen = !menuOpen)} />
 
-		<a href="/" class="wordmark" aria-label="MOKUSEKI">
-			<Wordmark />
-		</a>
-
-		<div class="brand-right">
-			<div class="lang-desktop"><LanguageToggle /></div>
-			<!-- SP only — colored booking badge; reordered to sit right after
-			     the (now left-aligned) wordmark, before Menu/Language. -->
-			<a class="btn-sm reserve-chip" href={RESERVE_URL} target="_blank" rel="noopener">
-				<span>Reserve</span>
-			</a>
-		</div>
-	</header>
-
-	<main class="main">
+	<!-- inert while the menu is open: the sheet is modal without a dialog
+	     role — Tab stays in the sheet plus the header's close toggle (ii). -->
+	<main class="main" inert={menuOpen}>
 		{@render children()}
 	</main>
 
-	<!-- flushTop: the home page's CTA section is already dark/full-bleed
-	     (see +page.svelte) and should read as one continuous block with
-	     the footer below it — no gap gets the page's light background to
-	     show through between them. -->
-	<SiteFooter flushTop={isTop} />
+	<!-- flushTop: the Top ends in a full-bleed section that should run
+	     straight into the footer, with no page background between them. -->
+	<SiteFooter flushTop={isTop} inert={menuOpen} />
 
 	<SiteMenu open={menuOpen} onClose={() => (menuOpen = false)} />
 </div>
@@ -237,248 +169,17 @@
 		padding-top: var(--header-space);
 	}
 
-	/* ─── Fixed header ───────────────────────────────── */
-	/* No background of its own — the page (or the hero photo) shows through.
-	 * Text color comes from --hdr-fg / --hdr-fg-soft so everything in the
-	 * header (wordmark, Menu, language toggle) flips together; see the
-	 * overDark logic in the script. */
-	.brand {
-		--hdr-fg: var(--ink);
-		--hdr-fg-soft: var(--ink-faint);
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: var(--z-header);
-		display: grid;
-		grid-template-columns: 1fr auto 1fr;
-		align-items: center;
-		padding: 20px clamp(24px, 5vw, 80px) 18px;
-		background: transparent;
-		color: var(--hdr-fg);
-		transition: color 400ms ease;
-	}
-
-	/* Over a dark section (the hero photo, the dark CTA/footer): white. Not
-	 * while the menu is open — that overlay is a light full-screen panel
-	 * sitting under the header, where white text would vanish. */
-	.brand.on-dark {
-		--hdr-fg: var(--white);
-		--hdr-fg-soft: rgba(255, 255, 255, 0.7);
-	}
-
-	/* Home-page-only entrance, synced to the hero's OP effect via
-	 * headerRevealed (see script above) — hidden until the hero photo
-	 * starts revealing, then fades/slides down into place. Off the home
-	 * page .brand-hero-sync is never applied, so the header just shows. */
-	.brand.brand-hero-sync {
-		opacity: 0;
-		transform: translateY(-16px);
-		transition:
-			opacity 900ms var(--ease-default),
-			transform 900ms var(--ease-default),
-			color 400ms ease;
-	}
-
-	.brand.brand-hero-sync.is-revealed {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.brand.brand-hero-sync {
-			opacity: 1;
-			transform: none;
-			transition: color 400ms ease;
-		}
-	}
-
-	.brand-left {
-		grid-column: 1;
-		justify-self: start;
-		display: inline-flex;
-		align-items: center;
-		gap: 24px;
-	}
-
-	.brand-right {
-		grid-column: 3;
-		justify-self: end;
-		display: inline-flex;
-		align-items: center;
-		gap: 16px;
-	}
-
-	/* SP-only header elements — hidden by default, swapped in at the 540px
-	 * breakpoint below (see also .lang-desktop / .reserve-chip there). */
-	.lang-sp {
-		display: none;
-	}
-
-	.reserve-chip {
-		display: none;
-	}
-
-	.menu-btn {
-		appearance: none;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding: 4px 0;
-		color: var(--hdr-fg-soft);
-		transition: color 300ms ease;
-	}
-
-	.menu-btn:hover {
-		color: var(--hdr-fg);
-	}
-
-	.menu-bars {
-		position: relative;
-		display: inline-block;
-		width: 16px;
-		height: 6px; /* 2 × 1px bar + 4px gap */
-	}
-
-	.menu-bars span {
-		position: absolute;
-		left: 0;
-		width: 100%;
-		height: 1px;
-		background: currentColor;
-		top: 0;
-		transition:
-			top 300ms ease,
-			transform 300ms ease;
-	}
-
-	.menu-bars span:last-child {
-		top: 5px;
-	}
-
-	/* Morphs into an ✕ when the menu is open — both bars meet at the
-	 * container's vertical center and rotate to cross. */
-	.menu-bars.open span {
-		top: 2.5px;
-	}
-
-	.menu-bars.open span:first-child {
-		transform: rotate(45deg);
-	}
-
-	.menu-bars.open span:last-child {
-		transform: rotate(-45deg);
-	}
-
-	.wordmark {
-		grid-column: 2;
-		color: var(--hdr-fg);
-		text-decoration: none;
-		display: inline-flex;
-		align-items: center;
-		line-height: 0;
-	}
-
-	.wordmark :global(svg) {
-		height: clamp(14px, 1.4vw, 18px);
-		width: auto;
-		display: block;
-	}
-
 	.main {
 		display: flex;
 		flex-direction: column;
 	}
 
 	@media (max-width: 540px) {
-		.brand {
-			/* Grid → flex row: logo left, everything else clustered right
-			 * (Reserve, Menu, Language, in that order). */
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			/* -8px total header height (was 20px/18px top/bottom). */
-			padding-top: 16px;
-			padding-bottom: 14px;
-		}
-
-		/* The header shrank (see .brand above) and the space reserved for
-		 * it never followed, leaving a ~17px gap. Measured: .brand's actual
-		 * height at this breakpoint is 56.2px; 57px rounds up a hair for
-		 * safety. (Redefines the variable .shell reads — see its comment.) */
+		/* The SP header's height (unchanged by the 2026-10 redesign — see
+		 * SiteHeader: 56px bar), rounded up a hair. Redefines the variable
+		 * .shell reads — see its comment. */
 		.shell {
 			--header-space: 57px;
-		}
-
-		/* .brand-left/.brand-right are just DOM grouping — display: contents
-		 * lets their children become direct flex items of .brand so each
-		 * can carry its own `order`, regardless of nesting. */
-		.brand-left,
-		.brand-right {
-			display: contents;
-		}
-
-		.wordmark {
-			order: 1;
-			/* Pushes every later (order > 1) item to the right. */
-			margin-right: auto;
-		}
-
-		.wordmark :global(svg) {
-			height: 15px;
-		}
-
-		.lang-sp {
-			order: 2;
-			display: inline-flex;
-		}
-
-		.reserve-chip {
-			order: 4;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			/* Full header height: stretch the flex item, then bleed past
-			 * .brand's own padding with matching negative margins so the
-			 * fill reaches the true top/bottom edge AND (being the last,
-			 * rightmost item) the true right edge too. */
-			align-self: stretch;
-			margin-block: -16px -14px;
-			margin-right: calc(-1 * clamp(24px, 5vw, 80px));
-			padding: 0 19px;
-			font-size: 12.5px;
-		}
-
-		.reserve-chip span {
-			transform: translateY(2px);
-		}
-
-		.menu-btn {
-			order: 3;
-		}
-
-		.menu-bars {
-			width: 20px;
-			height: 7px; /* 2 × 1px bar + 5px gap */
-		}
-
-		.menu-bars span:last-child {
-			top: 6px;
-		}
-
-		.menu-bars.open span {
-			top: 3px;
-		}
-
-		.menu-label {
-			display: none;
-		}
-
-		.lang-desktop {
-			display: none;
 		}
 	}
 </style>

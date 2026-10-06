@@ -3,16 +3,60 @@
 <html lang="%lang%">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- viewport-fit=cover: the page extends behind the iOS notch/toolbars;
+		     anything fixed near a physical edge pads itself with
+		     env(safe-area-inset-*). -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="text-scale" content="scale" />
+		<!-- Decided before first paint so nothing flashes (same pattern as
+		     the II site):
+		     - .js            → CSS may hide what JS will animate in.
+		     - data-op        → whether the Top's opening plays: once per tab
+		                        session, only when the visit STARTS on "/",
+		                        never under reduced motion, a #hash, a
+		                        back/forward or a prerender. Landing anywhere
+		                        else counts as having seen it.
+		     - .is-prescrolled → the browser will restore a scroll position, so
+		                        the big Top logo must not flash before the
+		                        header has measured where it sits.
+		     Mirrored in src/lib/home/opening.ts — keep the key in sync. -->
+		<script>
+			(function () {
+				var root = document.documentElement;
+				root.classList.add('js');
+				var play = false;
+				var entry = performance.getEntriesByType('navigation')[0];
+				var nav = entry ? entry.type : '';
+				// Outside the storage try: blocked site data makes sessionStorage
+				// throw, and a restored position must still hide the big logo.
+				if (nav === 'back_forward' || nav === 'reload' || location.hash) {
+					root.classList.add('is-prescrolled');
+				}
+				try {
+					play =
+						!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+						sessionStorage.getItem('mk-op') !== '1' &&
+						location.pathname === '/' &&
+						!location.hash &&
+						nav !== 'back_forward' &&
+						document.visibilityState !== 'hidden' &&
+						!document.prerendering;
+					sessionStorage.setItem('mk-op', '1');
+				} catch (e) {
+					play = false;
+				}
+				root.dataset.op = play ? 'play' : 'skip';
+			})();
+		</script>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap"
 			rel="stylesheet"
 		/>
-		<!-- FONTPLUS — FOT-筑紫オールドゴシック Std M webfont loader (domain-bound).
-		     defer: non render-blocking. Locally the --font-ja fallback applies. -->
+		<!-- FONTPLUS — Japanese webfont loader (domain-bound): 筑紫オールドゴシック
+		     Std M (legacy pages) and 筑紫ゴシック Pro D / M (the Top).
+		     defer: non render-blocking. Locally the Hiragino fallback applies. -->
 		<script
 			defer
 			src="https://webfont.fontplus.jp/accessor/script/fontplus.js?kqbwQX--jVA%3D&box=xwiPbvznvro%3D&aa=1&ab=2"
@@ -34,7 +78,7 @@
 			crossorigin="anonymous"
 		/>
 		<!-- base.css cache-bust: bump ?v= on every base.css edit -->
-		<link rel="stylesheet" href="%sveltekit.assets%/css/base.css?v=20261007a" />
+		<link rel="stylesheet" href="%sveltekit.assets%/css/base.css?v=20261007d" />
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

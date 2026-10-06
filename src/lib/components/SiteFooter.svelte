@@ -1,203 +1,207 @@
 <script lang="ts">
 	import { useI18n } from '$lib/i18n/store.svelte';
-	import Wordmark from './Wordmark.svelte';
+	import LanguageToggle from '$lib/i18n/LanguageToggle.svelte';
 	import { RESERVE_URL } from '$lib/site';
+	import LegalLine from './LegalLine.svelte';
+	import Wordmark from './Wordmark.svelte';
 
-	// flushTop: the page above already ends in a dark/full-bleed section
-	// (currently just the home page's CTA) — skip this footer's own
-	// top margin so the two read as one continuous dark block instead of
-	// showing a strip of the page's light background between them.
-	let { flushTop = false }: { flushTop?: boolean } = $props();
+	// The footer reprises the OP1 frame (Figma 218:604) as the page's bookend:
+	// big wordmark left, tagline right, one colour (2026-10 redesign, spec §5.4).
+	// Colours come only from --footer-bg / --footer-fg, so the Top gets peach
+	// on rust through the mksk remap and every other route keeps ink / ink-fg.
+	// flushTop: the page above already ends in a full-bleed band (the Top's
+	// reservation section) — no top margin, so no strip of page background
+	// shows between them.
+	// inert: set by +layout while the menu is open — the menu's modality comes
+	// from inert on main + footer, not from aria-modal.
+	let { flushTop = false, inert = false }: { flushTop?: boolean; inert?: boolean } = $props();
 
 	const i18n = useI18n();
+	// English in both locales; split where the SP layout breaks it.
+	const tagline = $derived(i18n.t.home.op.tagline);
 </script>
 
-<footer class="site-footer inverse" class:flush-top={flushTop} data-header="dark">
-	<div class="top">
-		<!-- Column 1 — Brand mark + tagline -->
-		<div class="col col-brand">
-			<a href="/" class="footer-wordmark" aria-label="MOKUSEKI">
-				<Wordmark />
-			</a>
-			<p class="body-sm tagline">{i18n.t.footer.tagline}</p>
-		</div>
+<footer class="mk-footer" class:flush-top={flushTop} data-header="dark" {inert}>
+	<div class="band">
+		<a class="mark" href="/" aria-label="MOKUSEKI"><Wordmark /></a>
+		<!-- One line on PC; the two halves stack (right-aligned) below 1024. -->
+		<p class="mk-tagline tag" lang="en">
+			<span class="tag-line">{tagline[0]}</span>{' '}<span class="tag-line">{tagline[1]}</span>
+		</p>
+	</div>
 
-		<!-- Column 2 — Navigation. Heading kept for a11y (aria-label) only —
-		     visually removed per representative's "Navigation不要" direction.
-		     Simplified to 4 links (Houses/About/Reserve/Contact). -->
-		<nav class="col" aria-label={i18n.t.footer.navHeading}>
+	<div class="row">
+		<nav aria-label={i18n.t.footer.navHeading}>
 			<ul class="links">
-				<li><a class="body-sm uppercase" href="/houses">{i18n.t.footer.nav.houses}</a></li>
-				<li><a class="body-sm uppercase" href="/about">{i18n.t.footer.nav.about}</a></li>
+				<li><a class="mk-body" href="/houses">{i18n.t.footer.nav.houses}</a></li>
+				<li><a class="mk-body" href="/about">{i18n.t.footer.nav.about}</a></li>
 				<li>
-					<a class="body-sm uppercase" href={RESERVE_URL} target="_blank" rel="noopener">
+					<a class="mk-body" href={RESERVE_URL} target="_blank" rel="noopener">
 						{i18n.t.footer.nav.reserve}
 					</a>
 				</li>
-				<li><a class="body-sm uppercase" href="/contact">{i18n.t.footer.nav.contact}</a></li>
+				<li><a class="mk-body" href="/contact">{i18n.t.footer.nav.contact}</a></li>
 			</ul>
 		</nav>
-
-		<!-- Column 3 (Contact/address) parked for now — the address/tel are
-		     still placeholder values (see representative's 2026-08-13 note).
-		     Restore once real contact details are ready. -->
-
-		<!-- TODO(launch): Journal/social links — restore once the brand
-		     accounts exist (hrefs in messages.ts currently point at the
-		     platform homepages). -->
-
-		<!-- TODO(launch): newsletter column — restore once a real signup
-		     endpoint exists; the previous form silently discarded emails. -->
+		<div class="lang"><LanguageToggle target /></div>
 	</div>
 
-	<div class="rule" aria-hidden="true"></div>
-
-	<div class="bottom">
-		<ul class="legal">
-			<li><a class="meta" href="/privacy">{i18n.t.footer.legal.privacy}</a></li>
-			<li><a class="meta" href="/terms">{i18n.t.footer.legal.terms}</a></li>
-			<li><a class="meta" href="/legal">{i18n.t.footer.legal.tokushoho}</a></li>
-		</ul>
-		<p class="meta copy">{i18n.t.footer.copy}</p>
-	</div>
+	<div class="legal"><LegalLine variant="footer" /></div>
 </footer>
 
 <style>
-	.site-footer {
-		/* Shell no longer applies horizontal padding, so the footer
-		 * naturally spans the viewport. Inner blocks get padding back. */
-		margin-top: clamp(64px, 8vh, 96px);
-		padding-top: clamp(64px, 8vh, 96px);
-		padding-bottom: 24px;
+	.mk-footer {
+		/* Spec §5.4 — the OP1 reprise (Figma 218:604 geometry) */
+		--ft-gap-above: clamp(64px, 8vh, 96px); /* off the Top only (flushTop) */
+		--ft-band-h: 400px;
+		--ft-nav-gap: 40px;
+		--ft-legal-gap: 120px;
+		--ft-bottom: 16px;
+		--ft-row-h: 44px; /* SP rows + every hit target here */
+		--ft-lang-gap: 16px;
+		--ft-tag-lh-stacked: 1.6; /* T1 when it breaks onto two lines */
+		--ft-underline-offset: 0.25em;
+		/* The OP's wordmark x — max() only matters on a landscape phone, where
+		 * the 40px tablet value would sit under the notch. */
+		--ft-left: max(var(--mk-op-left), var(--mk-chrome-l));
+		/* The language label's hit box is a full 44px row around its 12px text. */
+		--ft-lang-pad-y: calc((var(--ft-row-h) - var(--mk-fs-label) * var(--mk-lh-label)) / 2);
+		--ft-lang-pad-x: 8px;
+		/* Fallbacks = the legacy :root values (spec §2.2), in case the chrome
+		 * layer isn't defined. */
+		--legal-fg: var(--footer-fg, var(--ink-fg));
+
+		margin-top: var(--ft-gap-above);
+		padding-bottom: calc(var(--ft-bottom) + env(safe-area-inset-bottom, 0px));
+		background: var(--footer-bg, var(--ink));
+		color: var(--footer-fg, var(--ink-fg));
+		container-type: inline-size;
 	}
 
-	.site-footer.flush-top {
+	.mk-footer.flush-top {
 		margin-top: 0;
 	}
 
-	/* TsukuGo L for the footer's Japanese text (Latin stays Mokuseki Sans
-	 * via the fallback chain in --font-tsuku). */
-	.site-footer :global(.body),
-	.site-footer :global(.body-sm),
-	.site-footer :global(.h-ja),
-	.site-footer :global(address span) {
-		font-family: var(--font-tsuku);
-		font-weight: 250;
+	/* ─── Reprise band ─────────────────────────────────── */
+	.band {
+		position: relative;
+		height: var(--ft-band-h);
+		/* The nowrap tagline's pre-translate box runs past the right edge;
+		 * clip so it can never add horizontal page scroll. */
+		overflow: clip;
 	}
 
-	/* One unified text color for the whole footer (wordmark, tagline, nav,
-	 * legal, copyright) — reuses --ink-fg so it stays identical to the
-	 * buttons' text color (previously diverged from base.css's default
-	 * .inverse treatment, which gives .body-sm and .meta two different
-	 * opacities of white). */
-	.footer-wordmark,
-	.site-footer :global(.body-sm),
-	.site-footer :global(.meta) {
-		color: var(--ink-fg);
-	}
-
-	.top {
-		max-width: 1280px;
-		margin: 0 auto;
-		padding: 0 clamp(24px, 5vw, 80px);
-		/* 2 columns — Contact/newsletter/social columns are parked (see
-		 * TODOs above). */
-		display: grid;
-		grid-template-columns: 1.4fr 0.6fr;
-		gap: clamp(32px, 4vw, 64px);
-		align-items: start;
-	}
-
-	.col {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-
-	.footer-wordmark {
-		display: inline-flex;
-		/* color set by the unified footer-color rule above. */
-		text-decoration: none;
+	/* Same box as the OP's big wordmark: centred on the band's horizon
+	 * (height = w/10, Wordmark.svelte is 300×30). */
+	.mark {
+		position: absolute;
+		left: var(--ft-left);
+		top: calc(50% - var(--mk-op-mark-w) / 20);
+		width: var(--mk-op-mark-w);
 		line-height: 0;
 	}
 
-	.footer-wordmark :global(svg) {
-		height: 18px;
-		width: auto;
-		display: block;
+	.mark :global(svg) {
+		width: 100%;
+		height: auto;
 	}
 
-	.tagline {
-		max-width: 22ch;
-		margin-top: 8px;
+	/* Centred on x 68.333% / y 50%, exactly like the OP tagline. */
+	.tag {
+		position: absolute;
+		left: var(--mk-op-tag-x);
+		top: 50%;
+		translate: -50% -50%;
+		width: max-content;
+		white-space: nowrap;
+	}
+
+	/* ─── Nav row ──────────────────────────────────────── */
+	/* Baseline-aligned so the 12px language label sits on the links' line. */
+	.row {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 0 var(--mk-chrome-r) 0 var(--ft-left);
 	}
 
 	.links {
-		list-style: none;
-		padding: 0;
-		margin: 0;
 		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.links a {
-		text-decoration: none;
-		transition: color 300ms ease;
+		flex-wrap: wrap;
+		column-gap: var(--ft-nav-gap);
 	}
 
 	.links a:hover {
-		color: var(--accent);
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: var(--ft-underline-offset);
 	}
 
-	.rule {
-		/* spans the full viewport */
-		height: 1px;
-		background: rgba(246, 246, 246, 0.2);
-		margin: clamp(48px, 5vh, 64px) 0 24px;
-	}
-
-	.bottom {
-		max-width: 1280px;
-		margin: 0 auto;
-		padding: 0 clamp(24px, 5vw, 80px);
+	/* Negative margins cancel the hit padding, so the visible label lands
+	 * on the row's right edge and doesn't make the row taller. Flex (not a
+	 * line box) so the button's 44px box is the row height exactly — no
+	 * strut from the inherited font can add to it. */
+	.lang {
+		--lang-pad: var(--ft-lang-pad-y) var(--ft-lang-pad-x);
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 16px;
+		margin: calc(-1 * var(--ft-lang-pad-y)) calc(-1 * var(--ft-lang-pad-x));
 	}
 
+	/* ─── Legal row ────────────────────────────────────── */
+	/* PC: flush with the viewport — LegalLine pads itself to --mk-chrome-l
+	 * and pins the © at x 312. */
 	.legal {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		align-items: center;
-		gap: 14px;
+		margin-top: var(--ft-legal-gap);
 	}
 
-	.legal a {
-		text-decoration: none;
-		transition: opacity 300ms ease;
-		opacity: 0.6;
-	}
-
-	.legal a:hover {
-		opacity: 1;
-	}
-
-	@media (max-width: 960px) {
-		.top {
-			grid-template-columns: 1fr 1fr;
-			row-gap: clamp(40px, 5vh, 56px);
+	/* ─── SP / tablet (<1024): the OP's diagonal ───────── */
+	@media (max-width: 1023.98px) {
+		.mk-footer {
+			--ft-band-h: 320px;
+			--ft-legal-gap: 48px;
 		}
-	}
 
-	@media (max-width: 540px) {
-		.top {
-			grid-template-columns: 1fr;
-			row-gap: clamp(40px, 5vh, 56px);
+		/* Wordmark above the horizon (the band's middle), tagline below it. */
+		.mark {
+			top: calc(50% - var(--mk-op-stack-gap) - var(--mk-op-mark-w) / 10);
+		}
+
+		.tag {
+			left: auto;
+			right: var(--mk-inset);
+			top: calc(50% + var(--mk-op-stack-gap));
+			translate: none;
+			text-align: right;
+			line-height: var(--ft-tag-lh-stacked);
+		}
+
+		.tag-line {
+			display: block;
+		}
+
+		.row {
+			flex-direction: column;
+			align-items: flex-start;
+			padding: 0 var(--mk-inset);
+		}
+
+		.links {
+			flex-direction: column;
+		}
+
+		.links a {
+			display: flex;
+			align-items: center;
+			min-height: var(--ft-row-h);
+		}
+
+		.lang {
+			margin: var(--ft-lang-gap) 0 0 calc(-1 * var(--ft-lang-pad-x));
+		}
+
+		/* LegalLine wraps here and doesn't pad itself — align it to the inset. */
+		.legal {
+			padding-inline: var(--mk-inset);
 		}
 	}
 </style>

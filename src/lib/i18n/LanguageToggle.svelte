@@ -5,10 +5,26 @@
 	// compact: SP header — show only the active locale as a single tap
 	// target that flips to the other one (both stay reachable, just not
 	// both visible at once).
-	let { compact = false }: { compact?: boolean } = $props();
+	// target (2026-10 redesign): show only the language you'd SWITCH TO
+	// ("EN" while Japanese is active). Its accessible name starts with the
+	// visible text (WCAG 2.5.3, label in name). Colour is currentColor, so
+	// the header/menu/footer that places it decides it.
+	let { compact = false, target = false }: { compact?: boolean; target?: boolean } = $props();
+
+	const next = $derived(i18n.locale === 'ja' ? 'en' : 'ja');
 </script>
 
-{#if compact}
+{#if target}
+	<button
+		type="button"
+		class="mk-eyebrow lang-target"
+		lang={next}
+		aria-label={next === 'en' ? 'EN — Switch to English' : 'JP — 日本語に切り替え'}
+		onclick={() => i18n.setLocale(next)}
+	>
+		{next === 'en' ? 'EN' : 'JP'}
+	</button>
+{:else if compact}
 	<button
 		type="button"
 		class="toggle-compact"
@@ -40,6 +56,16 @@
 {/if}
 
 <style>
+	.lang-target {
+		appearance: none;
+		background: transparent;
+		border: 0;
+		color: currentColor;
+		cursor: pointer;
+		/* Hit area set by the placing context (header / menu / footer). */
+		padding: var(--lang-pad, 0);
+	}
+
 	/* Colors come from the header's theme variables (--hdr-fg / --hdr-fg-soft,
 	 * set on .brand in +layout.svelte) so the toggle flips white/ink together with
 	 * the rest of the header; the fallbacks keep the old ink colors anywhere

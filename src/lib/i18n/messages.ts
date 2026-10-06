@@ -35,6 +35,10 @@ type Dict = {
 		};
 	};
 	home: {
+		// Since the 2026-10 Top redesign the Top no longer reads hero.*,
+		// intro.eyebrow, philosophy.eyebrow/heading/signature,
+		// properties.eyebrow/sub, area.eyebrow/heading/sub or gallery.*
+		// (kept: other routes and the menu/SEO may, and the copy is approved).
 		hero: {
 			ledeLine1: string;
 			ledeLine2: string;
@@ -73,6 +77,24 @@ type Dict = {
 			sub: string;
 			cta: string;
 		};
+		// ─── 2026-10 Top redesign (Figma "II-ii" MKSK frames) ───
+		/** The OP / header lockup tagline — English in both locales, split
+		 *  where the SP layout breaks it onto two lines. */
+		op: { tagline: [string, string] };
+		concept: {
+			eyebrow: string;
+			heading: string;
+			/** One entry per Figma line (JA); EN is a single flowing entry. */
+			lines: string[];
+			imageAlt: string;
+		};
+		accommodation: { eyebrow: string; heading: string };
+		destinations: {
+			eyebrow: string;
+			/** JA: Figma's two lines; EN: one entry (balanced, never forced). */
+			heading: string[];
+		};
+		amenity: { eyebrow: string; heading: string; imageAlts: [string, string] };
 	};
 	reserve: {
 		eyebrow: string;
@@ -376,6 +398,30 @@ export const messages: Record<Locale, Dict> = {
 				heading: '滞在を、はじめる。',
 				sub: 'ご希望の日付と人数から、\nお泊まりいただける棟をご案内いたします。',
 				cta: 'Reserve a Stay'
+			},
+			// 2026-10 Top redesign — JA copy is the representative's own, from
+			// the Figma MKSK frames ("ammenity" in the frame corrected).
+			op: { tagline: ['A stay where the senses', 'quietly come undone'] },
+			concept: {
+				eyebrow: 'stay concept',
+				heading: '暮らすように泊まる',
+				lines: [
+					'モクセキの空間は、その土地に残った町家に手を加えたもの。',
+					'華美な飾りをせず、粛々とその土地に馴染む空間としました。',
+					'それはこの土地に住まうように泊まっていただくため。',
+					'名古屋は商業の街として、ものづくりの街として栄えてきました。'
+				],
+				imageAlt: '障子に落ちる竹の影'
+			},
+			accommodation: { eyebrow: 'accommodation', heading: 'モクセキに泊まる' },
+			destinations: {
+				eyebrow: 'destinations',
+				heading: ['街にとけこみ、触れ合い、', 'その土地を愉しみ尽くす旅。']
+			},
+			amenity: {
+				eyebrow: 'our amenity',
+				heading: '暮らしの道具',
+				imageAlts: ['畳の上の抹茶碗と茶筅', '土壁に落ちる竹の影']
 			}
 		},
 		reserve: {
@@ -785,6 +831,29 @@ export const messages: Record<Locale, Dict> = {
 				heading: 'Begin your stay.',
 				sub: 'Choose your dates and party size,\nand we will show you the houses available.',
 				cta: 'Reserve a Stay'
+			},
+			// 2026-10 Top redesign — EN translations of the representative's
+			// Figma JA copy. PROVISIONAL: awaiting their review.
+			op: { tagline: ['A stay where the senses', 'quietly come undone'] },
+			concept: {
+				eyebrow: 'stay concept',
+				heading: 'Stay as if you lived here',
+				lines: [
+					'The spaces of MOKUSEKI are machiya that have remained where they stand, carefully reworked. Free of ornament, each was made to settle quietly into its surroundings — so that you might stay here as though you lived here. Nagoya has long flourished as a city of merchants, and a city of makers.'
+				],
+				imageAlt: 'Bamboo shadows falling on shoji screens'
+			},
+			accommodation: { eyebrow: 'accommodation', heading: 'Stay at MOKUSEKI' },
+			destinations: {
+				eyebrow: 'destinations',
+				heading: [
+					'A journey that blends into the town, meets its people, and savors the place to the full.'
+				]
+			},
+			amenity: {
+				eyebrow: 'our amenity',
+				heading: 'Tools for daily living',
+				imageAlts: ['A matcha bowl and whisk on tatami', 'Bamboo shadows on an earthen wall']
 			}
 		},
 		reserve: {

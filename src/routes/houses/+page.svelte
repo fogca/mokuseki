@@ -101,8 +101,10 @@
 		 * breakpoint — this page is a simple vertical stack of full-bleed
 		 * photos, not the home page's side-by-side desktop layout. */
 		position: relative;
-		width: calc(100% + 2 * var(--padding));
-		margin-inline: calc(-1 * var(--padding));
+		/* By main's own padding (--pad-l/-r: --padding, or the safe-area
+		 * inset when wider), so the bleed still reaches both edges. */
+		width: calc(100% + var(--pad-l) + var(--pad-r));
+		margin-inline: calc(-1 * var(--pad-l)) calc(-1 * var(--pad-r));
 		height: clamp(520px, 90vh, 900px);
 	}
 
@@ -139,7 +141,8 @@
 			'title title'
 			'desc desc'
 			'cta  cta';
-		padding: 28px 0 40px 28px;
+		/* Edge-to-edge card, so the text keeps clear of a landscape notch. */
+		padding: 28px 0 40px calc(28px + env(safe-area-inset-left, 0px));
 		background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.55) 100%);
 		/* This overlay's box covers the whole card, which would otherwise
 		 * catch every click before it reaches .house-thumb underneath.
@@ -156,7 +159,7 @@
 	.house-loc {
 		grid-area: loc;
 		justify-self: end;
-		padding-right: 28px;
+		padding-right: calc(28px + env(safe-area-inset-right, 0px));
 		color: var(--white);
 	}
 
@@ -205,11 +208,11 @@
 		}
 
 		.house-overlay {
-			padding: 20px 0 35px 20px;
+			padding: 20px 0 35px calc(20px + env(safe-area-inset-left, 0px));
 		}
 
 		.house-loc {
-			padding-right: 20px;
+			padding-right: calc(20px + env(safe-area-inset-right, 0px));
 			font-size: calc(var(--fs-sm) - 2px);
 		}
 	}
