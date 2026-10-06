@@ -527,7 +527,7 @@
 		border: none;
 		font-family: var(--display);
 		font-size: var(--fs-body);
-		font-weight: 400;
+		font-weight: 250;
 		letter-spacing: 0;
 		line-height: var(--lh-en);
 		color: var(--ink);

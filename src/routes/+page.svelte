@@ -605,7 +605,7 @@
 	/* exp-index is the only intentionally-large numeral on the page. */
 	.exp-index {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: clamp(24px, 3vw, 34px);
 		letter-spacing: 0;
 		color: var(--accent);

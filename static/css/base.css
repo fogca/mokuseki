@@ -16,8 +16,9 @@
 
 /* Primary Latin face — Ango (in-house variable font by August Type
  * Foundry; formerly Elio — renamed 2026-10-03). wght 150–950: Hair /
- * Ultra masters, 9 named stops (the 400 used here sits between Light 350
- * and Regular 450). Ships 151 glyphs: A–Z, a–z, 0–9, accents and basic
+ * Ultra masters, 9 named stops (Hair 150, Thin 250, Light 350, Regular
+ * 450 … Ultra 950). The site sets 250 everywhere = the "Thin" stop exactly,
+ * not an interpolation. Ships 151 glyphs: A–Z, a–z, 0–9, accents and basic
  * punctuation, but NOT ! ? ; ' " [ ] / & @ # % and a few others, so every
  * stack below lists 'Norma VF09' right after it and the browser falls back
  * per glyph. Bump the URL (and ?v=) together with the preload in app.html. */
@@ -185,7 +186,7 @@ body {
 	background: var(--bg);
 	color: var(--ink);
 	font-family: var(--sans);
-	font-weight: 400;
+	font-weight: 250;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -242,7 +243,7 @@ main {
 .eyebrow,
 .meta {
 	font-family: var(--display);
-	font-weight: 400;
+	font-weight: 250;
 	line-height: var(--lh-en);
 	letter-spacing: var(--ls-en);
 	color: var(--ink);
@@ -291,7 +292,7 @@ main {
 
 .h-ja {
 	font-family: var(--ja-body);
-	font-weight: 400;
+	font-weight: 250;
 	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
@@ -301,7 +302,7 @@ main {
 
 .body {
 	font-family: var(--ja-body);
-	font-weight: 400;
+	font-weight: 250;
 	font-size: var(--fs-body);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);
@@ -311,7 +312,7 @@ main {
 
 .body-sm {
 	font-family: var(--ja-body);
-	font-weight: 400;
+	font-weight: 250;
 	font-size: var(--fs-ja-sm);
 	line-height: var(--lh-ja);
 	letter-spacing: var(--ls-ja);

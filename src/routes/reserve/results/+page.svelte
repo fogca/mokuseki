@@ -219,7 +219,7 @@
 	.card :global(.meta),
 	.card .select {
 		font-family: var(--font-tsuku);
-		font-weight: 400;
+		font-weight: 250;
 	}
 
 	.thumb {
@@ -279,7 +279,7 @@
 	/* The only intentionally-large numeral on this page. */
 	.price-amount {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: 24px;
 		letter-spacing: 0;
 		line-height: 1.2;
@@ -294,7 +294,7 @@
 		gap: 16px;
 		font-family: var(--display);
 		font-size: var(--fs-sm);
-		font-weight: 400;
+		font-weight: 250;
 		letter-spacing: var(--ls-en);
 		line-height: var(--lh-en);
 		text-transform: uppercase;

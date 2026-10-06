@@ -371,7 +371,7 @@
 
 	.total-amount {
 		font-family: var(--display);
-		font-weight: 400;
+		font-weight: 250;
 		font-size: 22px;
 		letter-spacing: 0;
 		line-height: 1.2;
@@ -464,7 +464,7 @@
 		border-bottom: 1px solid var(--rule);
 		font-family: var(--display);
 		font-size: var(--fs-body);
-		font-weight: 400;
+		font-weight: 250;
 		letter-spacing: 0;
 		line-height: var(--lh-en);
 		color: var(--ink);
