@@ -14,7 +14,22 @@
 	font-display: swap;
 }
 
-/* Primary Latin face — Andersen / Norma (in-house variable font, formerly
+/* Primary Latin face — Ango (in-house variable font by August Type
+ * Foundry; formerly Elio — renamed 2026-10-03). wght 150–950: Hair /
+ * Ultra masters, 9 named stops (the 400 used here sits between Light 350
+ * and Regular 450). Ships 151 glyphs: A–Z, a–z, 0–9, accents and basic
+ * punctuation, but NOT ! ? ; ' " [ ] / & @ # % and a few others, so every
+ * stack below lists 'Norma VF09' right after it and the browser falls back
+ * per glyph. Bump the URL (and ?v=) together with the preload in app.html. */
+@font-face {
+	font-family: 'Ango';
+	src: url('/fonts/Ango-VF25.woff2?v=20261006a') format('woff2-variations');
+	font-weight: 150 950;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Latin fallback — Andersen / Norma (in-house variable font, formerly
  * Steiner — renamed 2026-09-05, name table now says "Norma" too). wght
  * 1–950: Hair / Book / Ultra masters. Family name carries the version
  * on request — bump it, the 4 stacks below, and the URL together on
@@ -72,15 +87,15 @@
 		'FOT-筑紫ゴシック Std M', 'TsukuGoStd-M', 'TsukuGoPro-M', 'FOT-TsukuGoPro-M',
 		'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
 
-	/* Latin = Steiner; Japanese = 筑紫オールドゴシック. Now that JP is a single
+	/* Latin = Ango (Norma as per-glyph fallback); Japanese = 筑紫オールドゴシック. Now that JP is a single
 	 * gothic face, display and body share the same JP stack. */
-	--display: 'Norma VF09', 'Mokuseki Sans', 'Inter', var(--font-ja);
+	--display: 'Ango', 'Norma VF09', 'Mokuseki Sans', 'Inter', var(--font-ja);
 	--sans:
-		'Norma VF09', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
+		'Ango', 'Norma VF09', 'Mokuseki Sans', 'Inter', -apple-system, BlinkMacSystemFont,
 		'Helvetica Neue', var(--font-ja);
-	--ja-body: 'Norma VF09', var(--font-ja);
-	/* Footer / card meta JA — same JP face, Latin still Steiner. */
-	--font-tsuku: 'Norma VF09', 'Mokuseki Sans', var(--font-ja);
+	--ja-body: 'Ango', 'Norma VF09', var(--font-ja);
+	/* Footer / card meta JA — same JP face, Latin still Ango. */
+	--font-tsuku: 'Ango', 'Norma VF09', 'Mokuseki Sans', var(--font-ja);
 
 	/* Type scale — titles sized up a full step (representative's direction),
 	 * body/UI copy nudged +1px. */
