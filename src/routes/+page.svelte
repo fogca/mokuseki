@@ -371,12 +371,16 @@
 		min-height: 85svh;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: flex-end;
+		/* Headline block sits left, vertically centered in the hero (was
+		 * centered horizontally and anchored to the bottom). The padding is
+		 * symmetric on purpose — it used to be heavier on top, which would
+		 * push a centered block off true center. */
+		align-items: flex-start;
+		justify-content: center;
 		position: relative;
 		overflow: hidden;
 		isolation: isolate;
-		padding: clamp(96px, 16vh, 180px) var(--padding) clamp(72px, 12vh, 120px);
+		padding: clamp(72px, 12vh, 120px) var(--padding);
 	}
 
 	.hero-media {
@@ -398,17 +402,18 @@
 	.hero-inner {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		align-items: flex-start;
 		gap: 12px;
-		text-align: center;
+		text-align: left;
 	}
 
 	.hero :global(.h1) {
 		color: var(--white);
 		/* 48px on PC (representative's direction; was scaling up to 92px).
-		 * The 40px floor keeps SP exactly as it was — 7vw only reaches 48px
-		 * at a 686px viewport, so every PC width lands on a flat 48px
-		 * instead of the headline growing past it. */
+		 * 7vw only reaches 48px at a 686px viewport, so every PC width lands
+		 * on a flat 48px instead of the headline growing past it. The 40px
+		 * floor only matters for 541–685px now — SP (≤540px) is pinned to
+		 * 24px in the media block at the bottom. */
 		font-size: clamp(40px, 7vw, 48px);
 		max-width: 18ch;
 	}
@@ -416,9 +421,9 @@
 	.hero :global(.h-ja) {
 		color: rgba(255, 255, 255, 0.82);
 		white-space: nowrap;
-		/* Scales with the bigger EN headline above it (was a fixed 16px
-		 * shared with every other section's sub-heading). */
-		font-size: clamp(18px, 2.2vw, 30px);
+		/* 24px on PC (representative's direction; was clamp(18px, 2.2vw,
+		 * 30px)) — the SP value is in the 540px block at the bottom. */
+		font-size: 24px;
 	}
 
 	/* Per-word/-char spans the OP effect (see onMount above) animates —
@@ -430,8 +435,21 @@
 		display: inline-block;
 	}
 
+	/* The headline block is now vertically centered, so the scroll cue can't
+	 * keep trailing it (it only sat at the bottom because the text did).
+	 * Pinned to the bottom, centered — and at the SAME distance from the
+	 * hero's bottom edge as before (the old padding-bottom), not flush with
+	 * it: on desktop the floating Reservation bar covers the lowest ~70px of
+	 * the viewport, which on a short window overlaps the hero's bottom edge.
+	 * left/right + text-align rather than a transform, so it can't collide
+	 * with GSAP's autoAlpha tween. */
 	.hero-scroll {
-		margin-top: 4px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: clamp(72px, 12vh, 120px);
+		margin: 0;
+		text-align: center;
 		color: rgba(255, 255, 255, 0.7);
 	}
 
@@ -763,6 +781,16 @@
 	}
 
 	@media (max-width: 540px) {
+		/* Hero on SP: EN 24px, JA 14px (representative's direction). Above
+		 * 540px the PC values apply. */
+		.hero :global(.h1) {
+			font-size: 24px;
+		}
+
+		.hero :global(.h-ja) {
+			font-size: 14px;
+		}
+
 		.hg-caption {
 			margin-top: 12px;
 		}
