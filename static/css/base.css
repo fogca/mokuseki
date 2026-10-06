@@ -24,7 +24,7 @@
  * per glyph. Bump the URL (and ?v=) together with the preload in app.html. */
 @font-face {
 	font-family: 'Ango';
-	src: url('/fonts/Ango-VF25.woff2?v=20261006a') format('woff2-variations');
+	src: url('/fonts/Ango-VF26.woff2?v=20261007a') format('woff2-variations');
 	font-weight: 150 950;
 	font-style: normal;
 	font-display: swap;
