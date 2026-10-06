@@ -405,9 +405,11 @@
 
 	.hero :global(.h1) {
 		color: var(--white);
-		/* Bold pass: the hero statement should dominate the frame, not sit
-		 * at the same scale as a body-copy section heading. */
-		font-size: clamp(40px, 7vw, 92px);
+		/* 48px on PC (representative's direction; was scaling up to 92px).
+		 * The 40px floor keeps SP exactly as it was — 7vw only reaches 48px
+		 * at a 686px viewport, so every PC width lands on a flat 48px
+		 * instead of the headline growing past it. */
+		font-size: clamp(40px, 7vw, 48px);
 		max-width: 18ch;
 	}
 
