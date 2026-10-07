@@ -22,8 +22,8 @@
 	<figure class="amenity-fig amenity-fig--wide mk-reveal-mask" use:reveal>
 		<img
 			src="/images/mood_02.webp"
-			width="1792"
-			height="2400"
+			width="1767"
+			height="2359"
 			alt={copy.imageAlts[0]}
 			loading="lazy"
 			decoding="async"
@@ -76,17 +76,18 @@
 	}
 
 	/* ─── Photos ─────────────────────────────────────── */
-	/* overflow: hidden keeps the mask reveal's 1.08 zoom inside the frame;
-	 * blush shows while the lazy image decodes. */
+	/* overflow: hidden keeps the mask reveal's 1.08 zoom inside the frame.
+	 * Blush shows while the lazy image decodes — on the img, so it opens
+	 * with the mask reveal rather than standing in the frame before it. */
 	.amenity-fig {
 		overflow: hidden;
-		background: var(--mk-blush);
 	}
 
 	.amenity-fig img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		background: var(--mk-blush);
 	}
 
 	.amenity-fig--wide {

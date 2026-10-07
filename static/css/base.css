@@ -688,21 +688,25 @@ html.js .reveal-img:not(.is-visible) {
 }
 
 /* Image mask reveal (MKSK): the frame opens top-down while the photo
- * settles from a slight zoom. */
+ * settles from a slight zoom. The closing clip sits on the photo, never on
+ * the frame: the frame is what use:reveal observes, and Chrome's
+ * IntersectionObserver clips a target by its own clip-path — a frame
+ * clipped to zero height never reaches the threshold, so it never opens.
+ * The frame only crops the zoom; the placeholder colour belongs on the img
+ * (so it opens with the photo, not before it). */
 .mk-reveal-mask {
-	clip-path: inset(0);
-	transition: clip-path 1.2s var(--mk-ease-silk) var(--reveal-d, 0s);
+	overflow: hidden;
 }
 
 .mk-reveal-mask img {
-	transition: transform 1.6s var(--mk-ease-out) var(--reveal-d, 0s);
-}
-
-html.js .mk-reveal-mask:not(.is-visible) {
-	clip-path: inset(0 0 100% 0);
+	clip-path: inset(0);
+	transition:
+		clip-path 1.2s var(--mk-ease-silk) var(--reveal-d, 0s),
+		transform 1.6s var(--mk-ease-out) var(--reveal-d, 0s);
 }
 
 html.js .mk-reveal-mask:not(.is-visible) img {
+	clip-path: inset(0 0 100% 0);
 	transform: scale(1.08);
 }
 
@@ -717,7 +721,7 @@ html.js .mk-reveal-mask:not(.is-visible) img {
 	}
 }
 
-html.js:not(.is-hydrated) :is(.reveal-text, .reveal-img, .mk-reveal-mask) {
+html.js:not(.is-hydrated) :is(.reveal-text, .reveal-img, .mk-reveal-mask img) {
 	animation: mk-reveal-failsafe 0s 4s forwards;
 }
 

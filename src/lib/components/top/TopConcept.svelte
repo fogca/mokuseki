@@ -70,14 +70,16 @@
 		width: calc(100% + var(--mk-inset));
 		aspect-ratio: var(--mk-card-ratio);
 		overflow: hidden;
-		background: var(--mk-blush);
 	}
 
+	/* Blush shows while the lazy image decodes — on the img, so it opens
+	 * with the mask reveal rather than standing in the frame before it. */
 	.concept-figure img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		object-position: var(--concept-focus);
+		background: var(--mk-blush);
 	}
 
 	/* Tablet and up — Figma 220:663. At 1440 (scrollY 726): eyebrow 301,
