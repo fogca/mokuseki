@@ -18,14 +18,14 @@
  * Foundry; formerly Elio — renamed 2026-10-03). wght 150–950: Hair /
  * Ultra masters, 9 named stops (Hair 150, Thin 250, Light 350, Regular
  * 450 … Ultra 950). The site sets 250 everywhere = the "Thin" stop exactly,
- * not an interpolation. VF27 (2026-10-11) ships 175 characters: A–Z, a–z,
+ * not an interpolation. VF28 (2026-10-12) ships 175 characters (VF27 added the punctuation): A–Z, a–z,
  * 0–9, accents and punctuation incl. ! ? ; & / [ ] # * + = < > © ® ™ « » ’ “ ”.
  * Still NOT in it: % @ ^ ~ { } £ § ¶ ¡ ¿ × ÷ ± • ‹ › and ß æ ø ð þ (Æ Ø Ð Þ), so
  * every stack below lists 'Norma VF09' right after it and the browser falls back per glyph.
  * Bump the URL (and ?v=) together with the preload in app.html. */
 @font-face {
 	font-family: 'Ango';
-	src: url('/fonts/Ango-VF27.woff2?v=20261011a') format('woff2-variations');
+	src: url('/fonts/Ango-VF28.woff2?v=20261012a') format('woff2-variations');
 	font-weight: 150 950;
 	font-style: normal;
 	font-display: swap;
